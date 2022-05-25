@@ -1,0 +1,51 @@
+[
+    {
+        "_id": "0",
+        "type": "found",
+        "isStillAvailable": true,
+        "header": "a doggo",
+        "body": "look at what i've found!",
+        "picsUrls": [
+            "https://i.picsum.photos/id/237/300/300.jpg?hmac=9iUR3VHqf0Y9abGyuPZTpEIxHJL0sSvyNtJtDIMSylM",
+            "https://i.picsum.photos/id/237/300/300.jpg?hmac=9iUR3VHqf0Y9abGyuPZTpEIxHJL0sSvyNtJtDIMSylM"
+        ],
+        "date": "2022-05-25T11:30:00.000Z",
+        "location": {
+            "lat": 29.5577,
+            "long": 34.9519,
+            "name": "Eilat"
+        },
+        "author": {
+            "_id": "todo",
+            "firstName": "Boaz",
+            "lastName": "Cohen",
+            "profilePicUrl": "https://i.picsum.photos/id/237/300/300.jpg?hmac=9iUR3VHqf0Y9abGyuPZTpEIxHJL0sSvyNtJtDIMSylM"
+        },
+        "proximityInKm": 400
+    },
+    {
+        "_id": "1",
+        "type": "found",
+        "isStillAvailable": true,
+        "header": "yes another doggo",
+        "body": "a dog, oh",
+        "picsUrls": [
+            "https://i.picsum.photos/id/237/300/300.jpg?hmac=9iUR3VHqf0Y9abGyuPZTpEIxHJL0sSvyNtJtDIMSylM",
+            "https://i.picsum.photos/id/237/300/300.jpg?hmac=9iUR3VHqf0Y9abGyuPZTpEIxHJL0sSvyNtJtDIMSylM",
+            "https://i.picsum.photos/id/237/300/300.jpg?hmac=9iUR3VHqf0Y9abGyuPZTpEIxHJL0sSvyNtJtDIMSylM"
+        ],
+        "date": "2021-10-27T18:15:00.000Z",
+        "location": {
+            "lat": 32.0853,
+            "long": 34.7818,
+            "name": "Tel Aviv"
+        },
+        "author": {
+            "_id": "todo",
+            "firstName": "Naomi",
+            "lastName": "Drori",
+            "profilePicUrl": "https://i.picsum.photos/id/237/300/300.jpg?hmac=9iUR3VHqf0Y9abGyuPZTpEIxHJL0sSvyNtJtDIMSylM"
+        },
+        "proximityInKm": 15
+    }
+]
