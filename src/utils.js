@@ -64,3 +64,39 @@ export const newID = (() => {
     return current++;
   };
 })();
+
+export const capitalize = (phrase) => {
+  return phrase
+    .toLowerCase()
+    .split(' ')
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
+};
+
+import Constants from 'expo-constants';
+export const deviceName = Constants.deviceName;
+
+/**
+ * @param {Object} body
+ */
+export function sendPostReq(url, body) {
+  return fetch(url, {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    method: 'POST',
+    body: JSON.stringify(body),
+  });
+}
+
+import { SERVER_URL } from './constants';
+
+export function server({ raw: strings }, ...rest) {
+  const parts = [(strings[0].startsWith('/') ? '' : '/') + strings[0]];
+  for (let i = 0; i < rest.length; i++) {
+    parts.push(rest[i]);
+    parts.push(strings[i + 1]);
+  }
+  const path = parts.join('');
+  return SERVER_URL + path;
+}

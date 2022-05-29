@@ -17,7 +17,9 @@ import { StatusBar } from 'expo-status-bar';
 
 import Tabs from './src/Tabs';
 
+
 export default function App() {
+
   return (
     <>
       <StatusBar style="auto" />
@@ -25,3 +27,16 @@ export default function App() {
     </>
   );
 }
+/**
+ * my posts (make closed)
+ * settings - show closed posts
+ * 
+ * send msg via the app
+ * 
+ * keep the "closed" badge for 24 hours
+ * 
+ * clear should look like a link
+ * 
+ * search or filter?
+ * narrow down your search by
+ */

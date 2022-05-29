@@ -18,17 +18,11 @@ import { Ionicons } from '@expo/vector-icons';
 
 import FoundFeed from './FoundFeed';
 import globalStyles from './globalStyles';
+import ImagesModal from './ImagesModal';
 
-function FoundStack() {
-  const Stack = React.useMemo(createNativeStackNavigator, []);
+import FoundStack from './FoundStack';
 
-  return (
-    <Stack.Navigator screenOptions={{ title: 'Found' }}>
-      <Stack.Screen name="FoundFeed" component={FoundFeed} />
-      {/* other screens such as fullscreenuser or sullscreenpost */}
-    </Stack.Navigator>
-  );
-}
+import MoreStack from './MoreStack';
 
 /////////////////////////////////////////////////////////////////////
 
@@ -51,14 +45,6 @@ function LostScreen() {
   );
 }
 
-function SettingsScreen() {
-  return (
-    <View style={globalStyles.fullScreenAndCenter}>
-      <Text>Settings Screen will be here</Text>
-    </View>
-  );
-}
-
 /////////////////////////////////////////////////////////////////////
 
 export default function Tabs() {
@@ -77,7 +63,7 @@ export default function Tabs() {
               <Ionicons
                 size={size}
                 color={color}
-                name={focused ? 'map' : 'map-outline'}
+                name={focused ? 'earth-sharp' : 'earth-outline'}
               />
             ),
           }}
@@ -87,27 +73,27 @@ export default function Tabs() {
           component={LostScreen}
           options={{
             title: 'Lost',
-            // headerShown: false,
+            headerShown: false,
             tabBarIcon: ({ size, color, focused }) => (
               <Ionicons
                 size={size}
                 color={color}
-                name={focused ? 'search' : 'search-outline'}
+                name={focused ? 'planet-sharp' : 'planet-outline'}
               />
             ),
           }}
         />
         <Tabs.Screen
-          name="SettingsTab"
-          component={SettingsScreen}
+          name="MoreTab"
+          component={MoreStack}
           options={{
-            title: 'Settings',
-            // headerShown: false,
+            title: 'More',
+            headerShown: false,
             tabBarIcon: ({ size, color, focused }) => (
               <Ionicons
                 size={size}
                 color={color}
-                name={focused ? 'settings' : 'settings-outline'}
+                name={focused ? 'menu-sharp' : 'menu'}
               />
             ),
           }}

@@ -10,73 +10,112 @@ import {
   Keyboard,
   Alert,
   FlatList,
-  Image
+  Image,
 } from 'react-native';
 
 import { timeDeltaAsString } from './utils';
 
+import globalStyles from './globalStyles';
+
+import { FoundContext } from './contexts';
+
 export default function Post(props) {
+  const { setPostViewed } = React.useContext(FoundContext);
+  // todo can i use useNavigation?
+
   return (
-    <View style={styles.container}>
-      <View style={styles.LocationAndDate}>
-        <Text style={styles.date}>{timeDeltaAsString(props.date)}</Text>
-        <Text style={styles.location}>
-          {props.location.name}
-          {'\n'}
-          {props.proximityInKm == undefined
-            ? ''
-            : props.proximityInKm == 0
-            ? '< 0.01 km away'
-            : `${props.proximityInKm.toFixed(2)} km away`}
-        </Text>
+    <View style={[styles.container, globalStyles.shadow]}>
+      <View style={styles.extraMargin}>
+        <View style={styles.LocationAndDate}>
+          <Text style={styles.date}>{timeDeltaAsString(props.date)}</Text>
+          <Text style={styles.location}>
+            {props.location.name}
+            {'\n'}
+            {props.proximityInKm != undefined &&
+              prettyDistance(props.proximityInKm)}
+          </Text>
+        </View>
+        <Text style={styles.header}>{props.header}</Text>
+        <Text style={styles.bodyText}>{props.body}</Text>
       </View>
-      <Text style={styles.header}>{props.header}</Text>
-      <Text style={styles.bodyText}>{props.body}</Text>
 
       <FlatList
-        style={styles.imagesContainer}
+        style={[
+          styles.imagesContainer,
+          { paddingBottom: 8 },
+          // { borderWidth: 1, borderStyle: 'solid', borderColor: 'darkgray' },
+          { borderRadius: 4 },
+          { paddingLeft: 2 },
+          { paddingTop: 8 },
+          // { backgroundColor: '#eee'}
+        ]}
         data={props.picsUrls}
         horizontal={true}
-        renderItem={({ item }) => {
-          return <Image style={styles.image} source={{ uri: item }} />;
+        showsHorizontalScrollIndicator={false}
+        renderItem={({ item, index }) => {
+          const marginRight = index + 1 == props.picsUrls.length ? 4 : 0;
+          return (
+            <View style={[{ marginRight }, globalStyles.shadow]}>
+              <TouchableOpacity
+                onPress={() => {
+                  setPostViewed(props);
+                  props.navigation.navigate('ImagesModal');
+                }}
+              >
+                <Image style={styles.image} source={{ uri: item }} />
+              </TouchableOpacity>
+            </View>
+          );
         }}
         keyExtractor={(_, idx) => idx}
       />
 
-      <View style={styles.lineProfileContainer}>
-        <Image
-          style={styles.profileImage}
-          source={{
-            uri: props.author.profilePicUrl,
-          }}
-        />
-        <Text style={styles.pofileName}>
-          {props.author.firstName}
-        </Text>
-        <Text style={{ marginLeft: 'auto', marginRight: 8 }}></Text>
-      </View>
+      <TouchableOpacity
+        onPress={() => {
+          setPostViewed(props);
+          props.navigation.navigate('UserModal');
+        }}
+      >
+        <View style={styles.lineProfileContainer}>
+          <Image
+            style={styles.profileImage}
+            source={{ uri: props.author.profilePicUrl }}
+          />
+          <Text style={styles.pofileName}>
+            {props.author.firstName} {props.author.lastName}
+          </Text>
+        </View>
+      </TouchableOpacity>
     </View>
   );
 }
 
+function prettyDistance(proximityInKm) {
+  if (proximityInKm >= 10) {
+    return `${proximityInKm.toFixed(0)} km away`;
+  }
+  if (proximityInKm >= 1) {
+    return `${proximityInKm.toFixed(1)} km away`;
+  }
+  if (proximityInKm <= 0.1) {
+    return 'at this area';
+  }
+  return `${proximityInKm.toFixed(2)} km away`;
+}
+
 const styles = StyleSheet.create({
+  extraMargin: {
+    margin: 8,
+  },
+
   container: {
     margin: 3,
-
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-
-    elevation: 5,
 
     padding: 8,
     backgroundColor: '#fff',
 
     marginBottom: 8,
+    borderRadius: 8,
   },
   LocationAndDate: {
     display: 'flex',
@@ -84,31 +123,26 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   date: {
-    // fontFamily: "monoscope",
     fontWeight: 'normal',
-    letterSpacing: 1.5,
+    letterSpacing: 1.2,
     fontWeight: 'bold',
-    // textTransform: "uppercase",
+    textTransform: 'capitalize',
   },
   location: {
     marginLeft: 'auto',
-    // fontFamily: "monoscope", // todo load fonts...
-    // fontWeight: "bold",
     letterSpacing: 1.5,
-    // textTransform: "uppercase",
     textAlign: 'center',
+    textAlign: 'right',
   },
   header: {
     fontSize: 33,
     marginBottom: 18,
     textTransform: 'capitalize',
-    // textAlign: "center",
   },
   bodyText: {
     fontSize: 15,
     lineHeight: 20,
     marginBottom: 14,
-    // textAlign: "center",
   },
   imagesContainer: {
     marginBottom: 14,
@@ -116,10 +150,10 @@ const styles = StyleSheet.create({
   image: {
     width: 200,
     height: 200,
-    marginHorizontal: 6,
+    marginHorizontal: 5,
+    borderRadius: 4,
   },
   lineProfileContainer: {
-    display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'flex-start',
@@ -136,5 +170,6 @@ const styles = StyleSheet.create({
   pofileName: {
     margin: 6,
     textTransform: 'capitalize',
+    fontWeight: 'bold',
   },
 });
