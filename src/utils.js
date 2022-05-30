@@ -1,3 +1,23 @@
+import Constants from 'expo-constants';
+export const deviceName = Constants.deviceName;
+
+export function prettyDate(date) {
+  return new Date(date).toLocaleDateString('en-US', {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
+}
+
+export function prettyDateNoWeekday(date) {
+  return new Date(date).toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
+}
+
 /**
  * given a date (or a unix timestamp), returns a string like "2 days ago"
  */
@@ -73,9 +93,6 @@ export const capitalize = (phrase) => {
     .join(' ');
 };
 
-import Constants from 'expo-constants';
-export const deviceName = Constants.deviceName;
-
 /**
  * @param {Object} body
  */
@@ -91,6 +108,11 @@ export function sendPostReq(url, body) {
 
 import { SERVER_URL } from './constants';
 
+/**
+ * prefix with SERVER_URL
+ *
+ * `` server`/hello/there` `` --> `` 'http://localhost:3000/hello/there' ``
+ */
 export function server({ raw: strings }, ...rest) {
   const parts = [(strings[0].startsWith('/') ? '' : '/') + strings[0]];
   for (let i = 0; i < rest.length; i++) {
@@ -99,4 +121,11 @@ export function server({ raw: strings }, ...rest) {
   }
   const path = parts.join('');
   return SERVER_URL + path;
+}
+
+export function extractFrom(obj, keys) {
+  return keys.reduce((res, key) => {
+    if (key in obj) res[key] = obj[key];
+    return res;
+  }, {});
 }

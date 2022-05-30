@@ -37,10 +37,15 @@ function DebugCountScreen() {
   );
 }
 
+import { LocationContext } from './contexts';
+
 function LostScreen() {
+  const location = React.useContext(LocationContext);
   return (
     <View style={globalStyles.fullScreenAndCenter}>
       <Text>Lost Screen will be here</Text>
+      <Text>Location:</Text>
+      <Text>{JSON.stringify(location, null, 2)}</Text>
     </View>
   );
 }

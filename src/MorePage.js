@@ -15,7 +15,7 @@ import { Ionicons } from '@expo/vector-icons';
 
 import globalStyles from './globalStyles';
 
-export default function MorePage() {
+export default function MorePage({ navigation }) {
   return (
     <View
       style={{
@@ -41,7 +41,7 @@ export default function MorePage() {
       <Bar
         text="Profile"
         iconName="person-outline"
-        onPress={() => console.log('he')}
+        onPress={() => navigation.navigate('MyProfile')}
       />
 
       <Hr marginVertical={24} />

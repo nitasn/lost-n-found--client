@@ -19,15 +19,17 @@ import { Ionicons } from '@expo/vector-icons';
 import globalStyles from './globalStyles';
 
 import MorePage from './MorePage';
+import MyProfile from './MyProfile';
 
 export default function MoreStack() {
   const Stack = React.useMemo(createNativeStackNavigator, []);
 
   return (
     <Stack.Navigator
-      screenOptions={{ title: 'More', presentation: 'modal' }}
+      screenOptions={{ title: 'More' }}
     >
       <Stack.Screen name="MorePage" component={MorePage} />
+      <Stack.Screen name="MyProfile" component={MyProfile} />
     </Stack.Navigator>
   );
 }

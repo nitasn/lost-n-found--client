@@ -34,32 +34,19 @@ async function askForCameraRollPermissionsWeb() {
 
 /**
  * @typedef {"no-image"|"in-progress"|"succeeded"|"failed"} UploadStatus
- * @typedef {{status: UploadStatus, url: string?}} UploadState
  */
 
-/**
- * @typedef {Object} Props
- * @property {(state: UploadState) => void} onUploadStateChanged
- * @property {Object?} style
- *
- * @param {Props} props
- */
 export default function ImagePickerUploader(props) {
-  const [uri, setUri] = useState(null);
+  const [uri, setUri] = useState(props.initialUri ?? null);
 
   const [uploadState, setUploadState] = useState({
     status: 'no-image',
     url: undefined,
   });
 
-  useEffect(() => props.onUploadStateChanged?.(uploadState), [uploadState]);
+  useEffect(() => void props.onUpdate?.(uploadState), [uploadState]);
 
-  // the callback passed to useEffect needs to be sync,
-  // hence we don't simply do useEffect(askForCameraRollPermissionsWeb, [])
-  // also "{}"s are a must since the return value is a destroy function
-  useEffect(() => {
-    askForCameraRollPermissionsWeb();
-  }, []);
+  useEffect(() => void askForCameraRollPermissionsWeb(), []);
 
   const placeholderImageStyle = {
     width: (props.style?.width || DEFAULT_SIZE) / 4,
@@ -109,11 +96,6 @@ export default function ImagePickerUploader(props) {
   );
 }
 
-/**
- * @param {(state: UploadState) => void} setUploadState
- * @param {(uri: string?) => void} setUri
- * @param {number} resizeTo
- */
 async function pickImage(setUploadState, setUri) {
   const { uri, cancelled } = await ImagePicker.launchImageLibraryAsync({
     mediaTypes: ImagePicker.MediaTypeOptions.Images,

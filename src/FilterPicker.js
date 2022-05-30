@@ -34,6 +34,7 @@ const filterShape = {
 };
 
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
+import { prettyDate } from './utils';
 
 function DatePicker({ word, onChange, date }) {
   const [modalVisible, setModalVisible] = React.useState(false);
@@ -46,14 +47,7 @@ function DatePicker({ word, onChange, date }) {
       >
         <Text style={{ marginRight: 8 }}>{word}</Text>
         <Text style={{ fontWeight: 'bold' }}>
-          {date
-            ? new Date(date).toLocaleDateString('en-US', {
-                weekday: 'long',
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric',
-              })
-            : 'Any Date'}
+          {date ? prettyDate(date) : 'Any Date'}
         </Text>
       </TouchableOpacity>
 
