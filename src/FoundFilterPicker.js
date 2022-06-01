@@ -18,7 +18,7 @@ import { Ionicons } from '@expo/vector-icons';
 import globalStyles from './globalStyles';
 import { useFocusEffect } from '@react-navigation/native';
 import dummyPosts from './dummyPosts.json';
-import Post from './Post';
+import Post from './FoundPost';
 import { FoundContext } from './contexts';
 
 const filterShape = {

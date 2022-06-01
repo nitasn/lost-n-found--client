@@ -33,7 +33,7 @@ function useDistanceInKm(postLocation) {
   return distance;
 }
 
-export default function Post(props) {
+export default function (props) {
   const { setPostViewed } = React.useContext(FoundContext);
   const proximityInKm = useDistanceInKm(props.location);
 

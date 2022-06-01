@@ -17,12 +17,12 @@ import { sendPostReq, server } from './utils';
 import { Ionicons } from '@expo/vector-icons';
 import dummyPosts from './dummyPosts.json';
 import globalStyles from './globalStyles';
-import { FoundContext, PostsContext } from './contexts';
-import Post from './FoundPost';
+import { LostContext, PostsContext } from './contexts';
+import Post from './LostPost';
 
-function useFoundPosts() {
+function useLostPosts() {
   const { allPosts, postsLoadError } = React.useContext(PostsContext);
-  return [allPosts?.filter(({ type }) => type == 'found'), postsLoadError];
+  return [allPosts?.filter(({ type }) => type == 'lost'), postsLoadError];
 }
 
 function apply(filter, posts) {
@@ -79,11 +79,11 @@ function PostsLoadErrorScreen({ msg }) {
   );
 }
 
-export default function FoundFeed({ navigation }) {
+export default function LostFeed({ navigation }) {
   // todo pull to refresh
 
-  const { filter } = React.useContext(FoundContext);
-  const [unfilteredPosts, postsLoadError] = useFoundPosts();
+  const { filter } = React.useContext(LostContext);
+  const [unfilteredPosts, postsLoadError] = useLostPosts();
 
   if (postsLoadError) return <PostsLoadErrorScreen msg={postsLoadError} />;
 
@@ -124,7 +124,7 @@ export default function FoundFeed({ navigation }) {
 const replaceMeWithSearchBar = Object.freeze({});
 
 function SearchBar({ navigation }) {
-  const { filter } = React.useContext(FoundContext);
+  const { filter } = React.useContext(LostContext);
 
   return (
     <TouchableOpacity

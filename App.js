@@ -31,14 +31,14 @@ function ProvideAll({ children, CVs }) {
 export default function App() {
   const [jwt, jwtError] = useJwt();
   const location = useLocation({ updateInterval: 1000 * 60 });
-  const [posts, postsError, refreshPosts] = usePosts();
+  const [allPosts, postsLoadError, refreshPosts] = usePosts();
 
   if (!jwt) return <WelcomeScreen errorMsg={jwtError} />;
 
   const pairs = [
     [JwtContext, jwt],
     [LocationContext, location],
-    [PostsContext, { posts, postsError, refreshPosts }],
+    [PostsContext, { allPosts, postsLoadError, refreshPosts }],
   ];
 
   return (

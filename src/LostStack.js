@@ -13,15 +13,15 @@ import {
 
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import FoundFeed from './FoundFeed';
+import LostFeed from './LostFeed';
 import globalStyles from './globalStyles';
 import ImagesModal from './ImagesModal';
 import UserModal from './UserModal';
-import FilterPicker from './FoundFilterPicker';
+import FilterPicker from './LostFilterPicker';
 import ChatScreen from './ChatScreen';
-import { FoundContext } from './contexts';
+import { LostContext } from './contexts';
 
-export default function FoundStack() {
+export default function LostStack() {
   const Stack = React.useMemo(createNativeStackNavigator, []);
 
   const [postViewed, setPostViewed] = React.useState();
@@ -30,19 +30,19 @@ export default function FoundStack() {
   const exposed = { postViewed, setPostViewed, filter, setFilter };
 
   return (
-    <FoundContext.Provider value={exposed}>
+    <LostContext.Provider value={exposed}>
       <Stack.Navigator
         screenOptions={{
-          title: 'Found',
+          title: 'Lost',
           presentation: 'modal'
         }}
       >
-        <Stack.Screen name="FoundFeed" component={FoundFeed} />
+        <Stack.Screen name="LostFeed" component={LostFeed} />
         <Stack.Screen name="ImagesModal" component={ImagesModal} />
         <Stack.Screen name="UserModal" component={UserModal} />
         <Stack.Screen name="FilterPicker" component={FilterPicker} />
         <Stack.Screen name="ChatScreen" component={ChatScreen} />
       </Stack.Navigator>
-    </FoundContext.Provider>
+    </LostContext.Provider>
   );
 }

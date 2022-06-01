@@ -13,44 +13,13 @@ import {
 
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Ionicons } from '@expo/vector-icons';
 
-import FoundFeed from './FoundFeed';
-import globalStyles from './globalStyles';
-import ImagesModal from './ImagesModal';
 
 import FoundStack from './FoundStack';
-
+import LostStack from './LostStack';
 import MoreStack from './MoreStack';
 
-/////////////////////////////////////////////////////////////////////
-
-function DebugCountScreen() {
-  const [count, setCount] = React.useState(0);
-
-  return (
-    <View style={globalStyles.fullScreenAndCenter}>
-      <Text>Count: {count}</Text>
-      <Button title="increase" onPress={() => setCount(count + 1)} />
-    </View>
-  );
-}
-
-import { LocationContext } from './contexts';
-
-function LostScreen() {
-  const location = React.useContext(LocationContext);
-  return (
-    <View style={globalStyles.fullScreenAndCenter}>
-      <Text>Lost Screen will be here</Text>
-      <Text>Location:</Text>
-      <Text>{JSON.stringify(location, null, 2)}</Text>
-    </View>
-  );
-}
-
-/////////////////////////////////////////////////////////////////////
 
 export default function Tabs() {
   const Tabs = React.useMemo(createBottomTabNavigator, []);
@@ -58,6 +27,7 @@ export default function Tabs() {
   return (
     <NavigationContainer>
       <Tabs.Navigator>
+
         <Tabs.Screen
           name="FoundTab"
           component={FoundStack}
@@ -73,9 +43,10 @@ export default function Tabs() {
             ),
           }}
         />
+
         <Tabs.Screen
           name="LostTab"
-          component={LostScreen}
+          component={LostStack}
           options={{
             title: 'Lost',
             headerShown: false,
@@ -88,6 +59,7 @@ export default function Tabs() {
             ),
           }}
         />
+        
         <Tabs.Screen
           name="MoreTab"
           component={MoreStack}

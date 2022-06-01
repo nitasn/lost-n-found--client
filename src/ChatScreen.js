@@ -18,10 +18,15 @@ import { Ionicons } from '@expo/vector-icons';
 import globalStyles from './globalStyles';
 import { useFocusEffect } from '@react-navigation/native';
 import dummyPosts from './dummyPosts.json';
-import Post from './Post';
 import { FoundContext } from './contexts';
 
-export default function () {
+export default function ({navigation}) {
+  useFocusEffect(() => {
+    navigation.setOptions({
+      title: 'Chat',
+    });
+  });
+
   return (
     <View style={globalStyles.fullScreenAndCenter}>
       <Text>chat screen here</Text>
