@@ -163,8 +163,8 @@ async function pickImage(setUploadState, setUri) {
     let { base64 } = await manipulateAsync(uri, manipulations, options);
 
     await new Promise((res) => setTimeout(res, 2000));
-    // throw new Error("testing - network failed demo");
-    return 'demi-testing-cld-url'; // todo delete these lines
+    // throw new Error("testing - network failed demo"); // simulate failure
+    // return 'demi-testing-cld-url'; // simulate success
 
     const cld_url = await uploadToCloudinary(
       'data:image/jpeg;base64,' + base64

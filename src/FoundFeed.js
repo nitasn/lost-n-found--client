@@ -21,11 +21,6 @@ import { FoundContext } from './contexts';
 import Post from './Post';
 
 function usePosts() {
-  // return [dummyPosts, null];
-  
-  // todo refresh posts after some time or something
-  // or pull to refresh...
-
   const [posts, setPosts] = React.useState(null);
   const [error, setError] = React.useState(null);
 
@@ -85,7 +80,7 @@ function LoadingPostsScreen() {
 
 function PostsLoadErrorScreen({ msg }) {
   return (
-    <View style={[styles.conatiner, { padding: 12}]}>
+    <View style={[styles.conatiner, { padding: 12 }]}>
       <View>
         <Text>Could not load posts.</Text>
         <Text>
@@ -100,6 +95,8 @@ function PostsLoadErrorScreen({ msg }) {
 }
 
 export default function FoundFeed({ navigation }) {
+  // todo pull to refresh
+
   const { filter } = React.useContext(FoundContext);
   const [allPosts, postsLoadError] = usePosts();
 
@@ -139,7 +136,7 @@ export default function FoundFeed({ navigation }) {
   );
 }
 
-const replaceMeWithSearchBar = Object.create(null);
+const replaceMeWithSearchBar = Object.freeze({});
 
 function SearchBar({ navigation }) {
   const { filter } = React.useContext(FoundContext);
