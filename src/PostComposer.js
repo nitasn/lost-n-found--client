@@ -25,9 +25,8 @@ import { StatusBar } from 'expo-status-bar';
 import { Ionicons } from '@expo/vector-icons';
 import { useFocusEffect } from '@react-navigation/native';
 import PicsPickRow from './PicsPickRow';
-import { JwtContext } from './contexts';
+import { JwtContext, PostsContext } from './contexts';
 import globalStyles from './globalStyles';
-import ImagePickerUploader from './ImagePickerUploader';
 import { cache, capitalize, prettyDateNoWeekday } from './utils';
 import { LocationContext } from './contexts';
 import { server, sendPostReq, deviceName } from './utils';
@@ -276,6 +275,11 @@ export default ({ navigation }) => {
   const [paragraph, setParagraph] = React.useState('');
   const [location, setLocation] = React.useState({});
   const [imagesStatuses, setImagesStatus] = React.useState([]);
+  const { refreshPosts } = React.useContext(PostsContext);
+
+  useFocusEffect(() => {
+    navigation.setOptions({ title: 'Upload Post' });
+  });
 
   const jwt = React.useContext(JwtContext);
   const scrollRef = React.useRef();
@@ -296,8 +300,6 @@ export default ({ navigation }) => {
         style={{
           flex: 1,
           backgroundColor: 'lightgray',
-          // alignItems: 'center',
-          // justifyContent: 'center',
           padding: 14,
           width: '100%',
         }}
@@ -356,10 +358,10 @@ export default ({ navigation }) => {
       const { error, post_id } = await res.json();
       if (error) return onError(error);
 
+      refreshPosts();
       await AsyncAlert('Posted', 'Your post successfully uploaded ❤️');
-      return navigation.navigate('MorePage');
-    } 
-    catch (error) {
+      navigation.navigate('MorePage');
+    } catch (error) {
       onError(error);
     }
   }

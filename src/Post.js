@@ -22,8 +22,8 @@ function useDistanceInKm(postLocation) {
   const [distance, setDistance] = React.useState(undefined);
 
   React.useEffect(() => {
-    if (postLocation && deviceLocation) {
-      const { lat, long } = postLocation;
+    const { lat, long } = postLocation;
+    if (lat && long && deviceLocation) {
       const { latitude, longitude } = deviceLocation;
       const dist = geoDistance(latitude, longitude, lat, long);
       setDistance(dist);
@@ -57,20 +57,7 @@ export default function Post(props) {
       </View>
 
       <FlatList
-        style={[
-          styles.imagesContainer,
-          { paddingBottom: 8 },
-          {
-            // borderTopWidth: 1,
-            // borderBottomWidth: 1,
-            // borderStyle: 'solid',
-            // borderColor: 'darkgray'
-          },
-          // { borderRadius: 4 },
-          { paddingLeft: 2 },
-          { paddingTop: 8 },
-          // { backgroundColor: '#eee'}
-        ]}
+        style={[styles.imagesContainer, { paddingVertical: 8, paddingLeft: 2 }]}
         data={props.picsUrls}
         horizontal={true}
         showsHorizontalScrollIndicator={false}

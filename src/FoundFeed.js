@@ -17,27 +17,12 @@ import { sendPostReq, server } from './utils';
 import { Ionicons } from '@expo/vector-icons';
 import dummyPosts from './dummyPosts.json';
 import globalStyles from './globalStyles';
-import { FoundContext } from './contexts';
+import { FoundContext, PostsContext } from './contexts';
 import Post from './Post';
 
-function usePosts() {
-  const [posts, setPosts] = React.useState(null);
-  const [error, setError] = React.useState(null);
-
-  async function doAsyncWork() {
-    try {
-      const res = await fetch(server`/public/get-all-posts`);
-      const json = await res.json();
-      setPosts(json);
-    } catch (err) {
-      setError(err.message);
-      setTimeout(doAsyncWork, 1000);
-    }
-  }
-
-  React.useEffect(() => void doAsyncWork(), []);
-
-  return [posts, error];
+function useFoundPosts() {
+  const { posts, postsError } = React.useContext(PostsContext);
+  return [posts?.filter(({ type }) => type == 'found'), postsError];
 }
 
 function apply(filter, posts) {
@@ -98,13 +83,13 @@ export default function FoundFeed({ navigation }) {
   // todo pull to refresh
 
   const { filter } = React.useContext(FoundContext);
-  const [allPosts, postsLoadError] = usePosts();
+  const [unfilteredPosts, postsLoadError] = useFoundPosts();
 
   if (postsLoadError) return <PostsLoadErrorScreen msg={postsLoadError} />;
 
-  if (allPosts == null) return <LoadingPostsScreen />;
+  if (unfilteredPosts == null) return <LoadingPostsScreen />;
 
-  const posts = [replaceMeWithSearchBar, ...apply(filter, allPosts)];
+  const posts = [replaceMeWithSearchBar, ...apply(filter, unfilteredPosts)];
 
   return (
     <View style={styles.conatiner}>
