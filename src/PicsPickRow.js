@@ -1,15 +1,13 @@
-import * as React from "react";
-import { StyleSheet, ScrollView } from "react-native";
-import ImagePickerUploader from "./ImagePickerUploader";
-import { newID } from "./utils";
+import * as React from 'react';
+import { StyleSheet, ScrollView, View } from 'react-native';
+import globalStyles from './globalStyles';
+import ImagePickerUploader from './ImagePickerUploader';
+import { newID } from './utils';
 
 function valueOrDefault(value, fallback) {
   return value != undefined ? value : fallback;
 }
 
-/**
- * @returns {{id, uploadState: import("./ImagePickerUploader").UploadState}}
- */
 function newEmptyPicState() {
   return {
     // for react's `key` prop
@@ -17,18 +15,13 @@ function newEmptyPicState() {
 
     // what we actually care about
     uploadState: {
-      status: "no-image",
+      status: 'no-image',
       url: undefined,
     },
   };
 }
 
-/**
- * @typedef {(pics: [import("./ImagePickerUploader").UploadState]) => void} Callback
- * @param {{margins: number?, maxImages: number?, onStateChanged: Callback}}
- */
-export default function PicsPickRow({ margins, maxImages, onStateChanged }) {
-  margins = valueOrDefault(margins, 9);
+export default function PicsPickRow({ gap, maxImages, onStateChanged, style }) {
   maxImages = valueOrDefault(maxImages, 5);
 
   const [picksState, setPicksState] = React.useState([newEmptyPicState()]);
@@ -38,7 +31,7 @@ export default function PicsPickRow({ margins, maxImages, onStateChanged }) {
     const newState = [...picksState];
     newState[idxWhereChagned].uploadState = newUploadState;
     const empties = newState.filter(
-      (item) => item.uploadState.status == "no-image"
+      (item) => item.uploadState.status == 'no-image'
     );
     for (let i = 1; i < empties.length; i++) {
       const idx = newState.indexOf(empties[i]);
@@ -52,37 +45,52 @@ export default function PicsPickRow({ margins, maxImages, onStateChanged }) {
     onStateChanged?.(
       newState
         .map(({ uploadState }) => uploadState)
-        .filter((item) => item.status != "no-image")
+        .filter((item) => item.status != 'no-image')
     );
   }
 
   const styles = StyleSheet.create({
+    container: {
+      padding: 4, // todo stretch side-ways and keep shadow uncut... 
+      paddingBottom: 12,
+      borderColor: 'black',
+      // borderWidth: 1,
+      borderRadius: 8,
+      overflow: 'hidden',
+      ...style,
+    },
     imagesList: {
-      flexDirection: "row",
-      borderColor: "black",
-      borderWidth: 1,
-
-      flexDirection: "row",
-      paddingVertical: margins,
+      flexDirection: 'row',
+      overflow: 'visible'
     },
     imagePicker: {
-      marginRight: margins,
-      width: 150,
-      height: 150,
+      width: 180,
+      height: 180,
+      
     },
   });
 
   return (
-    <ScrollView style={styles.imagesList} horizontal={true} ref={listRef}>
-      {picksState.map(({ id }, idx) => (
-        <ImagePickerUploader
-          style={[styles.imagePicker, { marginLeft: idx ? 0 : margins }]}
-          onUploadStateChanged={(newUploadState) => {
-            onSinglePickStateChanged(idx, newUploadState);
-          }}
-          key={id}
-        />
-      ))}
-    </ScrollView>
+    <View style={styles.container}>
+      <ScrollView
+        style={styles.imagesList}
+        horizontal={true}
+        ref={listRef}
+        showsHorizontalScrollIndicator={false}
+      >
+        {picksState.map(({ id }, idx) => (
+          <ImagePickerUploader
+            style={[
+              styles.imagePicker,
+              idx + 1 < picksState.length && { marginRight: gap },
+            ]}
+            onUploadStateChanged={(newUploadState) => {
+              onSinglePickStateChanged(idx, newUploadState);
+            }}
+            key={id}
+          />
+        ))}
+      </ScrollView>
+    </View>
   );
 }

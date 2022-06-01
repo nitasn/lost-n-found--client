@@ -14,12 +14,16 @@ import {
 } from 'react-native';
 
 import * as ImagePicker from 'expo-image-picker';
+
 import { manipulateAsync, SaveFormat } from 'expo-image-manipulator';
 
 import placeholderImgUri from '../assets/add-image-icon.png';
 import failureImgUri from '../assets/red-alert.png';
 import succcessImgUri from '../assets/success-tick.png';
 
+import bg from '../assets/bg.jpeg';
+
+import globalStyles from './globalStyles';
 import uploadToCloudinary from './uploadToCloudinary';
 import EverSpinningDots from './EverSpinningDots';
 
@@ -34,19 +38,32 @@ async function askForCameraRollPermissionsWeb() {
 
 /**
  * @typedef {"no-image"|"in-progress"|"succeeded"|"failed"} UploadStatus
+ * @typedef {{status: UploadStatus, url: string?}} UploadState
  */
 
+/**
+ * @typedef {Object} Props
+ * @property {(state: UploadState) => void} onUploadStateChanged
+ * @property {Object?} style
+ *
+ * @param {Props} props
+ */
 export default function ImagePickerUploader(props) {
-  const [uri, setUri] = useState(props.initialUri ?? null);
+  const [uri, setUri] = useState(null);
 
   const [uploadState, setUploadState] = useState({
     status: 'no-image',
     url: undefined,
   });
 
-  useEffect(() => void props.onUpdate?.(uploadState), [uploadState]);
+  useEffect(() => props.onUploadStateChanged?.(uploadState), [uploadState]);
 
-  useEffect(() => void askForCameraRollPermissionsWeb(), []);
+  // the callback passed to useEffect needs to be sync,
+  // hence we don't simply do useEffect(askForCameraRollPermissionsWeb, [])
+  // also "{}" are a must since the return value is a destroy function
+  useEffect(() => {
+    askForCameraRollPermissionsWeb();
+  }, []);
 
   const placeholderImageStyle = {
     width: (props.style?.width || DEFAULT_SIZE) / 4,
@@ -69,8 +86,23 @@ export default function ImagePickerUploader(props) {
   return (
     <TouchableOpacity
       onPress={() => pickImage(setUploadState, setUri)}
-      style={[styles.container, props.style]}
+      style={[
+        styles.container,
+        props.style,
+        { ...globalStyles.shadow, shadowOpacity: uri ? .25 : .1 },
+      ]}
     >
+      <Image
+        resizeMode="stretch"
+        style={{
+          position: 'absolute',
+          width: '100%',
+          height: '100%',
+          borderRadius: 9,
+        }}
+        source={bg}
+      />
+
       <Image
         resizeMode="cover"
         style={uri ? styles.mainImage : placeholderImageStyle}
@@ -96,6 +128,11 @@ export default function ImagePickerUploader(props) {
   );
 }
 
+/**
+ * @param {(state: UploadState) => void} setUploadState
+ * @param {(uri: string?) => void} setUri
+ * @param {number} resizeTo
+ */
 async function pickImage(setUploadState, setUri) {
   const { uri, cancelled } = await ImagePicker.launchImageLibraryAsync({
     mediaTypes: ImagePicker.MediaTypeOptions.Images,
@@ -173,26 +210,16 @@ function useMergeState(initialState) {
 const styles = StyleSheet.create({
   container: {
     borderRadius: 9,
-    backgroundColor: 'rgba(141, 186, 160, 0.12)',
     width: DEFAULT_SIZE,
     height: DEFAULT_SIZE,
     justifyContent: 'center',
     alignItems: 'center',
-
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-
-    elevation: 5,
+    borderStyle: 'solid',
   },
   mainImage: {
     width: '100%',
     height: '100%',
-    borderRadius: 9,
+    borderRadius: 8,
   },
   indicatorArea: {
     position: 'absolute',

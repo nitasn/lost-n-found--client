@@ -12,19 +12,37 @@ import {
   FlatList,
 } from 'react-native';
 
-import globalStyles from './globalStyles';
-
+import { vw, vh, vmin, vmax } from 'react-native-expo-viewport-units';
+import { sendPostReq, server } from './utils';
+import { Ionicons } from '@expo/vector-icons';
 import dummyPosts from './dummyPosts.json';
+import globalStyles from './globalStyles';
+import { FoundContext } from './contexts';
 import Post from './Post';
 
-import { FoundContext } from './contexts';
-import { capitalize } from './utils';
+function usePosts() {
+  // return [dummyPosts, null];
+  
+  // todo refresh posts after some time or something
+  // or pull to refresh...
 
-import { Ionicons } from '@expo/vector-icons';
+  const [posts, setPosts] = React.useState(null);
+  const [error, setError] = React.useState(null);
 
-function usePosts(filter) {
-  // todo fetch from server in a useEffect or every minute
-  return dummyPosts;
+  async function doAsyncWork() {
+    try {
+      const res = await fetch(server`/public/get-all-posts`);
+      const json = await res.json();
+      setPosts(json);
+    } catch (err) {
+      setError(err.message);
+      setTimeout(doAsyncWork, 1000);
+    }
+  }
+
+  React.useEffect(() => void doAsyncWork(), []);
+
+  return [posts, error];
 }
 
 function apply(filter, posts) {
@@ -55,25 +73,44 @@ function apply(filter, posts) {
   return posts.filter((post) => conditions.every((check) => check(post)));
 }
 
-import { vw, vh, vmin, vmax } from 'react-native-expo-viewport-units';
+function LoadingPostsScreen() {
+  return (
+    <View style={styles.conatiner}>
+      <View>
+        <Text>Loading Posts...</Text>
+      </View>
+    </View>
+  );
+}
+
+function PostsLoadErrorScreen({ msg }) {
+  return (
+    <View style={[styles.conatiner, { padding: 12}]}>
+      <View>
+        <Text>Could not load posts.</Text>
+        <Text>
+          Please make sure you're connected to the internet and try again.
+        </Text>
+        <Text>{'\n'}</Text>
+        <Text>Error message:</Text>
+        <Text>{msg}</Text>
+      </View>
+    </View>
+  );
+}
 
 export default function FoundFeed({ navigation }) {
   const { filter } = React.useContext(FoundContext);
-  const allPosts = usePosts();
+  const [allPosts, postsLoadError] = usePosts();
 
-  const posts = React.useMemo(
-    () => [replaceMeWithSearchBar, ...apply(filter, allPosts)],
-    [filter, allPosts]
-  );
+  if (postsLoadError) return <PostsLoadErrorScreen msg={postsLoadError} />;
+
+  if (allPosts == null) return <LoadingPostsScreen />;
+
+  const posts = [replaceMeWithSearchBar, ...apply(filter, allPosts)];
 
   return (
-    <View
-      style={{
-        ...globalStyles.fullScreenAndCenter,
-        //  { backgroundColor: '#fce3e1' }
-        backgroundColor: 'lightgray',
-      }}
-    >
+    <View style={styles.conatiner}>
       <FlatList
         style={{ padding: 6, paddingTop: 0, width: '100%' }}
         data={posts}
@@ -139,3 +176,10 @@ function SearchBar({ navigation }) {
     </TouchableOpacity>
   );
 }
+
+const styles = StyleSheet.create({
+  conatiner: {
+    ...globalStyles.fullScreenAndCenter,
+    backgroundColor: 'lightgray',
+  },
+});

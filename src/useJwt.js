@@ -45,12 +45,12 @@ export default function useJwt() {
 }
 
 async function requestNewJwt() {
-  const res = await sendPostReq(server`/register-anon-user`, {
+  const res = await sendPostReq(server`/public/register-annon`, {
     name: deviceName,
     platform: Platform.OS,
   });
   const { error, token } = await res.json();
-  if (error) throw new Error(error);
+  if (error) throw error;
   else return token;
 }
 

@@ -18,7 +18,7 @@ import globalStyles from './globalStyles';
 import ImagesModal from './ImagesModal';
 import UserModal from './UserModal';
 import FilterPicker from './FilterPicker';
-
+import ChatScreen from './ChatScreen';
 import { FoundContext } from './contexts';
 
 export default function FoundStack() {
@@ -32,12 +32,16 @@ export default function FoundStack() {
   return (
     <FoundContext.Provider value={exposed}>
       <Stack.Navigator
-        screenOptions={{ title: 'Found', presentation: 'modal' }}
+        screenOptions={{
+          title: 'Found',
+          presentation: 'modal'
+        }}
       >
         <Stack.Screen name="FoundFeed" component={FoundFeed} />
         <Stack.Screen name="ImagesModal" component={ImagesModal} />
         <Stack.Screen name="UserModal" component={UserModal} />
         <Stack.Screen name="FilterPicker" component={FilterPicker} />
+        <Stack.Screen name="ChatScreen" component={ChatScreen} />
       </Stack.Navigator>
     </FoundContext.Provider>
   );

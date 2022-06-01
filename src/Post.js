@@ -13,15 +13,29 @@ import {
   Image,
 } from 'react-native';
 
-import { timeDeltaAsString } from './utils';
-
+import geoDistance, { capitalize, timeDeltaAsString } from './utils';
 import globalStyles from './globalStyles';
+import { FoundContext, LocationContext } from './contexts';
 
-import { FoundContext } from './contexts';
+function useDistanceInKm(postLocation) {
+  const deviceLocation = React.useContext(LocationContext);
+  const [distance, setDistance] = React.useState(undefined);
+
+  React.useEffect(() => {
+    if (postLocation && deviceLocation) {
+      const { lat, long } = postLocation;
+      const { latitude, longitude } = deviceLocation;
+      const dist = geoDistance(latitude, longitude, lat, long);
+      setDistance(dist);
+    }
+  }, [deviceLocation]);
+
+  return distance;
+}
 
 export default function Post(props) {
   const { setPostViewed } = React.useContext(FoundContext);
-  // todo can i use useNavigation?
+  const proximityInKm = useDistanceInKm(props.location);
 
   return (
     <View style={[styles.container, globalStyles.shadow]}>
@@ -29,10 +43,13 @@ export default function Post(props) {
         <View style={styles.LocationAndDate}>
           <Text style={styles.date}>{timeDeltaAsString(props.date)}</Text>
           <Text style={styles.location}>
-            {props.location.name}
-            {'\n'}
-            {props.proximityInKm != undefined &&
-              prettyDistance(props.proximityInKm)}
+            <Text style={{ textTransform: 'capitalize' }}>
+              {props.location.name}
+            </Text>
+            <Text>
+              {'\n'}
+              {proximityInKm != undefined && prettyDistance(proximityInKm)}
+            </Text>
           </Text>
         </View>
         <Text style={styles.header}>{props.header}</Text>
@@ -43,8 +60,13 @@ export default function Post(props) {
         style={[
           styles.imagesContainer,
           { paddingBottom: 8 },
-          // { borderWidth: 1, borderStyle: 'solid', borderColor: 'darkgray' },
-          { borderRadius: 4 },
+          {
+            // borderTopWidth: 1,
+            // borderBottomWidth: 1,
+            // borderStyle: 'solid',
+            // borderColor: 'darkgray'
+          },
+          // { borderRadius: 4 },
           { paddingLeft: 2 },
           { paddingTop: 8 },
           // { backgroundColor: '#eee'}
@@ -68,24 +90,77 @@ export default function Post(props) {
           );
         }}
         keyExtractor={(_, idx) => idx}
-      />
-
-      <TouchableOpacity
-        onPress={() => {
-          setPostViewed(props);
-          props.navigation.navigate('UserModal');
-        }}
       >
+        <View
+          style={{
+            position: 'absolute',
+            height: 70,
+            width: 70,
+            right: 70,
+            borderRadius: Number.MAX_SAFE_INTEGER,
+            backgroundColor: 'rgba(0, 0, 0, .9)',
+          }}
+        />
+      </FlatList>
+
+      <View>
+        <View // an hr
+          style={{
+            position: 'absolute',
+            height: 1,
+            width: '94%',
+            left: '3%',
+            backgroundColor: '#ccc',
+            paddingHorizontal: 158,
+            transform: [{ translateY: -5 }],
+          }}
+        />
+
         <View style={styles.lineProfileContainer}>
-          <Image
-            style={styles.profileImage}
-            source={{ uri: props.author.profilePicUrl }}
-          />
-          <Text style={styles.pofileName}>
-            {props.author.firstName} {props.author.lastName}
-          </Text>
+          <TouchableOpacity
+            style={{ flexDirection: 'row', alignItems: 'center', margin: 4 }}
+            onPress={() => {
+              setPostViewed(props);
+              props.navigation.navigate('UserModal');
+            }}
+          >
+            <Image
+              style={styles.profileImage}
+              source={{ uri: props.author.profilePicUrl }}
+            />
+            <Text
+              style={{
+                marginLeft: 4,
+                textTransform: 'capitalize',
+                fontWeight: 'bold',
+              }}
+            >
+              {props.author.name}
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={{ marginLeft: 'auto', marginRight: 8 }}
+            onPress={() => {
+              setPostViewed(props);
+              props.navigation.navigate('ChatScreen');
+            }}
+          >
+            <Text
+              style={{
+                borderWidth: 1,
+                borderStyle: 'solid',
+                paddingHorizontal: 12,
+                paddingVertical: 8,
+                borderRadius: 4,
+                ...globalStyles.shadow,
+              }}
+            >
+              Contact
+            </Text>
+          </TouchableOpacity>
         </View>
-      </TouchableOpacity>
+      </View>
     </View>
   );
 }
@@ -131,7 +206,6 @@ const styles = StyleSheet.create({
   location: {
     marginLeft: 'auto',
     letterSpacing: 1.5,
-    textAlign: 'center',
     textAlign: 'right',
   },
   header: {
@@ -166,10 +240,5 @@ const styles = StyleSheet.create({
     height: 50,
     borderRadius: 50 / 2,
     overflow: 'hidden',
-  },
-  pofileName: {
-    margin: 6,
-    textTransform: 'capitalize',
-    fontWeight: 'bold',
   },
 });

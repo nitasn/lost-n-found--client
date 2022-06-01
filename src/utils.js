@@ -1,3 +1,5 @@
+import * as React from 'react';
+
 import Constants from 'expo-constants';
 export const deviceName = Constants.deviceName;
 
@@ -94,13 +96,17 @@ export const capitalize = (phrase) => {
 };
 
 /**
+ *
+ * @param {string} url
  * @param {Object} body
+ * @param {string?} jwt
  */
-export function sendPostReq(url, body) {
+export function sendPostReq(url, body, jwt = undefined) {
+  const headers = { 'Content-Type': 'application/json' };
+  if (jwt) headers.Authorization = `Bearer ${jwt}`;
+
   return fetch(url, {
-    headers: {
-      'Content-Type': 'application/json',
-    },
+    headers,
     method: 'POST',
     body: JSON.stringify(body),
   });
@@ -129,3 +135,23 @@ export function extractFrom(obj, keys) {
     return res;
   }, {});
 }
+
+export const sleep = (ms) => new Promise((res) => setTimeout(res, ms));
+
+/**
+ * a simple cacher for functions, which may be sync or async.
+ * important: the cached function's argument(s) must be json-able.
+ */
+export const cache = (() => {
+  const dict = Object.create(null);
+
+  return function (func) {
+    return function (...args) {
+      const strArgs = JSON.stringify(args);
+      if (!(strArgs in dict)) {
+        dict[strArgs] = func(...args);
+      }
+      return dict[strArgs];
+    };
+  };
+})();

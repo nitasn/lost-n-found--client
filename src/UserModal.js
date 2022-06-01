@@ -29,7 +29,7 @@ export default function UserModal({ navigation }) {
 
   useFocusEffect(() => {
     navigation.setOptions({
-      title: `${capitalize(author.firstName)}'s Profile`,
+      title: `${capitalize(author.name)}'s Profile`,
     });
   });
 

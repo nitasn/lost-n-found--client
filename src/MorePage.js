@@ -30,7 +30,7 @@ export default function MorePage({ navigation }) {
       <Bar
         text="Upload Post"
         iconName="add"
-        onPress={() => console.log('he')}
+        onPress={() => navigation.navigate('PostComposer')}
       />
 
       <Hr marginVertical={24} />
@@ -52,7 +52,7 @@ export default function MorePage({ navigation }) {
       <Bar
         text="Settings"
         iconName="settings-outline"
-        onPress={() => console.log('he')}
+        // onPress={() => console.log('he')}
       />
     </View>
   );

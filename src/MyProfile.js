@@ -15,34 +15,25 @@ import {
   Modal,
 } from 'react-native';
 
+import jwtDecode from 'jwt-decode';
+import { StatusBar } from 'expo-status-bar';
 import { Ionicons } from '@expo/vector-icons';
-
-import globalStyles from './globalStyles';
-import { capitalize, prettyDateNoWeekday } from './utils';
-
-import { JwtContext } from './contexts';
-
 import { useFocusEffect } from '@react-navigation/native';
 
-import { StatusBar } from 'expo-status-bar';
-
-import jwtDecode from 'jwt-decode';
+import { JwtContext } from './contexts';
+import globalStyles from './globalStyles';
+import { prettyDateNoWeekday } from './utils';
 import ImagePickerUploader from './ImagePickerUploader';
 
-function EditButton() {
-  return <Ionicons size={30} color={'black'} name={'pencil-outline'} />;
+function useDecodedJwt() {
+  const jwt = React.useContext(JwtContext);
+  return jwtDecode(jwt);
 }
 
 export default function MyProfile({ navigation }) {
-  const jwt = React.useContext(JwtContext);
+  const { name, profilePicUrl, iat, _id } = useDecodedJwt();
 
-  useFocusEffect(() => {
-    navigation.setOptions({
-      title: `Your Profile`,
-    });
-  });
-
-  const { name, profilePicUrl, iat, _id } = jwtDecode(jwt);
+  useFocusEffect(() => void navigation.setOptions({ title: `Your Profile` }));
 
   return (
     <>
@@ -77,21 +68,22 @@ export default function MyProfile({ navigation }) {
             marginVertical: 12,
           }}
         >
-          {/* <Image
+          <Image
             style={{
               alignSelf: 'center',
               width: '100%',
               aspectRatio: 1,
               marginHorizontal: 5,
               marginVertical: 12,
-                borderRadius: 12,
+              borderRadius: 12,
             }}
-            source={{ uri: profilePicUrl }} */}
-          <ImagePickerUploader
+            source={{ uri: profilePicUrl }}
+          />
+          {/* <ImagePickerUploader
             initialUri={profilePicUrl}
             onUploadStateChanged={console.log}
             style={{ width: 327, height: 327 }}
-          />
+          /> */}
         </View>
 
         <Text style={{ marginVertical: 12 }}>

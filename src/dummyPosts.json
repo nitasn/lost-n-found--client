@@ -17,8 +17,7 @@
         },
         "author": {
             "_id": "todo",
-            "firstName": "Boaz",
-            "lastName": "Cohen",
+            "name": "Boaz",
             "profilePicUrl": "https://i.picsum.photos/id/409/200/200.jpg?hmac=AY8BYOBixnRqVEMdEhYmw49e-6qu3M3zf_xXjkAuHHc"
         },
         "proximityInKm": 2.33
@@ -42,8 +41,7 @@
         },
         "author": {
             "_id": "todo",
-            "firstName": "Naomi",
-            "lastName": "Drori",
+            "name": "Naomi",
             "profilePicUrl": "https://i.picsum.photos/id/281/200/200.jpg?hmac=5FvZ-Y5zbbpS3-mJ_mp6-eH61MkwhUJi9qnhscegqkY"
         },
         "proximityInKm": 15

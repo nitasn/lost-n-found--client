@@ -27,7 +27,7 @@ export default function ImagesModal({ navigation }) {
 
   useFocusEffect(() => {
     navigation.setOptions({
-      title: `${capitalize(postViewed.author.firstName)}'s Images`,
+      title: `${capitalize(postViewed.author.name)}'s Images`,
     });
   });
 
