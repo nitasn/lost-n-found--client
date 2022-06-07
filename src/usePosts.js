@@ -2,6 +2,9 @@ import { server } from './utils';
 import * as React from 'react';
 
 export default function usePosts() {
+  // todo update every 60 seconds
+  // every call to goFetch may schedule another, and we pass 'refresh', be carefull
+
   const [posts, setPosts] = React.useState(null);
   const [error, setError] = React.useState(null);
 

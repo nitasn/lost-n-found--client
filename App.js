@@ -28,9 +28,11 @@ function ProvideAll({ children, CVs }) {
   }, children);
 }
 
+const MINUTE_IN_MILLIS = 1000 * 60;
+
 export default function App() {
   const [jwt, jwtError] = useJwt();
-  const location = useLocation({ updateInterval: 1000 * 60 });
+  const location = useLocation({ updateInterval: MINUTE_IN_MILLIS });
   const [allPosts, postsLoadError, refreshPosts] = usePosts();
 
   if (!jwt) return <WelcomeScreen errorMsg={jwtError} />;

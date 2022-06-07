@@ -79,6 +79,13 @@ function PostsLoadErrorScreen({ msg }) {
   );
 }
 
+const LOOSEN_FILTER_MSG = `
+Looks like there are no matches...
+Loosen your query and try again ❤️`;
+
+const NO_POSTS_MSG = `
+No Posts Currently Active ❤️`;
+
 export default function FoundFeed({ navigation }) {
   // todo pull to refresh
 
@@ -111,9 +118,7 @@ export default function FoundFeed({ navigation }) {
       {posts.length == 1 && (
         <View style={{ marginBottom: vh(50) }}>
           <Text style={{ fontSize: 15, lineHeight: 20 }}>
-            Looks like there are no matches...
-            {'\n'}
-            Loosen your query and try again ❤️
+            {unfilteredPosts.length ? LOOSEN_FILTER_MSG : NO_POSTS_MSG}
           </Text>
         </View>
       )}
