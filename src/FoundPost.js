@@ -33,18 +33,18 @@ function useDistanceInKm(postLocation) {
   return distance;
 }
 
-export default function (props) {
+export default function ({ navigation, postData }) {
   const { setPostViewed } = React.useContext(FoundContext);
-  const proximityInKm = useDistanceInKm(props.location);
+  const proximityInKm = useDistanceInKm(postData.location);
 
   return (
     <View style={[styles.container, globalStyles.shadow]}>
       <View style={styles.extraMargin}>
         <View style={styles.LocationAndDate}>
-          <Text style={styles.date}>{timeDeltaAsString(props.date)}</Text>
+          <Text style={styles.date}>{timeDeltaAsString(postData.date)}</Text>
           <Text style={styles.location}>
             <Text style={{ textTransform: 'capitalize' }}>
-              {props.location.name}
+              {postData.location.name}
             </Text>
             <Text>
               {'\n'}
@@ -52,23 +52,23 @@ export default function (props) {
             </Text>
           </Text>
         </View>
-        <Text style={styles.header}>{props.header}</Text>
-        <Text style={styles.bodyText}>{props.body}</Text>
+        <Text style={styles.header}>{postData.header}</Text>
+        <Text style={styles.bodyText}>{postData.body}</Text>
       </View>
 
       <FlatList
         style={[styles.imagesContainer, { paddingVertical: 8, paddingLeft: 2 }]}
-        data={props.picsUrls}
+        data={postData.picsUrls}
         horizontal={true}
         showsHorizontalScrollIndicator={false}
         renderItem={({ item, index }) => {
-          const marginRight = index + 1 == props.picsUrls.length ? 4 : 0;
+          const marginRight = index + 1 == postData.picsUrls.length ? 4 : 0;
           return (
             <View style={[{ marginRight }, globalStyles.shadow]}>
               <TouchableOpacity
                 onPress={() => {
-                  setPostViewed(props);
-                  props.navigation.navigate('ImagesModal');
+                  setPostViewed(postData);
+                  navigation.navigate('ImagesModal');
                 }}
               >
                 <Image style={styles.image} source={{ uri: item }} />
@@ -107,13 +107,13 @@ export default function (props) {
           <TouchableOpacity
             style={{ flexDirection: 'row', alignItems: 'center', margin: 4 }}
             onPress={() => {
-              setPostViewed(props);
-              props.navigation.navigate('UserModal');
+              setPostViewed(postData);
+              navigation.navigate('UserModal');
             }}
           >
             <Image
               style={styles.profileImage}
-              source={{ uri: props.author.profilePicUrl }}
+              source={{ uri: postData.author.profilePicUrl }}
             />
             <Text
               style={{
@@ -122,15 +122,15 @@ export default function (props) {
                 fontWeight: 'bold',
               }}
             >
-              {props.author.name}
+              {postData.author.name}
             </Text>
           </TouchableOpacity>
 
           <TouchableOpacity
             style={{ marginLeft: 'auto', marginRight: 8 }}
             onPress={() => {
-              setPostViewed(props);
-              props.navigation.navigate('ChatScreen');
+              setPostViewed(postData);
+              navigation.navigate('ChatScreen');
             }}
           >
             <Text

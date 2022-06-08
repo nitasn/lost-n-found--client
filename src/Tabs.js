@@ -15,11 +15,15 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
 
-
 import FoundStack from './FoundStack';
-import LostStack from './LostStack';
 import MoreStack from './MoreStack';
+import globalStyles from './globalStyles';
 
+const DemiLost = () => (
+  <View style={globalStyles.fullScreenAndCenter}>
+    <Text>lost screen here</Text>
+  </View>
+);
 
 export default function Tabs() {
   const Tabs = React.useMemo(createBottomTabNavigator, []);
@@ -27,7 +31,6 @@ export default function Tabs() {
   return (
     <NavigationContainer>
       <Tabs.Navigator>
-
         <Tabs.Screen
           name="FoundTab"
           component={FoundStack}
@@ -46,7 +49,7 @@ export default function Tabs() {
 
         <Tabs.Screen
           name="LostTab"
-          component={LostStack}
+          component={DemiLost}
           options={{
             title: 'Lost',
             headerShown: false,
@@ -59,7 +62,7 @@ export default function Tabs() {
             ),
           }}
         />
-        
+
         <Tabs.Screen
           name="MoreTab"
           component={MoreStack}

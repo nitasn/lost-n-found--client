@@ -109,7 +109,7 @@ export default function FoundFeed({ navigation }) {
           }
           return (
             <View style={{ marginBottom: index + 1 == posts.length && 3 }}>
-              <Post {...item} navigation={navigation} />
+              <Post postData={item} navigation={navigation} />
             </View>
           );
         }}
