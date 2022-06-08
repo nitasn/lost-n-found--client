@@ -12,8 +12,12 @@ import {
   useWindowDimensions,
   Keyboard,
   Alert,
+  SafeAreaView,
+  TextInput,
+  ScrollView,
 } from 'react-native';
 
+import { Ionicons } from '@expo/vector-icons';
 import { StatusBar } from 'expo-status-bar';
 import useJwt from './src/useJwt';
 import Tabs from './src/Tabs';
@@ -22,6 +26,8 @@ import useLocation from './src/useLocation';
 import usePosts from './src/usePosts';
 import { JwtContext, LocationContext, PostsContext } from './src/contexts';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import globalStyles from './src/globalStyles';
+import WelcomeInsertName from './src/WelcomeInsertName';
 
 function ProvideAll({ children, ContextsAndValues }) {
   return ContextsAndValues.reduceRight((result, [Context, value]) => {
@@ -30,7 +36,32 @@ function ProvideAll({ children, ContextsAndValues }) {
 }
 
 export default function App() {
-  const [jwt, jwtError] = useJwt();
+  // return <WelcomeScreen errorMsg={"Oh snap!!!"}/>
+  // AsyncStorage.setItem('name', "Nitsan")
+  // AsyncStorage.setItem('jwt', NitsanJWT)
+
+  // AsyncStorage.removeItem('jwt')
+  // AsyncStorage.removeItem('name')
+  // return <Text>
+  //   {'\n\n\n\n'}
+  //   {'\n\n\n\n'}
+  //   {'\n\n\n\n'}
+  //   Clear Start...
+  // </Text>
+
+  const [name, setName] = React.useState();
+
+  if (!name) return <WelcomeInsertName onName={setName} />;
+
+  return <RealApp name={name} />;
+}
+
+const NitsanJWT = `
+  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiTml0c2FuIiwicHJvZmlsZVBpY1VybCI6Imh0dHBzOi8vaW1hZ2VzLnVuc3BsYXNoLmNvbS9waG90by0xNjUzNTgwNTU5MzgwLWU0NGU0NWQyODkzZT9jcm9wPWVudHJvcHkmY3M9dGlueXNyZ2ImZml0PWNyb3AmZm09anBnJmg9NDAwJml4aWQ9TW53eGZEQjhNWHh5WVc1a2IyMThNSHg4Zkh4OGZIeDhNVFkxTXpreE5qUXpOQSZpeGxpYj1yYi0xLjIuMSZxPTgwJnc9NDAwIiwiaWF0IjoxNjUzOTE2NDM0NDY0LCJfaWQiOiI2Mjk0YzMxMmZmODYzNDkxY2MyZDNhMDUifQ.r0yXpA1Dr01UHuySEcXvvyLQm-u-EbmSgZPZsQ-ZRAo
+`;
+
+function RealApp({ name }) {
+  const [jwt, jwtError] = useJwt(name);
   const location = useLocation();
   const [allPosts, postsLoadError, refreshPosts] = usePosts();
 
@@ -61,4 +92,10 @@ export default function App() {
  * send msg via the app
  *
  * keep the "closed" badge for 24 hours
+ */
+
+/**
+ * what i've done
+ * 
+ * insert name at first time
  */

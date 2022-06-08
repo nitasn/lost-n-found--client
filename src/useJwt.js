@@ -5,7 +5,7 @@ import { server, sendPostReq, deviceName } from './utils';
 
 let workingOnIt = false;
 
-export default function useJwt() {
+export default function useJwt(name) {
   const [value, setValue] = React.useState(null);
   const [error, setError] = React.useState(null);
 
@@ -25,7 +25,7 @@ export default function useJwt() {
     let newJwt;
 
     try {
-      newJwt = await requestNewJwt();
+      newJwt = await requestNewJwt(name);
     } catch {
       workingOnIt = false;
       return setError('Could not get a new JWT');
@@ -44,9 +44,9 @@ export default function useJwt() {
   return [value, error];
 }
 
-async function requestNewJwt() {
+async function requestNewJwt(name) {
   const res = await sendPostReq(server`/public/register-annon`, {
-    name: deviceName,
+    name,
     platform: Platform.OS,
   });
   const { error, token } = await res.json();
