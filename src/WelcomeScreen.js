@@ -28,8 +28,7 @@ function randomPastelColor() {
 
 function hsl2rgb(h, s, l) {
   let a = s * Math.min(l, 1 - l);
-  let f = (n, k = (n + h / 30) % 12) =>
-    l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
+  let f = (n, k = (n + h / 30) % 12) => l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
   return [f(0), f(8), f(4)].map((x) => Math.round(x * 256));
 }
 
@@ -65,9 +64,7 @@ export default function WelcomeScreen({ errorMsg }) {
         paddingHorizontal: 16,
       }}
     >
-      <Text style={{ fontSize: 14, color: 'darkgray', fontWeight: 'bold' }}>
-        {errorMsg}
-      </Text>
+      <Text style={{ fontSize: 14, color: 'darkgray', fontWeight: 'bold' }}>{errorMsg}</Text>
     </View>
   );
 

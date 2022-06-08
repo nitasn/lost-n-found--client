@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as React from 'react';
-import { Alert } from 'react-native';
+import { Alert, Platform } from 'react-native';
 import { server, sendPostReq, deviceName } from './utils';
 
 let workingOnIt = false;

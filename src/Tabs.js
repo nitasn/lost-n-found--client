@@ -14,20 +14,17 @@ import {
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
-
-import FoundStack from './FoundStack';
+import ChatScreen from './ChatScreen';
+import FeedStack from './FeedStack';
 import MoreStack from './MoreStack';
 import globalStyles from './globalStyles';
 
-const DemiLost = () => (
-  <View style={globalStyles.fullScreenAndCenter}>
-    <Text>lost screen here</Text>
-  </View>
-);
+const Tabs = createBottomTabNavigator();
 
-export default function Tabs() {
-  const Tabs = React.useMemo(createBottomTabNavigator, []);
+const FoundStack = FeedStack('found');
+const LostStack = FeedStack('lost');
 
+export default function () {
   return (
     <NavigationContainer>
       <Tabs.Navigator>
@@ -49,7 +46,7 @@ export default function Tabs() {
 
         <Tabs.Screen
           name="LostTab"
-          component={DemiLost}
+          component={LostStack}
           options={{
             title: 'Lost',
             headerShown: false,
@@ -64,17 +61,29 @@ export default function Tabs() {
         />
 
         <Tabs.Screen
+          name="ChatScreen"
+          component={ChatScreen}
+          options={{
+            title: 'Chat',
+            headerShown: false,
+            tabBarIcon: ({ size, color, focused }) => (
+              <Ionicons
+                size={size}
+                color={color}
+                name={focused ? 'chatbox-ellipses' : 'chatbox-ellipses-outline'}
+              />
+            ),
+          }}
+        />
+
+        <Tabs.Screen
           name="MoreTab"
           component={MoreStack}
           options={{
             title: 'More',
             headerShown: false,
             tabBarIcon: ({ size, color, focused }) => (
-              <Ionicons
-                size={size}
-                color={color}
-                name={focused ? 'menu-sharp' : 'menu'}
-              />
+              <Ionicons size={size} color={color} name={focused ? 'menu-sharp' : 'menu'} />
             ),
           }}
         />

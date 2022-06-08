@@ -15,7 +15,7 @@ import {
 
 import geoDistance, { capitalize, timeDeltaAsString } from './utils';
 import globalStyles from './globalStyles';
-import { FoundContext, LocationContext } from './contexts';
+import { LocationContext } from './contexts';
 
 function useDistanceInKm(postLocation) {
   const deviceLocation = React.useContext(LocationContext);
@@ -33,8 +33,7 @@ function useDistanceInKm(postLocation) {
   return distance;
 }
 
-export default function ({ navigation, postData }) {
-  const { setPostViewed } = React.useContext(FoundContext);
+export default function ({ postData, onImagesClick, onAuthorClick, onChatClick }) {
   const proximityInKm = useDistanceInKm(postData.location);
 
   return (
@@ -43,9 +42,7 @@ export default function ({ navigation, postData }) {
         <View style={styles.LocationAndDate}>
           <Text style={styles.date}>{timeDeltaAsString(postData.date)}</Text>
           <Text style={styles.location}>
-            <Text style={{ textTransform: 'capitalize' }}>
-              {postData.location.name}
-            </Text>
+            <Text style={{ textTransform: 'capitalize' }}>{postData.location.name}</Text>
             <Text>
               {'\n'}
               {proximityInKm != undefined && prettyDistance(proximityInKm)}
@@ -65,12 +62,7 @@ export default function ({ navigation, postData }) {
           const marginRight = index + 1 == postData.picsUrls.length ? 4 : 0;
           return (
             <View style={[{ marginRight }, globalStyles.shadow]}>
-              <TouchableOpacity
-                onPress={() => {
-                  setPostViewed(postData);
-                  navigation.navigate('ImagesModal');
-                }}
-              >
+              <TouchableOpacity onPress={onImagesClick}>
                 <Image style={styles.image} source={{ uri: item }} />
               </TouchableOpacity>
             </View>
@@ -106,15 +98,9 @@ export default function ({ navigation, postData }) {
         <View style={styles.lineProfileContainer}>
           <TouchableOpacity
             style={{ flexDirection: 'row', alignItems: 'center', margin: 4 }}
-            onPress={() => {
-              setPostViewed(postData);
-              navigation.navigate('UserModal');
-            }}
+            onPress={onAuthorClick}
           >
-            <Image
-              style={styles.profileImage}
-              source={{ uri: postData.author.profilePicUrl }}
-            />
+            <Image style={styles.profileImage} source={{ uri: postData.author.profilePicUrl }} />
             <Text
               style={{
                 marginLeft: 4,
@@ -126,13 +112,7 @@ export default function ({ navigation, postData }) {
             </Text>
           </TouchableOpacity>
 
-          <TouchableOpacity
-            style={{ marginLeft: 'auto', marginRight: 8 }}
-            onPress={() => {
-              setPostViewed(postData);
-              navigation.navigate('ChatScreen');
-            }}
-          >
+          <TouchableOpacity style={{ marginLeft: 'auto', marginRight: 8 }} onPress={onChatClick}>
             <Text
               style={{
                 borderWidth: 1,

@@ -18,9 +18,8 @@ import { Ionicons } from '@expo/vector-icons';
 import globalStyles from './globalStyles';
 import { useFocusEffect } from '@react-navigation/native';
 import dummyPosts from './dummyPosts.json';
-import { FoundContext } from './contexts';
 
-export default function ({navigation}) {
+export default function ({ navigation }) {
   useFocusEffect(() => {
     navigation.setOptions({
       title: 'Chat',

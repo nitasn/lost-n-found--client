@@ -14,12 +14,11 @@ import {
 } from 'react-native';
 
 import { Ionicons } from '@expo/vector-icons';
-
+import { useNavigation } from '@react-navigation/native';
 import globalStyles from './globalStyles';
 import { useFocusEffect } from '@react-navigation/native';
-import dummyPosts from './dummyPosts.json';
-import Post from './FoundPost';
-import { FoundContext } from './contexts';
+
+import { FoundContext, LostContext } from './contexts';
 
 const filterShape = {
   text: String,
@@ -29,45 +28,23 @@ const filterShape = {
   },
   location: {
     latLong: [Number, Number],
-    radiusKm: Number,
+    radiusKm: Number, // not done yet
   },
 };
 
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import { prettyDate } from './utils';
 
-function DatePicker({ word, onChange, date }) {
-  const [modalVisible, setModalVisible] = React.useState(false);
-
-  return (
-    <>
-      <TouchableOpacity
-        style={{ flexDirection: 'row', ...styles.boxed }}
-        onPress={() => setModalVisible(true)}
-      >
-        <Text style={{ marginRight: 8 }}>{word}</Text>
-        <Text style={{ fontWeight: 'bold' }}>
-          {date ? prettyDate(date) : 'Any Date'}
-        </Text>
-      </TouchableOpacity>
-
-      <DateTimePickerModal
-        isVisible={modalVisible}
-        textColor="black"
-        mode="date"
-        onConfirm={(date) => (setModalVisible(false), onChange(date))}
-        onCancel={() => setModalVisible(false)}
-      />
-    </>
-  );
-}
-
-export default function FilterPicker({ navigation }) {
-  const { filter, setFilter } = React.useContext(FoundContext);
+export default function FilterPicker({ filter, setFilter }) {
+  const navigation = useNavigation();
 
   const [text, setText] = React.useState(filter?.text);
   const [fromDate, setFromDate] = React.useState(filter?.dates?.from);
   const [untilDate, setUntilDate] = React.useState(filter?.dates?.until);
+
+  useFocusEffect(() => {
+    navigation.setOptions({ title: 'Search' });
+  });
 
   React.useEffect(() => {
     if (!text && !fromDate && !untilDate) {
@@ -75,18 +52,9 @@ export default function FilterPicker({ navigation }) {
     }
     setFilter({
       text,
-      dates: {
-        from: fromDate,
-        until: untilDate,
-      },
+      dates: { from: fromDate, until: untilDate },
     });
   }, [text, fromDate, untilDate]);
-
-  useFocusEffect(() => {
-    navigation.setOptions({
-      title: 'Search',
-    });
-  });
 
   return (
     <View style={{ margin: 12, padding: 12 }}>
@@ -156,7 +124,7 @@ export default function FilterPicker({ navigation }) {
             text="Show Results"
             iconName="arrow-forward-outline"
             revert
-            onPress={() => navigation.navigate('FoundFeed')}
+            onPress={() => navigation.navigate('Feed')}
           />
 
           <FlatButton
@@ -176,9 +144,7 @@ export default function FilterPicker({ navigation }) {
 }
 
 function FlatButton({ color, text, iconName, onPress, revert }) {
-  const [bg, border, fg] = revert
-    ? [color, color, 'white']
-    : ['#e7e7e7', color, color];
+  const [bg, border, fg] = revert ? [color, color, 'white'] : ['#e7e7e7', color, color];
 
   return (
     <TouchableOpacity
@@ -209,6 +175,30 @@ function FlatButton({ color, text, iconName, onPress, revert }) {
 
       <Ionicons size={20} color={fg} name={iconName} />
     </TouchableOpacity>
+  );
+}
+
+function DatePicker({ word, onChange, date }) {
+  const [modalVisible, setModalVisible] = React.useState(false);
+
+  return (
+    <>
+      <TouchableOpacity
+        style={{ flexDirection: 'row', ...styles.boxed }}
+        onPress={() => setModalVisible(true)}
+      >
+        <Text style={{ marginRight: 8 }}>{word}</Text>
+        <Text style={{ fontWeight: 'bold' }}>{date ? prettyDate(date) : 'Any Date'}</Text>
+      </TouchableOpacity>
+
+      <DateTimePickerModal
+        isVisible={modalVisible}
+        textColor="black"
+        mode="date"
+        onConfirm={(date) => (setModalVisible(false), onChange(date))}
+        onCancel={() => setModalVisible(false)}
+      />
+    </>
   );
 }
 

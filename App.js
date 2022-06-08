@@ -1,4 +1,4 @@
-import 'react-native-gesture-handler'; // must go first
+// import 'react-native-gesture-handler'; // must go first
 
 import * as React from 'react';
 import {
@@ -21,23 +21,22 @@ import WelcomeScreen from './src/WelcomeScreen';
 import useLocation from './src/useLocation';
 import usePosts from './src/usePosts';
 import { JwtContext, LocationContext, PostsContext } from './src/contexts';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-function ProvideAll({ children, CVs }) {
-  return CVs.reduceRight((result, [Context, value]) => {
+function ProvideAll({ children, ContextsAndValues }) {
+  return ContextsAndValues.reduceRight((result, [Context, value]) => {
     return <Context.Provider value={value}>{result}</Context.Provider>;
   }, children);
 }
 
-const MINUTE_IN_MILLIS = 1000 * 60;
-
 export default function App() {
   const [jwt, jwtError] = useJwt();
-  const location = useLocation({ updateInterval: MINUTE_IN_MILLIS });
+  const location = useLocation();
   const [allPosts, postsLoadError, refreshPosts] = usePosts();
 
   if (!jwt) return <WelcomeScreen errorMsg={jwtError} />;
 
-  const pairs = [
+  const CVs = [
     [JwtContext, jwt],
     [LocationContext, location],
     [PostsContext, { allPosts, postsLoadError, refreshPosts }],
@@ -46,7 +45,7 @@ export default function App() {
   return (
     <>
       <StatusBar style="auto" />
-      <ProvideAll CVs={pairs}>
+      <ProvideAll ContextsAndValues={CVs}>
         <Tabs />
       </ProvideAll>
     </>
@@ -62,7 +61,4 @@ export default function App() {
  * send msg via the app
  *
  * keep the "closed" badge for 24 hours
- *
- * search or filter?
- * narrow down your search by
  */
