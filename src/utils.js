@@ -3,6 +3,11 @@ import * as React from 'react';
 import Constants from 'expo-constants';
 export const deviceName = Constants.deviceName;
 
+import RelativeTimeFormat from 'relative-time-format';
+import en from 'relative-time-format/locale/en.json';
+
+RelativeTimeFormat.addLocale(en);
+
 export function prettyDate(date) {
   return new Date(date).toLocaleDateString('en-US', {
     weekday: 'long',
@@ -33,7 +38,7 @@ export const timeDeltaAsString = (() => {
     second: 1000,
   };
 
-  const rtf = new Intl.RelativeTimeFormat('en', { numeric: 'auto' });
+  const rtf = new RelativeTimeFormat('en', { numeric: 'auto' });
 
   /**
    * @param {number|Date|string} timestamp in the past or in the future
@@ -69,9 +74,7 @@ export default function geoDistance(lat1, lon1, lat2, lon2) {
   lat1 = toRad(lat1);
   lat2 = toRad(lat2);
 
-  const a =
-    Math.sin(dLat / 2) ** 2 +
-    Math.sin(dLon / 2) ** 2 * Math.cos(lat1) * Math.cos(lat2);
+  const a = Math.sin(dLat / 2) ** 2 + Math.sin(dLon / 2) ** 2 * Math.cos(lat1) * Math.cos(lat2);
 
   return 2 * R * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 }

@@ -23,6 +23,7 @@ import { FoundContext, LostContext } from './contexts';
 import { capitalize } from './utils';
 
 export default function (type) {
+
   const Stack = createNativeStackNavigator();
 
   const Feed = TypeFeed(type);
@@ -38,12 +39,19 @@ export default function (type) {
         <Stack.Navigator
           screenOptions={{
             title: capitalize(type),
+            headerTitleAlign: 'center',
             presentation: 'modal',
           }}
         >
           <Stack.Screen name="Feed" component={Feed} />
           <Stack.Screen name="ImagesModal" component={ImagesModal} />
           <Stack.Screen name="UserModal" component={UserModal} />
+
+          {/* todo
+
+            get rid of the 2 context providers and just pass on the props (nav: useNavigation)
+
+          */}
 
           <Stack.Screen
             name="FilterPicker"

@@ -4,10 +4,6 @@ import globalStyles from './globalStyles';
 import ImagePickerUploader from './ImagePickerUploader';
 import { newID } from './utils';
 
-function valueOrDefault(value, fallback) {
-  return value != undefined ? value : fallback;
-}
-
 function newEmptyPicState() {
   return {
     // for react's `key` prop
@@ -30,9 +26,7 @@ export default function PicsPickRow({ gap, maxImages, onStateChanged, style }) {
   function onSinglePickStateChanged(idxWhereChagned, newUploadState) {
     const newState = [...picksState];
     newState[idxWhereChagned].uploadState = newUploadState;
-    const empties = newState.filter(
-      (item) => item.uploadState.status == 'no-image'
-    );
+    const empties = newState.filter((item) => item.uploadState.status == 'no-image');
     for (let i = 1; i < empties.length; i++) {
       const idx = newState.indexOf(empties[i]);
       newState.splice(idx, 1);
@@ -43,35 +37,12 @@ export default function PicsPickRow({ gap, maxImages, onStateChanged, style }) {
     }
     setPicksState(newState);
     onStateChanged?.(
-      newState
-        .map(({ uploadState }) => uploadState)
-        .filter((item) => item.status != 'no-image')
+      newState.map(({ uploadState }) => uploadState).filter((item) => item.status != 'no-image')
     );
   }
 
-  const styles = StyleSheet.create({
-    container: {
-      padding: 4, // todo stretch side-ways and keep shadow uncut... 
-      paddingBottom: 12,
-      borderColor: 'black',
-      // borderWidth: 1,
-      borderRadius: 8,
-      overflow: 'hidden',
-      ...style,
-    },
-    imagesList: {
-      flexDirection: 'row',
-      overflow: 'visible'
-    },
-    imagePicker: {
-      width: 180,
-      height: 180,
-      
-    },
-  });
-
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, style]}>
       <ScrollView
         style={styles.imagesList}
         horizontal={true}
@@ -80,10 +51,7 @@ export default function PicsPickRow({ gap, maxImages, onStateChanged, style }) {
       >
         {picksState.map(({ id }, idx) => (
           <ImagePickerUploader
-            style={[
-              styles.imagePicker,
-              idx + 1 < picksState.length && { marginRight: gap },
-            ]}
+            style={[styles.imagePicker, idx + 1 < picksState.length && { marginRight: gap }]}
             onUploadStateChanged={(newUploadState) => {
               onSinglePickStateChanged(idx, newUploadState);
             }}
@@ -93,4 +61,27 @@ export default function PicsPickRow({ gap, maxImages, onStateChanged, style }) {
       </ScrollView>
     </View>
   );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    borderColor: 'black',
+    // borderWidth: 1,
+    borderRadius: 8,
+    overflow: 'hidden',
+    paddingBottom: 4,
+  },
+  imagesList: {
+    flexDirection: 'row',
+    overflow: 'visible',
+  },
+  imagePicker: {
+    width: 200,
+    height: 200,
+    margin: 12,
+  },
+});
+
+function valueOrDefault(value, fallback) {
+  return value != undefined ? value : fallback;
 }

@@ -306,9 +306,7 @@ export default ({ navigation }) => {
       >
         <View
           style={{
-            padding: 16,
             paddingVertical: 25,
-            paddingHorizontal: 20,
             backgroundColor: '#fff',
             borderRadius: 8,
             width: '100%',
@@ -317,19 +315,20 @@ export default ({ navigation }) => {
             marginBottom: 30,
           }}
         >
-          <LostOrFoundSelector {...{ type, setType }} />
-          <HeaderInput {...{ type, header, setHeader }} />
-          <LocationPicker {...{ type, location, setLocation }} />
-          <PicsPickRow
-            gap={10}
-            onStateChanged={setImagesStatus}
-            style={{ marginTop: 8 }}
-          />
-          <ParagraphInput {...{ paragraph, setParagraph, scrollRef }} />
-          <SubmitButton
-            isActive={canPost}
-            onPress={() => void sendToServer()}
-          />
+          <View style={{ paddingHorizontal: 20 }}>
+            <LostOrFoundSelector {...{ type, setType }} />
+            <HeaderInput {...{ type, header, setHeader }} />
+            <LocationPicker {...{ type, location, setLocation }} />
+          </View>
+
+          <View style={{ paddingHorizontal: 10 }}>
+            <PicsPickRow gap={4} onStateChanged={setImagesStatus} style={{ marginTop: 8 }} />
+          </View>
+
+          <View style={{ paddingHorizontal: 20 }}>
+            <ParagraphInput {...{ paragraph, setParagraph, scrollRef }} />
+            <SubmitButton isActive={canPost} onPress={() => void sendToServer()} />
+          </View>
         </View>
       </ScrollView>
     </KeyboardAvoidingView>

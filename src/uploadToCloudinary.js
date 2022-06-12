@@ -21,6 +21,8 @@ export default async function uploadToCloudinary(filedata) {
   formData.append('file', filedata);
   formData.append('upload_preset', unsignedPreset);
 
+  return 'todo-delete-me-debug-url'
+
   try {
     const res = await fetch(uploadUrl, {
       method: 'POST',

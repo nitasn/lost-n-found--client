@@ -120,7 +120,6 @@ export default function ({ postData, onImagesClick, onAuthorClick, onChatClick }
                 paddingHorizontal: 12,
                 paddingVertical: 8,
                 borderRadius: 4,
-                ...globalStyles.shadow,
               }}
             >
               Contact

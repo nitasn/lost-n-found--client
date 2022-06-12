@@ -50,7 +50,7 @@ export default function (type) {
               return <SearchBar navigation={navigation} filter={!!filter} />;
             }
             return (
-              <View style={{ marginBottom: index + 1 == posts.length && 3 }}>
+              <View style={(index + 1 == posts.length && { marginBottom: 3 })}>
                 <Post
                   postData={item}
                   onImagesClick={() => {

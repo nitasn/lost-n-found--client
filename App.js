@@ -96,6 +96,7 @@ function RealApp({ name }) {
 
 /**
  * what i've done
- * 
+ *
+ * web view of a post
  * insert name at first time
  */
