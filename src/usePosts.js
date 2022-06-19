@@ -1,6 +1,8 @@
 import { server } from './utils';
 import * as React from 'react';
 
+let timeoutId;
+
 export default function usePosts() {
   // todo update every 60 seconds
   // every call to goFetch may schedule another, and we pass 'refresh', be carefull
@@ -8,22 +10,28 @@ export default function usePosts() {
   const [posts, setPosts] = React.useState(null);
   const [error, setError] = React.useState(null);
 
-  const [dummyCounter, setDummyCounter] = React.useState(0);
-  const refresh = () => setDummyCounter(dc => dc + 1);
+  React.useEffect(() => void goFetch(), []);
 
   async function goFetch() {
     try {
       const res = await fetch(server`/public/get-all-posts`);
       const json = await res.json();
       setPosts(json);
-    } 
-    catch (err) {
+    } catch (err) {
       setError(err.message);
-      setTimeout(goFetch, 1000);
+      timeoutId = setTimeout(goFetch, 1000);
+      // todo this doesn't work. it does resend a req until it gets a res,
+      // but then the post just don't show up in the feed.
     }
   }
 
-  React.useEffect(() => void goFetch(), [dummyCounter]);
+  function refresh() {
+    if (timeoutId) {
+      clearTimeout(timeoutId);
+      timeoutId = undefined;
+    }
+    goFetch();
+  }
 
   return [posts, error, refresh];
 }

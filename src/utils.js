@@ -3,11 +3,6 @@ import * as React from 'react';
 import Constants from 'expo-constants';
 export const deviceName = Constants.deviceName;
 
-import RelativeTimeFormat from 'relative-time-format';
-import en from 'relative-time-format/locale/en.json';
-
-RelativeTimeFormat.addLocale(en);
-
 export function prettyDate(date) {
   return new Date(date).toLocaleDateString('en-US', {
     weekday: 'long',
@@ -38,8 +33,6 @@ export const timeDeltaAsString = (() => {
     second: 1000,
   };
 
-  const rtf = new RelativeTimeFormat('en', { numeric: 'auto' });
-
   /**
    * @param {number|Date|string} timestamp in the past or in the future
    * @param {number|Date} reference defaults to Date.now()
@@ -48,10 +41,12 @@ export const timeDeltaAsString = (() => {
     timestamp = +new Date(timestamp);
     const elapsed = timestamp - reference;
 
-    // "Math.abs" accounts for both "past" & "future" scenarios
-    for (const u in units) {
-      if (Math.abs(elapsed) > units[u] || u == 'second') {
-        return rtf.format(Math.round(elapsed / units[u]), u);
+    for (const unit in units) {
+      // "Math.abs" accounts for both "past" & "future" scenarios
+      if (Math.abs(elapsed) > units[unit] || unit == 'second') {
+        const howMany = Math.abs(Math.round(elapsed / units[unit]));
+        if (elapsed < 0) return `${howMany} ${unit}s ago`;
+        return `in ${howMany} ${unit}s`;
       }
     }
   };
@@ -74,7 +69,8 @@ export default function geoDistance(lat1, lon1, lat2, lon2) {
   lat1 = toRad(lat1);
   lat2 = toRad(lat2);
 
-  const a = Math.sin(dLat / 2) ** 2 + Math.sin(dLon / 2) ** 2 * Math.cos(lat1) * Math.cos(lat2);
+  const a =
+    Math.sin(dLat / 2) ** 2 + Math.sin(dLon / 2) ** 2 * Math.cos(lat1) * Math.cos(lat2);
 
   return 2 * R * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 }
@@ -158,3 +154,14 @@ export const cache = (() => {
     };
   };
 })();
+
+export function lastOf(arr) {
+  return arr[arr.length - 1];
+}
+
+export function zip(arr1, arr2) {
+  if (arr1.length > arr2.length) {
+    return [...arr2].map((y, idx) => [arr1[idx], y]);
+  }
+  return [...arr1].map((x, idx) => [x, arr2[idx]]);
+}

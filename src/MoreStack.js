@@ -25,9 +25,7 @@ export default function MoreStack() {
   const Stack = React.useMemo(createNativeStackNavigator, []);
 
   return (
-    <Stack.Navigator
-      screenOptions={{ title: 'More' }}
-    >
+    <Stack.Navigator screenOptions={{ title: 'More', headerTitleAlign: 'center' }}>
       <Stack.Screen name="MorePage" component={MorePage} />
       <Stack.Screen name="MyProfile" component={MyProfile} />
       <Stack.Screen name="PostComposer" component={PostComposer} />

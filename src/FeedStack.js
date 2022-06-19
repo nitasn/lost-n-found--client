@@ -18,7 +18,6 @@ import globalStyles from './globalStyles';
 import ImagesModal from './ImagesModal';
 import UserModal from './UserModal';
 import FilterPicker from './FilterPicker';
-import ChatScreen from './ChatScreen';
 import { FoundContext, LostContext } from './contexts';
 import { capitalize } from './utils';
 

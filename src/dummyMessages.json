@@ -1,0 +1,32 @@
+[
+  {
+    "isByMe": true,
+    "time": "2019-05-26T21:00:00.000Z",
+    "text": "hey wassup"
+  },
+  {
+    "isByMe": true,
+    "time": "2020-06-02T21:00:00.000Z",
+    "text": "can I borrow your snorkel?"
+  },
+  {
+    "isByMe": false,
+    "time": "2020-06-06T21:00:00.000Z",
+    "text": "yes of crouse mate."
+  },
+  {
+    "isByMe": false,
+    "time": "2020-06-06T21:00:00.000Z",
+    "text": "my address is rehov bo lepo 7. do not forget to bring your guitars"
+  },
+  {
+    "isByMe": true,
+    "time": "2022-09-11T21:00:00.000Z",
+    "text": "i am coming wait for me"
+  },
+  {
+    "isByMe": false,
+    "time": "2022-09-12T21:00:00.000Z",
+    "text": "tov yalla bye"
+  }
+]

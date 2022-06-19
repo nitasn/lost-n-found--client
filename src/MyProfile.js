@@ -23,12 +23,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import { JwtContext } from './contexts';
 import globalStyles from './globalStyles';
 import { prettyDateNoWeekday } from './utils';
-import ImagePickerUploader from './ImagePickerUploader';
-
-function useDecodedJwt() {
-  const jwt = React.useContext(JwtContext);
-  return jwtDecode(jwt);
-}
+import useDecodedJwt from './useDecodedJwt';
 
 export default function MyProfile({ navigation }) {
   const { name, profilePicUrl, iat, _id } = useDecodedJwt();

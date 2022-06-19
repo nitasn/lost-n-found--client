@@ -24,64 +24,63 @@ function useTypedPosts(desiredType) {
   return [allPosts?.filter(({ type }) => type == desiredType), postsLoadError];
 }
 
-export default function (type) {
-  return ({ navigation }) => {
-    // todo pull to refresh
+export default (type) => ({ navigation }) => {
+  // todo pull to refresh
 
-    const { filter, setPostViewed } = React.useContext(
-      type == 'found' ? FoundContext : LostContext
-    );
+  const { filter, setPostViewed } = React.useContext(
+    type == 'found' ? FoundContext : LostContext
+  );
 
-    const [unfilteredPosts, postsLoadError] = useTypedPosts(type);
+  const [unfilteredPosts, postsLoadError] = useTypedPosts(type);
 
-    if (postsLoadError) return <PostsLoadErrorScreen msg={postsLoadError} />;
+  if (postsLoadError) return <PostsLoadErrorScreen msg={postsLoadError} />;
 
-    if (unfilteredPosts == null) return <LoadingPostsScreen />;
+  if (unfilteredPosts == null) return <LoadingPostsScreen />;
 
-    const posts = [replaceMeWithSearchBar, ...apply(filter, unfilteredPosts)];
+  const posts = [replaceMeWithSearchBar, ...apply(filter, unfilteredPosts)];
 
-    return (
-      <View style={[styles.conatiner, { flex: 1 }]}>
-        <FlatList
-          style={{ padding: 6, paddingTop: 0, width: '100%' }}
-          data={posts}
-          renderItem={({ item, index }) => {
-            if (item == replaceMeWithSearchBar) {
-              return <SearchBar navigation={navigation} filter={!!filter} />;
-            }
-            return (
-              <View style={(index + 1 == posts.length && { marginBottom: 3 })}>
-                <Post
-                  postData={item}
-                  onImagesClick={() => {
-                    setPostViewed(item);
-                    navigation.navigate('ImagesModal');
-                  }}
-                  onAuthorClick={() => {
-                    setPostViewed(item);
-                    navigation.navigate('UserModal');
-                  }}
-                  onChatClick={() => {
-                    setPostViewed(item);
-                    navigation.navigate('ChatScreen');
-                  }}
-                />
-              </View>
-            );
-          }}
-          keyExtractor={(_, idx) => idx}
-        />
-        {posts.length == 1 && (
-          <View style={{ marginBottom: vh(50) }}>
-            <Text style={{ fontSize: 15, lineHeight: 20 }}>
-              {unfilteredPosts.length ? LOOSEN_FILTER_MSG : NO_POSTS_MSG}
-            </Text>
-          </View>
-        )}
-      </View>
-    );
-  };
-}
+  return (
+    <View style={[styles.conatiner, { flex: 1 }]}>
+      <FlatList
+        style={{ padding: 6, paddingTop: 0, width: '100%' }}
+        data={posts}
+        renderItem={({ item, index }) => {
+          if (item == replaceMeWithSearchBar) {
+            return <SearchBar navigation={navigation} filter={!!filter} />;
+          }
+          return (
+            <View style={(index + 1 == posts.length && { marginBottom: 3 })}>
+              <Post
+                postData={item}
+                onImagesClick={() => {
+                  setPostViewed(item);
+                  navigation.navigate('ImagesModal');
+                }}
+                onAuthorClick={() => {
+                  setPostViewed(item);
+                  navigation.navigate('UserModal');
+                }}
+                onChatClick={() => {
+                  setPostViewed(item);
+                  navigation.navigate('ChatScreen');
+                }}
+              />
+            </View>
+          );
+        }}
+        keyExtractor={(_, idx) => idx}
+      />
+      {posts.length == 1 && (
+        <View style={{ marginBottom: vh(50) }}>
+          <Text style={{ fontSize: 15, lineHeight: 20 }}>
+            {unfilteredPosts.length ? LOOSEN_FILTER_MSG : NO_POSTS_MSG}
+          </Text>
+        </View>
+      )}
+    </View>
+  );
+};
+
 
 const replaceMeWithSearchBar = Object.freeze({});
 

@@ -11,23 +11,57 @@ import {
   Alert,
 } from 'react-native';
 
-import { NavigationContainer } from '@react-navigation/native';
+import {
+  NavigationContainer,
+  createNavigationContainerRef,
+} from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
-import ChatScreen from './ChatScreen';
+import ChatsScreen from './ChatsScreen';
 import FeedStack from './FeedStack';
 import MoreStack from './MoreStack';
 import globalStyles from './globalStyles';
+import ConversationScreen from './ConversationScreen';
+import ChatsStack from './ChatsStack';
+import Debug from './Debug';
 
 const Tabs = createBottomTabNavigator();
 
 const FoundStack = FeedStack('found');
 const LostStack = FeedStack('lost');
 
+const ref = createNavigationContainerRef();
+
 export default function () {
+  const [routeName, setRouteName] = React.useState();
+
+  const shouldHideTabsBar = routeName == 'ConversationScreen';
+
   return (
-    <NavigationContainer>
+    <NavigationContainer
+      ref={ref}
+      onReady={() => {
+        setRouteName(ref.getCurrentRoute().name); // do the same on convo screen to scroll down
+      }}
+      onStateChange={() => {
+        setRouteName(ref.getCurrentRoute().name);
+      }}
+    >
       <Tabs.Navigator>
+        {/* <Tabs.Screen
+          name="Debug"
+          component={Debug}
+          options={{
+            tabBarIcon: ({ size, color, focused }) => (
+              <Ionicons
+                size={size}
+                color={color}
+                name={focused ? 'bug' : 'bug-outline'}
+              />
+            ),
+          }}
+        /> */}
+
         <Tabs.Screen
           name="FoundTab"
           component={FoundStack}
@@ -61,11 +95,15 @@ export default function () {
         />
 
         <Tabs.Screen
-          name="ChatScreen"
-          component={ChatScreen}
+          name="ChatsTab"
+          component={ChatsStack}
           options={{
-            title: 'Chat',
+            title: 'Chats',
             headerShown: false,
+            tabBarStyle: shouldHideTabsBar && { display: 'none' },
+            safeAreaInsets: {
+              bottom: 0,
+            },
             tabBarIcon: ({ size, color, focused }) => (
               <Ionicons
                 size={size}
@@ -83,7 +121,11 @@ export default function () {
             title: 'More',
             headerShown: false,
             tabBarIcon: ({ size, color, focused }) => (
-              <Ionicons size={size} color={color} name={focused ? 'menu-sharp' : 'menu'} />
+              <Ionicons
+                size={size}
+                color={color}
+                name={focused ? 'menu-sharp' : 'menu'}
+              />
             ),
           }}
         />

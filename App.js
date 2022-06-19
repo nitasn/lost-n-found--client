@@ -28,6 +28,7 @@ import { JwtContext, LocationContext, PostsContext } from './src/contexts';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import globalStyles from './src/globalStyles';
 import WelcomeInsertName from './src/WelcomeInsertName';
+import { SERVER_URL } from './src/constants';
 
 function ProvideAll({ children, ContextsAndValues }) {
   return ContextsAndValues.reduceRight((result, [Context, value]) => {
@@ -55,10 +56,6 @@ export default function App() {
 
   return <RealApp name={name} />;
 }
-
-const NitsanJWT = `
-  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiTml0c2FuIiwicHJvZmlsZVBpY1VybCI6Imh0dHBzOi8vaW1hZ2VzLnVuc3BsYXNoLmNvbS9waG90by0xNjUzNTgwNTU5MzgwLWU0NGU0NWQyODkzZT9jcm9wPWVudHJvcHkmY3M9dGlueXNyZ2ImZml0PWNyb3AmZm09anBnJmg9NDAwJml4aWQ9TW53eGZEQjhNWHh5WVc1a2IyMThNSHg4Zkh4OGZIeDhNVFkxTXpreE5qUXpOQSZpeGxpYj1yYi0xLjIuMSZxPTgwJnc9NDAwIiwiaWF0IjoxNjUzOTE2NDM0NDY0LCJfaWQiOiI2Mjk0YzMxMmZmODYzNDkxY2MyZDNhMDUifQ.r0yXpA1Dr01UHuySEcXvvyLQm-u-EbmSgZPZsQ-ZRAo
-`;
 
 function RealApp({ name }) {
   const [jwt, jwtError] = useJwt(name);
@@ -100,3 +97,7 @@ function RealApp({ name }) {
  * web view of a post
  * insert name at first time
  */
+
+const NitsanJWT = `
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiTml0c2FuIiwicHJvZmlsZVBpY1VybCI6Imh0dHBzOi8vaW1hZ2VzLnVuc3BsYXNoLmNvbS9waG90by0xNjUzNTgwNTU5MzgwLWU0NGU0NWQyODkzZT9jcm9wPWVudHJvcHkmY3M9dGlueXNyZ2ImZml0PWNyb3AmZm09anBnJmg9NDAwJml4aWQ9TW53eGZEQjhNWHh5WVc1a2IyMThNSHg4Zkh4OGZIeDhNVFkxTXpreE5qUXpOQSZpeGxpYj1yYi0xLjIuMSZxPTgwJnc9NDAwIiwiaWF0IjoxNjUzOTE2NDM0NDY0LCJfaWQiOiI2Mjk0YzMxMmZmODYzNDkxY2MyZDNhMDUifQ.r0yXpA1Dr01UHuySEcXvvyLQm-u-EbmSgZPZsQ-ZRAo
+`;
