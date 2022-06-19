@@ -13,6 +13,7 @@ import {
   TextInput,
   ScrollView,
   KeyboardAvoidingView,
+  Platform,
 } from 'react-native';
 
 import { Ionicons } from '@expo/vector-icons';
@@ -83,7 +84,7 @@ export default function ({ navigation }) {
   if (messagesError) return <CenteredText msg={'error :( ' + messagesError.message} />;
 
   function onUnmount() {
-    // 
+    //
   }
 
   const MessagesArea = View;
@@ -186,6 +187,10 @@ export default function ({ navigation }) {
 }
 
 function Message({ isByMe, time, text, style }) {
+  const when = isToday(time)
+    ? new Date(time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    : new Date(time).toLocaleDateString([], { dateStyle: 'short' });
+
   return (
     <View
       style={{
@@ -209,7 +214,7 @@ function Message({ isByMe, time, text, style }) {
         {text}
       </Text>
       <Text style={{ fontSize: 12, textAlign: 'right', color: 'rgba(0, 0, 0, .5)' }}>
-        {new Date(time).toLocaleTimeString([], { timeStyle: 'short' })}
+        {when}
       </Text>
     </View>
   );
@@ -220,5 +225,16 @@ function CenteredText({ msg }) {
     <View style={{ ...globalStyles.fullScreenAndCenter, backgroundColor: '#1b2842' }}>
       <Text style={{ color: '#eee' }}>{msg}</Text>
     </View>
+  );
+}
+
+const now = new Date();
+
+function isToday(date) {
+  date = new Date(date);
+  return (
+    date.getFullYear() === now.getFullYear() &&
+    date.getMonth() === now.getMonth() &&
+    date.getDate() === now.getDate()
   );
 }

@@ -74,7 +74,7 @@ function Hr({ marginVertical }) {
 
 function Bar({ onPress, text, iconName }) {
   return (
-    <View style={{ flexDirection: 'row' }}>
+    <View style={{ flexDirection: 'row', width: '100%' }}>
       <TouchableOpacity
         onPress={onPress}
         style={{
