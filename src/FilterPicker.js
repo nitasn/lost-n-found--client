@@ -18,7 +18,7 @@ import { useNavigation } from '@react-navigation/native';
 import globalStyles from './globalStyles';
 import { useFocusEffect } from '@react-navigation/native';
 
-import { FoundContext, LostContext } from './contexts';
+import { FeedContext } from './contexts';
 
 const filterShape = {
   text: String,
@@ -35,10 +35,12 @@ const filterShape = {
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import { prettyDate } from './utils';
 
-export default function FilterPicker({ filter, setFilter }) {
+export default function FilterPicker() {
   const navigation = useNavigation();
 
-  const [text, setText] = React.useState(filter?.text ?? "");
+  const { filter, setFilter } = React.useContext(FeedContext);
+
+  const [text, setText] = React.useState(filter?.text ?? '');
   const [fromDate, setFromDate] = React.useState(filter?.dates?.from);
   const [untilDate, setUntilDate] = React.useState(filter?.dates?.until);
 
@@ -90,7 +92,7 @@ export default function FilterPicker({ filter, setFilter }) {
         style={{
           ...styles.boxed,
           fontWeight: text ? '500' : 'normal',
-          ...globalStyles.noInputOutline
+          ...globalStyles.noInputOutline,
         }}
         onChangeText={setText}
         value={text}

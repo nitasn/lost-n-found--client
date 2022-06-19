@@ -20,12 +20,17 @@ export default function useLocation({ updateEvery } = { updateEvery: ONE_MINUTE 
       return setLocation(null);
     }
 
-    const { coords } = await Location.getCurrentPositionAsync();
+    try {
+      const { coords } = await Location.getCurrentPositionAsync();
 
-    setLocation(extractFrom(coords, ['latitude', 'longitude']));
+      setLocation(extractFrom(coords, ['latitude', 'longitude']));
 
-    if (updateEvery != undefined) {
-      setTimeout(asyncWork, updateEvery);
+      if (Number.isFinite(updateEvery) && updateEvery >= 0) {
+        setTimeout(asyncWork, updateEvery);
+      }
+    } 
+    catch {
+      setTimeout(asyncWork, 1000);
     }
   }
 

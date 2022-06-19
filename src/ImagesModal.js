@@ -17,13 +17,13 @@ import {
 
 import globalStyles from './globalStyles';
 
-import { FoundContext } from './contexts';
+import { FeedContext } from './contexts';
 import { capitalize } from './utils';
 
 import { useFocusEffect } from '@react-navigation/native';
 
 export default function ImagesModal({ navigation }) {
-  const { postViewed } = React.useContext(FoundContext);
+  const { postViewed } = React.useContext(FeedContext);
 
   useFocusEffect(() => {
     navigation.setOptions({

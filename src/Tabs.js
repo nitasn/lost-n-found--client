@@ -23,19 +23,15 @@ import MoreStack from './MoreStack';
 import globalStyles from './globalStyles';
 import ConversationScreen from './ConversationScreen';
 import ChatsStack from './ChatsStack';
-import Debug from './Debug';
 
 const Tabs = createBottomTabNavigator();
-
-const FoundStack = FeedStack('found');
-const LostStack = FeedStack('lost');
 
 const ref = createNavigationContainerRef();
 
 export default function () {
   const [routeName, setRouteName] = React.useState();
 
-  const shouldHideTabsBar = routeName == 'ConversationScreen';
+  const shouldHideTabsBar = routeName === 'ConversationScreen';
 
   return (
     <NavigationContainer
@@ -47,53 +43,22 @@ export default function () {
         setRouteName(ref.getCurrentRoute().name);
       }}
     >
-      <Tabs.Navigator>
-        {/* <Tabs.Screen
-          name="Debug"
-          component={Debug}
-          options={{
-            tabBarIcon: ({ size, color, focused }) => (
-              <Ionicons
-                size={size}
-                color={color}
-                name={focused ? 'bug' : 'bug-outline'}
-              />
-            ),
-          }}
-        /> */}
-
+      <Tabs.Navigator headerMode="screen">
         <Tabs.Screen
-          name="FoundTab"
-          component={FoundStack}
+          name="FeedStack"
+          component={FeedStack}
           options={{
-            title: 'Found',
+            title: 'Items',
             headerShown: false,
             tabBarIcon: ({ size, color, focused }) => (
               <Ionicons
                 size={size}
                 color={color}
-                name={focused ? 'earth-sharp' : 'earth-outline'}
+                name={focused ? 'compass-sharp' : 'compass-outline'}
               />
             ),
           }}
         />
-
-        <Tabs.Screen
-          name="LostTab"
-          component={LostStack}
-          options={{
-            title: 'Lost',
-            headerShown: false,
-            tabBarIcon: ({ size, color, focused }) => (
-              <Ionicons
-                size={size}
-                color={color}
-                name={focused ? 'planet-sharp' : 'planet-outline'}
-              />
-            ),
-          }}
-        />
-
         <Tabs.Screen
           name="ChatsTab"
           component={ChatsStack}
@@ -113,7 +78,6 @@ export default function () {
             ),
           }}
         />
-
         <Tabs.Screen
           name="MoreTab"
           component={MoreStack}

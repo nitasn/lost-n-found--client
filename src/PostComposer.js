@@ -334,6 +334,7 @@ export default ({ navigation }) => {
 
           <View style={{ paddingHorizontal: 20 }}>
             <ParagraphInput {...{ paragraph, setParagraph, scrollRef }} />
+            {/* todo button should show "uploading..." and be non-pressable */}
             <SubmitButton isActive={canPost} onPress={() => void sendToServer()} />
           </View>
         </View>

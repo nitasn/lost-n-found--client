@@ -161,6 +161,7 @@ export default function ({ navigation }) {
               borderRadius: Number.MAX_SAFE_INTEGER,
               backgroundColor: '#1b2842',
             }}
+            disabled={isSending} // todo what if i press it twicereally quick
           >
             <View style={{ flexDirection: 'row' }}>
               <Text style={{ color: 'white' }}>{!isSending ? 'SEND' : 'SENDING...'}</Text>

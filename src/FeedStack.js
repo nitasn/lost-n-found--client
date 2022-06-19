@@ -13,51 +13,42 @@ import {
 
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import TypeFeed from './Feed';
+import Feed from './Feed';
 import globalStyles from './globalStyles';
 import ImagesModal from './ImagesModal';
 import UserModal from './UserModal';
 import FilterPicker from './FilterPicker';
-import { FoundContext, LostContext } from './contexts';
-import { capitalize } from './utils';
+import { FeedContext } from './contexts';
+import TypeChangingHeader from './TypeChangingHeader';
 
-export default function (type) {
+const Stack = createNativeStackNavigator();
 
-  const Stack = createNativeStackNavigator();
+export default function () {
+  const [postViewed, setPostViewed] = React.useState();
+  const [filter, setFilter] = React.useState(null);
+  const [type, setType] = React.useState('found');
 
-  const Feed = TypeFeed(type);
+  const provided = { postViewed, setPostViewed, filter, setFilter, type };
 
-  const Context = type == 'found' ? FoundContext : LostContext;
-
-  return () => {
-    const [postViewed, setPostViewed] = React.useState();
-    const [filter, setFilter] = React.useState(null);
-
-    return (
-      <Context.Provider value={{ postViewed, setPostViewed, filter, setFilter }}>
-        <Stack.Navigator
-          screenOptions={{
-            title: capitalize(type),
-            headerTitleAlign: 'center',
-            presentation: 'modal',
+  return (
+    <FeedContext.Provider value={provided}>
+      <Stack.Navigator
+        headerMode="screen"
+        screenOptions={{
+          headerTitleAlign: 'center',
+        }}
+      >
+        <Stack.Screen
+          name="Feed"
+          component={Feed}
+          options={{
+            header: () => <TypeChangingHeader type={type} setType={setType} />,
           }}
-        >
-          <Stack.Screen name="Feed" component={Feed} />
-          <Stack.Screen name="ImagesModal" component={ImagesModal} />
-          <Stack.Screen name="UserModal" component={UserModal} />
-
-          {/* todo
-
-            get rid of the 2 context providers and just pass on the props (nav: useNavigation)
-
-          */}
-
-          <Stack.Screen
-            name="FilterPicker"
-            children={() => <FilterPicker {...{ filter, setFilter }} />}
-          />
-        </Stack.Navigator>
-      </Context.Provider>
-    );
-  };
+        />
+        <Stack.Screen name="ImagesModal" component={ImagesModal} />
+        <Stack.Screen name="UserModal" component={UserModal} />
+        <Stack.Screen name="FilterPicker" component={FilterPicker} />
+      </Stack.Navigator>
+    </FeedContext.Provider>
+  );
 }

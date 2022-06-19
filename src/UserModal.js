@@ -18,19 +18,18 @@ import {
 import globalStyles from './globalStyles';
 import { capitalize } from './utils';
 
-import { FoundContext } from './contexts';
+import { FeedContext } from './contexts';
 
 import { useFocusEffect } from '@react-navigation/native';
 
 import { StatusBar } from 'expo-status-bar';
 
 export default function UserModal({ navigation }) {
-  const { author } = React.useContext(FoundContext).postViewed;
+  const { author } = React.useContext(FeedContext).postViewed;
+  // todo this should be accessable from the chat... so we really need redux
 
   useFocusEffect(() => {
-    navigation.setOptions({
-      title: `${capitalize(author.name)}'s Profile`,
-    });
+    navigation.setOptions({ title: `${capitalize(author.name)}'s Profile` });
   });
 
   return (

@@ -16,28 +16,24 @@ import {
 import { vw, vh, vmin, vmax } from 'react-native-expo-viewport-units';
 import { Ionicons } from '@expo/vector-icons';
 import globalStyles from './globalStyles';
-import { FoundContext, LostContext, PostsContext } from './contexts';
+import { FeedContext, PostsContext } from './contexts';
 import Post from './Post';
+import { useNavigation } from '@react-navigation/native';
 
-function useTypedPosts(desiredType) {
-  const { allPosts, postsLoadError } = React.useContext(PostsContext);
-  return [allPosts?.filter(({ type }) => type == desiredType), postsLoadError];
-}
-
-export default (type) => ({ navigation }) => {
+export default ({ navigation }) => {
   // todo pull to refresh
 
-  const { filter, setPostViewed } = React.useContext(
-    type == 'found' ? FoundContext : LostContext
-  );
+  const { type: feedType, filter, setPostViewed } = React.useContext(FeedContext);
 
-  const [unfilteredPosts, postsLoadError] = useTypedPosts(type);
+  const { allPosts, postsLoadError } = React.useContext(PostsContext);
 
   if (postsLoadError) return <PostsLoadErrorScreen msg={postsLoadError} />;
 
-  if (unfilteredPosts == null) return <LoadingPostsScreen />;
+  if (!allPosts) return <LoadingPostsScreen />;
 
-  const posts = [replaceMeWithSearchBar, ...apply(filter, unfilteredPosts)];
+  const allPostsOfType = allPosts.filter(({ type }) => type == feedType);
+
+  const posts = [replaceMeWithSearchBar, ...apply(filter, allPostsOfType)];
 
   return (
     <View style={[styles.conatiner, { flex: 1 }]}>
@@ -46,10 +42,10 @@ export default (type) => ({ navigation }) => {
         data={posts}
         renderItem={({ item, index }) => {
           if (item == replaceMeWithSearchBar) {
-            return <SearchBar navigation={navigation} filter={!!filter} />;
+            return <SearchBar filter={!!filter} />;
           }
           return (
-            <View style={(index + 1 == posts.length && { marginBottom: 3 })}>
+            <View style={index + 1 == posts.length && { marginBottom: 3 }}>
               <Post
                 postData={item}
                 onImagesClick={() => {
@@ -74,7 +70,7 @@ export default (type) => ({ navigation }) => {
       {posts.length == 1 && (
         <View style={{ marginBottom: vh(50) }}>
           <Text style={{ fontSize: 15, lineHeight: 20 }}>
-            {unfilteredPosts.length ? LOOSEN_FILTER_MSG : NO_POSTS_MSG}
+            {allPostsOfType.length ? LOOSEN_FILTER_MSG : NO_POSTS_MSG}
           </Text>
         </View>
       )}
@@ -82,10 +78,11 @@ export default (type) => ({ navigation }) => {
   );
 };
 
-
 const replaceMeWithSearchBar = Object.freeze({});
 
-function SearchBar({ navigation, filter }) {
+function SearchBar({ filter }) {
+  const navigation = useNavigation();
+
   return (
     <TouchableOpacity
       style={{
