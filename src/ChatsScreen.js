@@ -29,7 +29,7 @@ import { collection, doc, getDoc, query, where } from 'firebase/firestore';
 function CenteredText({ msg }) {
   return (
     <View style={globalStyles.fullScreenAndCenter}>
-      <Text>{msg}</Text>
+      <Text style={{maxWidth: 350}}>{msg}</Text>
     </View>
   );
 }
@@ -47,8 +47,18 @@ export default function ({ navigation }) {
 
   if (chatsLoading) return <CenteredText msg="loading chats..." />;
   if (chatsError) return <CenteredText msg={'chats error: ' + chatsError.message} />;
+  const chatsValueData = chatsValue.data();
+  if (!chatsValueData)
+    return (
+      <CenteredText
+        msg={
+          'No active chats.\n\n' +
+          "To chat with a person, press the 'Contact' button on one of their posts <3"
+        }
+      />
+    );
 
-  const { 'refs-to-chats': refsToChats } = chatsValue.data();
+  const { 'refs-to-chats': refsToChats } = chatsValueData;
   const ids = [...refsToChats].map((ref) => lastOf(ref._key.path.segments));
 
   return <ListUsers {...{ ids, navigation }} myId={_id} />;

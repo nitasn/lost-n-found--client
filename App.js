@@ -74,7 +74,7 @@ function RealApp({ name }) {
     <>
       <StatusBar style="auto" />
       <ProvideAll ContextsAndValues={CVs}>
-        <Tabs />
+          <Tabs />
       </ProvideAll>
     </>
   );

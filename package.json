@@ -40,7 +40,8 @@
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",
-    "@babel/preset-env": "^7.1.6"
+    "@babel/preset-env": "^7.1.6",
+    "@expo/ngrok": "^4.1.0"
   },
   "private": true
 }

@@ -64,7 +64,9 @@ export default function ({ onName }) {
             width: '100%',
           }}
         >
-          <Text style={{ fontSize: 30, marginTop: 20, textAlign: 'center' }}>Lost &amp; Found</Text>
+          <Text style={{ fontSize: 30, marginTop: 20, textAlign: 'center' }}>
+            Lost &amp; Found
+          </Text>
           <Text style={{ fontSize: 20, marginTop: 40 }}>Welcome!</Text>
           <Text style={{ fontSize: 20, marginTop: 25 }}>
             The only detail we'll ask you is your name ❤️
@@ -84,7 +86,7 @@ export default function ({ onName }) {
             onPress={() => inputRef.current.focus()}
           >
             <TextInput
-              style={{ fontSize: 20 }}
+              style={{ fontSize: 20, ...globalStyles.noInputOutline }}
               value={name}
               onChangeText={setName}
               placeholder="name..."

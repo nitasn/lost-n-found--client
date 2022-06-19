@@ -61,8 +61,11 @@ export default function ({ postData, onImagesClick, onAuthorClick, onChatClick }
         renderItem={({ item, index }) => {
           const marginRight = index + 1 == postData.picsUrls.length ? 4 : 0;
           return (
-            <View style={[{ marginRight }, globalStyles.shadow]}>
-              <TouchableOpacity onPress={onImagesClick}>
+            <View style={{ marginRight }}>
+              <TouchableOpacity
+                onPress={onImagesClick}
+                style={{ ...globalStyles.shadow }}
+              >
                 <Image style={styles.image} source={{ uri: item }} />
               </TouchableOpacity>
             </View>
@@ -100,7 +103,10 @@ export default function ({ postData, onImagesClick, onAuthorClick, onChatClick }
             style={{ flexDirection: 'row', alignItems: 'center', margin: 4 }}
             onPress={onAuthorClick}
           >
-            <Image style={styles.profileImage} source={{ uri: postData.author.profilePicUrl }} />
+            <Image
+              style={styles.profileImage}
+              source={{ uri: postData.author.profilePicUrl }}
+            />
             <Text
               style={{
                 marginLeft: 4,
@@ -112,7 +118,10 @@ export default function ({ postData, onImagesClick, onAuthorClick, onChatClick }
             </Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={{ marginLeft: 'auto', marginRight: 8 }} onPress={onChatClick}>
+          <TouchableOpacity
+            style={{ marginLeft: 'auto', marginRight: 8 }}
+            onPress={onChatClick}
+          >
             <Text
               style={{
                 borderWidth: 1,

@@ -38,7 +38,7 @@ import { prettyDate } from './utils';
 export default function FilterPicker({ filter, setFilter }) {
   const navigation = useNavigation();
 
-  const [text, setText] = React.useState(filter?.text);
+  const [text, setText] = React.useState(filter?.text ?? "");
   const [fromDate, setFromDate] = React.useState(filter?.dates?.from);
   const [untilDate, setUntilDate] = React.useState(filter?.dates?.until);
 
@@ -87,7 +87,11 @@ export default function FilterPicker({ filter, setFilter }) {
       </View>
 
       <TextInput
-        style={{ ...styles.boxed, fontWeight: text ? '500' : 'normal' }}
+        style={{
+          ...styles.boxed,
+          fontWeight: text ? '500' : 'normal',
+          ...globalStyles.noInputOutline
+        }}
         onChangeText={setText}
         value={text}
         placeholder="Words..."

@@ -62,7 +62,8 @@ export default (type) => ({ navigation }) => {
                 }}
                 onChatClick={() => {
                   setPostViewed(item);
-                  navigation.navigate('ChatScreen');
+                  // navigation.navigate('ChatScreen');
+                  Alert.alert('Chat is currenty under development <3');
                 }}
               />
             </View>

@@ -9,6 +9,7 @@ import {
   useWindowDimensions,
   Keyboard,
   Alert,
+  Platform,
 } from 'react-native';
 
 export default StyleSheet.create({
@@ -28,5 +29,8 @@ export default StyleSheet.create({
     shadowRadius: 3.84,
 
     elevation: 5,
+  },
+  noInputOutline: Platform.OS != "web" ? {} : {
+    outlineStyle: 'none',
   },
 });

@@ -16,6 +16,7 @@ import {
   TextInput,
   ScrollView,
   KeyboardAvoidingView,
+  Platform,
 } from 'react-native';
 
 import AsyncAlert from './AsyncAlert';
@@ -85,7 +86,7 @@ function HeaderInput({ header, setHeader, type }) {
         value={header}
         onChangeText={setHeader}
         placeholder={`What did you ${type == 'lost' ? 'lose' : 'find'}?`}
-        style={{ fontSize: 20 }}
+        style={{ fontSize: 20, ...globalStyles.noInputOutline}}
       />
     </View>
   );
@@ -123,9 +124,10 @@ function ParagraphInput({ paragraph, setParagraph, scrollRef }) {
         style={{
           fontSize,
           paddingLeft: 6,
+          ...globalStyles.noInputOutline
         }}
         maxLength={300}
-      ></TextInput>
+      />
     </View>
   );
 }
@@ -219,6 +221,7 @@ function LocationPicker({ type, location, setLocation }) {
             ...(isHere && !fetchedName && !userText && { fontStyle: 'italic' }),
             ...(userText && { fontWeight: 'bold' }),
             // transform: [{ translateY: .5 }],
+            ...globalStyles.noInputOutline
           }}
           placeholderTextColor="rgba(0, 0, 0, .4)"
         />
@@ -322,7 +325,11 @@ export default ({ navigation }) => {
           </View>
 
           <View style={{ paddingHorizontal: 10 }}>
-            <PicsPickRow gap={4} onStateChanged={setImagesStatus} style={{ marginTop: 8 }} />
+            <PicsPickRow
+              gap={4}
+              onStateChanged={setImagesStatus}
+              style={{ marginTop: 8 }}
+            />
           </View>
 
           <View style={{ paddingHorizontal: 20 }}>

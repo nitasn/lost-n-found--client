@@ -30,6 +30,8 @@ export default function ({ isChecked, onChange, label, style }) {
           backgroundColor: isChecked ? 'black' : 'transparent',
           borderWidth: 1.5,
           borderRadius: 4,
+          aspectRatio: 1,
+          justifyContent: 'center'
         }}
       >
         <Ionicons
