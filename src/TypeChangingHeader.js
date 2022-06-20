@@ -11,6 +11,7 @@ import {
   Keyboard,
   Alert,
   SafeAreaView,
+  Platform,
 } from 'react-native';
 
 import globalStyles from './globalStyles';
@@ -23,9 +24,7 @@ export default function ({ type, setType }) {
         <View
           style={{
             paddingBottom: 18,
-            paddingTop: 35,
-            alignItems: 'center',
-            justifyContent: 'center',
+            paddingTop: Platform.OS == 'web' ? 18 : 35,
           }}
         >
           <LostOrFoundSelector type={type} setType={setType} />
@@ -37,41 +36,15 @@ export default function ({ type, setType }) {
 }
 
 function LostOrFoundSelector({ type, setType }) {
+  const oppositeType = type == 'found' ? 'lost' : 'found';
   return (
-    // <TouchableOpacity
-    //   onPress={() => setType(type == 'found' ? 'lost' : 'found')}
-    //   style={{
-    //     flexDirection: 'row',
-    //     justifyContent: 'center',
-    //     alignItems: 'center',
-    //     position: 'relative',
-    //   }}
-    // >
-    //   <Text
-    //     style={{
-    //       fontSize: 20,
-    //       letterSpacing: 1.3,
-    //       textTransform: 'capitalize',
-    //       marginHorizontal: 10,
-    //     }}
-    //   >
-    //     <Text style={{ fontWeight: 'bold' }}>{type}</Text> Items
-    //   </Text>
-    //   <Ionicons
-    //     size={20}
-    //     color="black"
-    //     name="repeat-outline"
-    //     // style={{ position: 'absolute', right: -19, top: 2 }}
-    //   />
-    // </TouchableOpacity>
-
-    <TouchableOpacity
-      onPress={() => setType(type == 'found' ? 'lost' : 'found')}
+    <View
       style={{
+        width: '100%',
+        paddingHorizontal: 15,
         flexDirection: 'row',
-        justifyContent: 'center',
-        alignItems: 'flex-end',
-        ...globalStyles.shadow,
+        justifyContent: 'space-between',
+        alignItems: 'center',
       }}
     >
       <Text
@@ -79,18 +52,24 @@ function LostOrFoundSelector({ type, setType }) {
           fontSize: 20,
           textTransform: 'capitalize',
           marginHorizontal: 10,
+          ...globalStyles.shadow,
         }}
       >
         <Text style={{ fontWeight: 'bold' }}>{type}</Text> Items
       </Text>
-      <Ionicons
-        size={22}
-        color="black"
-        name="repeat-outline"
-        style={{
-          transform: [{ translateY: 1 }],
-        }}
-      />
-    </TouchableOpacity>
+      <TouchableOpacity onPress={() => setType(oppositeType)}>
+        <Text
+          style={{
+            fontSize: 16,
+            textTransform: 'capitalize',
+            marginHorizontal: 5,
+            color: 'darkgray',
+            transform: [{ translateY: 1 }],
+          }}
+        >
+          Show {oppositeType}
+        </Text>
+      </TouchableOpacity>
+    </View>
   );
 }

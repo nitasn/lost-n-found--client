@@ -67,6 +67,7 @@ export default ({ navigation }) => {
         }}
         keyExtractor={(_, idx) => idx}
       />
+
       {posts.length == 1 && (
         <View style={{ marginBottom: vh(50) }}>
           <Text style={{ fontSize: 15, lineHeight: 20 }}>
