@@ -36,27 +36,6 @@ function ProvideAll({ children, ContextsAndValues }) {
   }, children);
 }
 
- function App2() {
-  // return <WelcomeScreen errorMsg={"Oh snap!!!"}/>
-  // AsyncStorage.setItem('name', "Nitsan")
-  // AsyncStorage.setItem('jwt', NitsanJWT)
-
-  // AsyncStorage.removeItem('jwt')
-  // AsyncStorage.removeItem('name')
-  // return <Text>
-  //   {'\n\n\n\n'}
-  //   {'\n\n\n\n'}
-  //   {'\n\n\n\n'}
-  //   Clear Start...
-  // </Text>
-
-  const [name, setName] = React.useState();
-
-  if (!name) return <WelcomeInsertName onName={setName} />;
-
-  // return <RealApp name={name} />;
-}
-
 export default function App({ name }) {
   // const [jwt, jwtError] = useJwt(name);
 
@@ -93,13 +72,6 @@ export default function App({ name }) {
  * send msg via the app
  *
  * keep the "closed" badge for 24 hours
- */
-
-/**
- * what i've done
- *
- * web view of a post
- * insert name at first time
  */
 
 const NitsanJWT = `

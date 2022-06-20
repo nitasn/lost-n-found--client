@@ -11,7 +11,7 @@ import {
   Alert,
 } from 'react-native';
 
-import { NavigationContainer } from '@react-navigation/native';
+import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Ionicons } from '@expo/vector-icons';
@@ -21,12 +21,17 @@ import ConversationScreen from './ConversationScreen';
 
 import { ChatContext } from './contexts';
 
-export default function () {
+export default function ({ navigation, route }) {
+  React.useLayoutEffect(() => {
+    navigation.setOptions({
+      tabBarVisible: getFocusedRouteNameFromRoute(route) === 'ConversationScreen',
+    });
+  }, [navigation, route]);
+
   const Stack = React.useMemo(createNativeStackNavigator, []);
 
   const [currentChatId, setCurrentChatId] = React.useState();
   const [userChattingWith, setUserChattingWith] = React.useState();
-  // todo someone else should provide those because there's link from the feeds to dierct chat...
 
   const provided = {
     currentChatId,
