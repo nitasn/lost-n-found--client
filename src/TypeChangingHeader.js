@@ -57,7 +57,11 @@ function LostOrFoundSelector({ type, setType }) {
       >
         <Text style={{ fontWeight: 'bold' }}>{type}</Text> Items
       </Text>
-      <TouchableOpacity onPress={() => setType(oppositeType)}>
+      <TouchableOpacity
+        onPress={() => setType(oppositeType)}
+        style={{ flexDirection: 'row' }}
+      >
+
         <Text
           style={{
             fontSize: 16,
@@ -67,8 +71,11 @@ function LostOrFoundSelector({ type, setType }) {
             transform: [{ translateY: 1 }],
           }}
         >
-          Show {oppositeType}
+          Switch
         </Text>
+
+        <Ionicons size={20} color="darkgray" name="swap-horizontal" />
+
       </TouchableOpacity>
     </View>
   );
