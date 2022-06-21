@@ -17,6 +17,7 @@ import geoDistance, { capitalize, timeDeltaAsString } from './utils';
 import globalStyles from './globalStyles';
 import { FeedContext, LocationContext } from './contexts';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
+// import MapView from 'react-native-maps';
 
 function useDistanceInKm(postLocation) {
   const deviceLocation = React.useContext(LocationContext);
@@ -49,7 +50,9 @@ export default function () {
         <View style={styles.LocationAndDate}>
           <Text style={styles.date}>{timeDeltaAsString(postViewed.date)}</Text>
           <Text style={styles.location}>
-            <Text style={{ textTransform: 'capitalize' }}>{postViewed.location.name}</Text>
+            <Text style={{ textTransform: 'capitalize' }}>
+              {postViewed.location.name}
+            </Text>
             <Text>
               {'\n'}
               {proximityInKm != undefined && prettyDistance(proximityInKm)}
@@ -76,31 +79,18 @@ export default function () {
           );
         }}
         keyExtractor={(_, idx) => idx}
-      >
-        <View
-          style={{
-            position: 'absolute',
-            height: 70,
-            width: 70,
-            right: 70,
-            borderRadius: Number.MAX_SAFE_INTEGER,
-            backgroundColor: 'rgba(0, 0, 0, .9)',
-          }}
-        />
-      </FlatList>
+      />
 
       <View>
-        <View // an hr
-          style={{
-            position: 'absolute',
-            height: 1,
-            width: '94%',
-            left: '3%',
-            backgroundColor: '#ccc',
-            paddingHorizontal: 158,
-            transform: [{ translateY: -5 }],
-          }}
-        />
+        <View style={{ width: '100%', paddingHorizontal: 8, marginBottom: 8 }}>
+          <View // an hr
+            style={{
+              height: 1,
+              width: '100%',
+              backgroundColor: '#ccc',
+            }}
+          />
+        </View>
 
         <View style={styles.lineProfileContainer}>
           <TouchableOpacity
