@@ -54,7 +54,7 @@ export default function () {
               <Ionicons
                 size={size}
                 color={color}
-                name={focused ? 'compass-sharp' : 'compass-outline'}
+                name={focused ? 'planet-sharp' : 'planet-outline'}
               />
             ),
           }}

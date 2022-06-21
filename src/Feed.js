@@ -46,22 +46,7 @@ export default ({ navigation }) => {
           }
           return (
             <View style={index + 1 == posts.length && { marginBottom: 3 }}>
-              <Post
-                postData={item}
-                onImagesClick={() => {
-                  setPostViewed(item);
-                  navigation.navigate('ImagesModal');
-                }}
-                onAuthorClick={() => {
-                  setPostViewed(item);
-                  navigation.navigate('UserModal');
-                }}
-                onChatClick={() => {
-                  setPostViewed(item);
-                  // navigation.navigate('ChatScreen');
-                  Alert.alert('Chat is currenty under development <3');
-                }}
-              />
+              <Post postData={item} />
             </View>
           );
         }}
@@ -126,8 +111,8 @@ const styles = StyleSheet.create({
 
 function LoadingPostsScreen() {
   return (
-    <View style={styles.conatiner}>
-      <View>
+    <View style={[styles.conatiner, { padding: 12 }]}>
+      <View style={styles.conatiner}>
         <Text>Loading Posts...</Text>
       </View>
     </View>
@@ -137,7 +122,7 @@ function LoadingPostsScreen() {
 function PostsLoadErrorScreen({ msg }) {
   return (
     <View style={[styles.conatiner, { padding: 12 }]}>
-      <View>
+      <View style={styles.conatiner}>
         <Text>Could not load posts.</Text>
         <Text>Please make sure you're connected to the internet and try again.</Text>
         <Text>{'\n'}</Text>

@@ -16,7 +16,7 @@ import {
 import geoDistance, { capitalize, timeDeltaAsString } from './utils';
 import globalStyles from './globalStyles';
 import { FeedContext, LocationContext } from './contexts';
-import { useNavigation } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 
 function useDistanceInKm(postLocation) {
   const deviceLocation = React.useContext(LocationContext);
@@ -34,61 +34,42 @@ function useDistanceInKm(postLocation) {
   return distance;
 }
 
-export default function ({ postData }) {
-  const proximityInKm = useDistanceInKm(postData.location);
-  const { setPostViewed } = React.useContext(FeedContext);
+export default function () {
+  const { postViewed } = React.useContext(FeedContext);
+  const proximityInKm = useDistanceInKm(postViewed.location);
   const navigation = useNavigation();
 
-  const onImagesClick = () => {
-    setPostViewed(postData);
-    navigation.navigate('ImagesModal');
-  };
-
-  const onAuthorClick = () => {
-    setPostViewed(postData);
-    navigation.navigate('UserModal');
-  };
-
-  const onChatClick = () => {
-    setPostViewed(postData);
-    Alert.alert('Chat is currenty under development <3');
-  };
-
-  const onPostClick = () => {
-    setPostViewed(postData);
-    navigation.navigate('PostScreen');
-  }
+  useFocusEffect(() => {
+    navigation.setOptions({ title: `${capitalize(postViewed.author.name)}'s Post` });
+  });
 
   return (
-    <TouchableOpacity style={[styles.container, globalStyles.shadow]} onPress={onPostClick}>
+    <View style={[styles.container, globalStyles.shadow]}>
       <View style={styles.extraMargin}>
         <View style={styles.LocationAndDate}>
-          <Text style={styles.date}>{timeDeltaAsString(postData.date)}</Text>
+          <Text style={styles.date}>{timeDeltaAsString(postViewed.date)}</Text>
           <Text style={styles.location}>
-            <Text style={{ textTransform: 'capitalize' }}>{postData.location.name}</Text>
+            <Text style={{ textTransform: 'capitalize' }}>{postViewed.location.name}</Text>
             <Text>
               {'\n'}
               {proximityInKm != undefined && prettyDistance(proximityInKm)}
             </Text>
           </Text>
         </View>
-        <Text style={styles.header}>{postData.header}</Text>
-        <Text style={styles.bodyText}>{postData.body}</Text>
+        <Text style={styles.header}>{postViewed.header}</Text>
+        <Text style={styles.bodyText}>{postViewed.body}</Text>
       </View>
 
       <FlatList
         style={[styles.imagesContainer, { paddingVertical: 8, paddingLeft: 2 }]}
-        data={postData.picsUrls}
+        data={postViewed.picsUrls}
         horizontal={true}
         showsHorizontalScrollIndicator={false}
         renderItem={({ item, index }) => {
-          const marginRight = index + 1 == postData.picsUrls.length ? 4 : 0;
+          const marginRight = index + 1 == postViewed.picsUrls.length ? 4 : 0;
           return (
             <View style={{ marginRight }}>
-              <TouchableOpacity
-                onPress={onImagesClick}
-                style={{ ...globalStyles.shadow }}
-              >
+              <TouchableOpacity style={{ ...globalStyles.shadow }}>
                 <Image style={styles.image} source={{ uri: item }} />
               </TouchableOpacity>
             </View>
@@ -124,11 +105,10 @@ export default function ({ postData }) {
         <View style={styles.lineProfileContainer}>
           <TouchableOpacity
             style={{ flexDirection: 'row', alignItems: 'center', margin: 4 }}
-            onPress={onAuthorClick}
           >
             <Image
               style={styles.profileImage}
-              source={{ uri: postData.author.profilePicUrl }}
+              source={{ uri: postViewed.author.profilePicUrl }}
             />
             <Text
               style={{
@@ -137,14 +117,11 @@ export default function ({ postData }) {
                 fontWeight: 'bold',
               }}
             >
-              {postData.author.name}
+              {postViewed.author.name}
             </Text>
           </TouchableOpacity>
 
-          <TouchableOpacity
-            style={{ marginLeft: 'auto', marginRight: 8 }}
-            onPress={onChatClick}
-          >
+          <TouchableOpacity style={{ marginLeft: 'auto', marginRight: 8 }}>
             <Text
               style={{
                 borderWidth: 1,
@@ -159,7 +136,7 @@ export default function ({ postData }) {
           </TouchableOpacity>
         </View>
       </View>
-    </TouchableOpacity>
+    </View>
   );
 }
 
@@ -182,7 +159,7 @@ const styles = StyleSheet.create({
   },
 
   container: {
-    margin: 3,
+    margin: 8,
 
     padding: 8,
     backgroundColor: '#fff',

@@ -20,6 +20,7 @@ import UserModal from './UserModal';
 import FilterPicker from './FilterPicker';
 import { FeedContext } from './contexts';
 import TypeChangingHeader from './TypeChangingHeader';
+import PostScreen from './PostScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -48,6 +49,7 @@ export default function () {
         <Stack.Screen name="ImagesModal" component={ImagesModal} />
         <Stack.Screen name="UserModal" component={UserModal} />
         <Stack.Screen name="FilterPicker" component={FilterPicker} />
+        <Stack.Screen name="PostScreen" component={PostScreen} />
       </Stack.Navigator>
     </FeedContext.Provider>
   );

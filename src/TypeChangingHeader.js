@@ -44,7 +44,7 @@ function LostOrFoundSelector({ type, setType }) {
         paddingHorizontal: 15,
         flexDirection: 'row',
         justifyContent: 'space-between',
-        alignItems: 'center',
+        alignItems: 'flex-end',
       }}
     >
       <Text
@@ -67,14 +67,13 @@ function LostOrFoundSelector({ type, setType }) {
             fontSize: 16,
             textTransform: 'capitalize',
             marginHorizontal: 5,
-            color: 'darkgray',
-            transform: [{ translateY: 1 }],
+            color: '#aaa',
           }}
         >
-          Switch
+          View {oppositeType} Items
         </Text>
 
-        <Ionicons size={20} color="darkgray" name="swap-horizontal" />
+        <Ionicons size={20} color="#aaa" name="swap-vertical" />
 
       </TouchableOpacity>
     </View>
