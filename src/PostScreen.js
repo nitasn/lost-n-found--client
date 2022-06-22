@@ -11,13 +11,14 @@ import {
   Alert,
   FlatList,
   Image,
+  ScrollView,
 } from 'react-native';
 
 import geoDistance, { capitalize, timeDeltaAsString } from './utils';
 import globalStyles from './globalStyles';
 import { FeedContext, LocationContext } from './contexts';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
-// import MapView from 'react-native-maps';
+import MapView from 'react-native-maps';
 
 function useDistanceInKm(postLocation) {
   const deviceLocation = React.useContext(LocationContext);
@@ -45,88 +46,104 @@ export default function () {
   });
 
   return (
-    <View style={[styles.container, globalStyles.shadow]}>
-      <View style={styles.extraMargin}>
-        <View style={styles.LocationAndDate}>
-          <Text style={styles.date}>{timeDeltaAsString(postViewed.date)}</Text>
-          <Text style={styles.location}>
-            <Text style={{ textTransform: 'capitalize' }}>
-              {postViewed.location.name}
+    <ScrollView>
+      <View style={[styles.container, globalStyles.shadow]}>
+        <View style={styles.extraMargin}>
+          <View style={styles.LocationAndDate}>
+            <Text style={styles.date}>{timeDeltaAsString(postViewed.date)}</Text>
+            <Text style={styles.location}>
+              <Text style={{ textTransform: 'capitalize' }}>
+                {postViewed.location.name}
+              </Text>
+              <Text>
+                {'\n'}
+                {proximityInKm != undefined && prettyDistance(proximityInKm)}
+              </Text>
             </Text>
-            <Text>
-              {'\n'}
-              {proximityInKm != undefined && prettyDistance(proximityInKm)}
-            </Text>
-          </Text>
+          </View>
+          <Text style={styles.header}>{postViewed.header}</Text>
+          <Text style={styles.bodyText}>{postViewed.body}</Text>
         </View>
-        <Text style={styles.header}>{postViewed.header}</Text>
-        <Text style={styles.bodyText}>{postViewed.body}</Text>
-      </View>
-
-      <FlatList
-        style={[styles.imagesContainer, { paddingVertical: 8, paddingLeft: 2 }]}
-        data={postViewed.picsUrls}
-        horizontal={true}
-        showsHorizontalScrollIndicator={false}
-        renderItem={({ item, index }) => {
-          const marginRight = index + 1 == postViewed.picsUrls.length ? 4 : 0;
-          return (
-            <View style={{ marginRight }}>
-              <TouchableOpacity style={{ ...globalStyles.shadow }}>
-                <Image style={styles.image} source={{ uri: item }} />
-              </TouchableOpacity>
-            </View>
-          );
-        }}
-        keyExtractor={(_, idx) => idx}
-      />
-
-      <View>
-        <View style={{ width: '100%', paddingHorizontal: 8, marginBottom: 8 }}>
-          <View // an hr
-            style={{
-              height: 1,
-              width: '100%',
-              backgroundColor: '#ccc',
+        <FlatList
+          style={[styles.imagesContainer, { paddingVertical: 8, paddingLeft: 2 }]}
+          data={postViewed.picsUrls}
+          horizontal={true}
+          showsHorizontalScrollIndicator={false}
+          renderItem={({ item, index }) => {
+            const marginRight = index + 1 == postViewed.picsUrls.length ? 4 : 0;
+            return (
+              <View style={{ marginRight }}>
+                <TouchableOpacity style={{ ...globalStyles.shadow }}>
+                  <Image style={styles.image} source={{ uri: item }} />
+                </TouchableOpacity>
+              </View>
+            );
+          }}
+          keyExtractor={(_, idx) => idx}
+        />
+        <View
+          style={{
+            width: '100%',
+            height: 300,
+            ...globalStyles.shadow,
+            padding: 6,
+          }}
+        >
+          <MapView
+            style={{ flex: 1, borderRadius: 6 }}
+            region={{
+              latitude: 37.78825,
+              longitude: -122.4324,
+              latitudeDelta: 0.0922,
+              longitudeDelta: 0.0421,
             }}
           />
         </View>
-
-        <View style={styles.lineProfileContainer}>
-          <TouchableOpacity
-            style={{ flexDirection: 'row', alignItems: 'center', margin: 4 }}
-          >
-            <Image
-              style={styles.profileImage}
-              source={{ uri: postViewed.author.profilePicUrl }}
+        <View>
+          <View style={{ width: '100%', paddingHorizontal: 8, marginVertical: 8 }}>
+            <View // an hr
+              style={{
+                height: 1,
+                width: '100%',
+                backgroundColor: '#ccc',
+              }}
             />
-            <Text
-              style={{
-                marginLeft: 4,
-                textTransform: 'capitalize',
-                fontWeight: 'bold',
-              }}
+          </View>
+          <View style={styles.lineProfileContainer}>
+            <TouchableOpacity
+              style={{ flexDirection: 'row', alignItems: 'center', margin: 4 }}
             >
-              {postViewed.author.name}
-            </Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={{ marginLeft: 'auto', marginRight: 8 }}>
-            <Text
-              style={{
-                borderWidth: 1,
-                borderStyle: 'solid',
-                paddingHorizontal: 12,
-                paddingVertical: 8,
-                borderRadius: 4,
-              }}
-            >
-              Contact
-            </Text>
-          </TouchableOpacity>
+              <Image
+                style={styles.profileImage}
+                source={{ uri: postViewed.author.profilePicUrl }}
+              />
+              <Text
+                style={{
+                  marginLeft: 4,
+                  textTransform: 'capitalize',
+                  fontWeight: 'bold',
+                }}
+              >
+                {postViewed.author.name}
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={{ marginLeft: 'auto', marginRight: 8 }}>
+              <Text
+                style={{
+                  borderWidth: 1,
+                  borderStyle: 'solid',
+                  paddingHorizontal: 12,
+                  paddingVertical: 8,
+                  borderRadius: 4,
+                }}
+              >
+                Contact
+              </Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
-    </View>
+    </ScrollView>
   );
 }
 
