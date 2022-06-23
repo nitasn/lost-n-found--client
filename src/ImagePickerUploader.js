@@ -4,14 +4,7 @@ const RESIZE_TO = 400; // to shrink the selected image into before uploading
 
 import React, { useState, useEffect } from 'react';
 
-import {
-  Platform,
-  StyleSheet,
-  TouchableOpacity,
-  Image,
-  Text,
-  View,
-} from 'react-native';
+import { Platform, StyleSheet, TouchableOpacity, Image, Text, View } from 'react-native';
 
 import * as ImagePicker from 'expo-image-picker';
 
@@ -89,7 +82,7 @@ export default function ImagePickerUploader(props) {
       style={[
         styles.container,
         props.style,
-        { ...globalStyles.shadow, shadowOpacity: uri ? .25 : .1 },
+        { ...globalStyles.shadow, shadowOpacity: uri ? 0.25 : 0.1 },
       ]}
     >
       <Image
@@ -112,11 +105,7 @@ export default function ImagePickerUploader(props) {
       {uploadState.status != 'no-image' && (
         <View style={styles.indicatorArea}>
           {uploadState.status != 'in-progress' ? (
-            <Image
-              resizeMode="contain"
-              source={indcImg}
-              style={styles.indicatorImage}
-            />
+            <Image resizeMode="contain" source={indcImg} style={styles.indicatorImage} />
           ) : (
             <EverSpinningDots style={styles.indicatorImage} />
             // <Text></Text>
@@ -137,7 +126,7 @@ async function pickImage(setUploadState, setUri) {
   const { uri, cancelled } = await ImagePicker.launchImageLibraryAsync({
     mediaTypes: ImagePicker.MediaTypeOptions.Images,
     allowsEditing: true,
-    // aspect: [16, 9],
+    // aspect: [1, 1], // todo can i enable this?
     quality: 1,
   });
 
@@ -157,7 +146,14 @@ async function pickImage(setUploadState, setUri) {
   }
 
   async function compressAndUpload() {
-    const manipulations = [{ resize: { height: RESIZE_TO, width: RESIZE_TO } }];
+
+    let [w, h] = await new Promise((res, rej) => Image.getSize(uri, res, rej));
+    const vmin = Math.min(w, h);
+    const shrinkRatio = vmin / RESIZE_TO;
+    w /= shrinkRatio;
+    h /= shrinkRatio;
+
+    const manipulations = [{ resize: { width: w, height: h } }];
     const options = { compress: 1, format: SaveFormat.JPEG, base64: true };
 
     let { base64 } = await manipulateAsync(uri, manipulations, options);
@@ -166,9 +162,7 @@ async function pickImage(setUploadState, setUri) {
     // throw new Error("testing - network failed demo"); // simulate failure
     // return 'demi-testing-cld-url'; // simulate success
 
-    const cld_url = await uploadToCloudinary(
-      'data:image/jpeg;base64,' + base64
-    );
+    const cld_url = await uploadToCloudinary('data:image/jpeg;base64,' + base64);
 
     return cld_url;
   }
