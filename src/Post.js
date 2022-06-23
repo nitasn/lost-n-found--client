@@ -221,9 +221,10 @@ const styles = StyleSheet.create({
   },
   image: {
     width: 200,
-    height: 200,
-    marginHorizontal: 5,
+    aspectRatio: 1,
+    resizeMode: 'cover',
     borderRadius: 4,
+    marginHorizontal: 5,
   },
   lineProfileContainer: {
     flexDirection: 'row',

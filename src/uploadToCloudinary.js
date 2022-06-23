@@ -7,6 +7,9 @@ const uploadUrl = `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`;
  * @returns {Promise<string?>} url of the hosted image, or null if error
  */
 export default async function uploadToCloudinary(filedata) {
+
+  // return 'test--not-url'; // TODO DELETE THIS!
+
   const formData = new FormData();
   formData.append('file', filedata);
   formData.append('upload_preset', unsignedPreset);

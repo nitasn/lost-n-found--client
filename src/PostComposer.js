@@ -32,246 +32,6 @@ import { cache, capitalize, prettyDateNoWeekday } from './utils';
 import { LocationContext } from './contexts';
 import { server, sendPostReq, deviceName } from './utils';
 
-function LostOrFoundSelector({ type, setType }) {
-  return (
-    <TouchableOpacity
-      onPress={() => setType(type == 'found' ? 'lost' : 'found')}
-      style={{
-        flexDirection: 'row',
-        justifyContent: 'center',
-        alignItems: 'flex-end',
-        marginBottom: 22,
-        ...globalStyles.shadow,
-      }}
-    >
-      <Text
-        style={{
-          fontSize: 30,
-          letterSpacing: 1.3,
-          textTransform: 'capitalize',
-          marginHorizontal: 10,
-          fontWeight: 'bold',
-        }}
-      >
-        I {type}
-      </Text>
-      <Ionicons size={30} color="black" name="repeat-outline" />
-    </TouchableOpacity>
-  );
-}
-
-function HeaderInput({ header, setHeader, type }) {
-  React.useEffect(() => {
-    setHeader(header.trimStart());
-  }, [header]);
-
-  return (
-    <View
-      style={{
-        borderColor: 'rgba(0,0,0,.4)',
-
-        padding: 12,
-        fontSize: 16,
-        borderStyle: 'dashed',
-        borderWidth: 1,
-        borderRadius: 8,
-        borderColor: 'black',
-
-        marginTop: 16,
-        marginBottom: 24,
-      }}
-    >
-      <TextInput
-        autoCapitalize="words"
-        value={header}
-        onChangeText={setHeader}
-        placeholder={`What did you ${type == 'lost' ? 'lose' : 'find'}?`}
-        style={{ fontSize: 20, ...globalStyles.noInputOutline}}
-      />
-    </View>
-  );
-}
-
-function ParagraphInput({ paragraph, setParagraph, scrollRef }) {
-  React.useEffect(() => {
-    setParagraph(paragraph.trimStart());
-  }, [paragraph]);
-
-  const fontSize = 16;
-
-  return (
-    <View style={{ marginVertical: 24 }}>
-      {paragraph == '' && (
-        <Text
-          style={{
-            fontSize,
-            color: '#bbb',
-            position: 'absolute',
-            paddingLeft: 4,
-            paddingTop: 4,
-          }}
-        >
-          Add more information (optional)
-        </Text>
-      )}
-      <TextInput
-        multiline
-        onBlur={() => setParagraph(paragraph.trim())}
-        onFocus={() => scrollRef.current.scrollToEnd()}
-        scrollEnabled={false}
-        onChangeText={setParagraph}
-        value={paragraph}
-        style={{
-          fontSize,
-          paddingLeft: 6,
-          ...globalStyles.noInputOutline
-        }}
-        maxLength={300}
-      />
-    </View>
-  );
-}
-
-function roundToPlaces(number, places) {
-  const order = 10 ** places;
-  return Math.round(number * order) / order;
-}
-
-const reverseGecode = cache(async ({ lat, long }) => {
-  lat = roundToPlaces(lat, 6);
-  long = roundToPlaces(long, 6);
-
-  try {
-    const url =
-      `https://api.bigdatacloud.net/data/reverse-geocode-client?` +
-      `latitude=${lat}&longitude=${long}&localityLanguage=en`;
-    return await fetch(url)
-      .then((res) => res.json())
-      .then((obj) => obj.city);
-  } catch (err) {
-    console.error("Couldn't Reverse-Gecode:", err);
-    return null;
-  }
-});
-
-function LocationPicker({ type, location, setLocation }) {
-  const deviceLocation = React.useContext(LocationContext);
-  const [latLong, setLatLong] = React.useState({
-    lat: location.lat,
-    long: location.long,
-  });
-  const [fetchedName, setFetchedName] = React.useState(location.name);
-  const [userText, setUserText] = React.useState('');
-  const [isHere, setIsHere] = React.useState(true);
-
-  React.useEffect(() => {
-    if (deviceLocation) {
-      const { latitude, longitude } = deviceLocation;
-      setLatLong({ lat: latitude, long: longitude });
-    }
-  }, [deviceLocation]);
-
-  React.useEffect(() => {
-    reverseGecode(latLong).then(setFetchedName);
-  }, [latLong]);
-
-  React.useEffect(() => {
-    setUserText(userText.trimStart());
-  }, [userText]);
-
-  React.useEffect(() => {
-    setLocation(
-      isHere
-        ? {
-            ...latLong,
-            name: userText || fetchedName,
-          }
-        : { name: userText }
-    );
-  }, [isHere, latLong, userText, fetchedName]);
-
-  return (
-    <View
-      style={{
-        flexDirection: 'row',
-        alignItems: 'flex-end',
-        justifyContent: 'space-between',
-        paddingHorizontal: 4,
-
-        marginTop: 4,
-        marginBottom: 24,
-      }}
-    >
-      <View style={{ flexDirection: 'row' }}>
-        <Text style={{ fontSize: 16 }}>{userText && 'At '}</Text>
-        <TextInput
-          autoCapitalize="words"
-          value={userText}
-          onChangeText={setUserText}
-          placeholder={
-            isHere
-              ? fetchedName
-                ? `"${fetchedName}"`
-                : "Getting this place's Name..."
-              : `Where did you ${type == 'lost' ? 'lose' : 'find'} it?`
-          }
-          style={{
-            fontSize: 16,
-            // the text "Getting this place's Name..." should be italic
-            ...(isHere && !fetchedName && !userText && { fontStyle: 'italic' }),
-            ...(userText && { fontWeight: 'bold' }),
-            // transform: [{ translateY: .5 }],
-            ...globalStyles.noInputOutline
-          }}
-          placeholderTextColor="rgba(0, 0, 0, .4)"
-        />
-      </View>
-
-      <View style={{ marginLeft: 2 }}>
-        <CheckBox isChecked={isHere} onChange={setIsHere} label="Here" />
-      </View>
-    </View>
-  );
-}
-
-function SubmitButton({ onPress, isActive }) {
-  return (
-    <View
-      style={{
-        flexDirection: 'row',
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginTop: 24,
-      }}
-    >
-      <TouchableOpacity
-        disabled={!isActive}
-        style={{
-          paddingVertical: 8,
-          paddingHorizontal: 16,
-          paddingRight: 15,
-          borderRadius: 8,
-          borderWidth: 1,
-          borderColor: isActive ? 'transparent' : 'darkgray',
-          backgroundColor: isActive ? 'rgb(26, 119, 169)' : 'transparent',
-        }}
-        onPress={onPress}
-      >
-        <Text
-          style={{
-            fontWeight: 'bold',
-            textTransform: 'uppercase',
-            fontSize: 18,
-            color: isActive ? '#eee' : 'darkgray',
-          }}
-        >
-          {isActive ? 'Post →' : 'Post'}
-        </Text>
-      </TouchableOpacity>
-    </View>
-  );
-}
-
 export default ({ navigation }) => {
   const [type, setType] = React.useState('lost');
   const [header, setHeader] = React.useState('');
@@ -290,7 +50,8 @@ export default ({ navigation }) => {
   const canPost =
     header.length >= 2 &&
     (location.name || (location.lat && location.long)) &&
-    imagesStatuses.every(({ status }) => status == 'succeeded');
+    imagesStatuses.every(({ status }) => status == 'succeeded') &&
+    imagesStatuses.length >= 1;
 
   return (
     <KeyboardAvoidingView
@@ -368,8 +129,250 @@ export default ({ navigation }) => {
       refreshPosts();
       await AsyncAlert('Posted', 'Your post successfully uploaded ❤️');
       navigation.navigate('MorePage');
-    } catch (error) {
-      onError(error);
+    } 
+    catch (err) {
+      console.error('could not post because', err);
+      onError(err.message);
     }
   }
 };
+
+function LostOrFoundSelector({ type, setType }) {
+  return (
+    <TouchableOpacity
+      onPress={() => setType(type == 'found' ? 'lost' : 'found')}
+      style={{
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'flex-end',
+        marginBottom: 22,
+        ...globalStyles.shadow,
+      }}
+    >
+      <Text
+        style={{
+          fontSize: 30,
+          letterSpacing: 1.3,
+          textTransform: 'capitalize',
+          marginHorizontal: 10,
+          fontWeight: 'bold',
+        }}
+      >
+        I {type}
+      </Text>
+      <Ionicons size={30} color="black" name="repeat-outline" />
+    </TouchableOpacity>
+  );
+}
+
+function HeaderInput({ header, setHeader, type }) {
+  React.useEffect(() => {
+    setHeader(header.trimStart());
+  }, [header]);
+
+  return (
+    <View
+      style={{
+        borderColor: 'rgba(0,0,0,.4)',
+
+        padding: 12,
+        fontSize: 16,
+        borderStyle: 'dashed',
+        borderWidth: 1,
+        borderRadius: 8,
+        borderColor: 'black',
+
+        marginTop: 16,
+        marginBottom: 24,
+      }}
+    >
+      <TextInput
+        autoCapitalize="words"
+        value={header}
+        onChangeText={setHeader}
+        placeholder={`What did you ${type == 'lost' ? 'lose' : 'find'}?`}
+        style={{ fontSize: 20, ...globalStyles.noInputOutline }}
+      />
+    </View>
+  );
+}
+
+function ParagraphInput({ paragraph, setParagraph, scrollRef }) {
+  React.useEffect(() => {
+    setParagraph(paragraph.trimStart());
+  }, [paragraph]);
+
+  const fontSize = 16;
+
+  return (
+    <View style={{ marginVertical: 24 }}>
+      {paragraph == '' && (
+        <Text
+          style={{
+            fontSize,
+            color: '#bbb',
+            position: 'absolute',
+            paddingLeft: 4,
+            paddingTop: 4,
+          }}
+        >
+          Add more information (optional)
+        </Text>
+      )}
+      <TextInput
+        multiline
+        onBlur={() => setParagraph(paragraph.trim())}
+        onFocus={() => scrollRef.current.scrollToEnd()}
+        scrollEnabled={false}
+        onChangeText={setParagraph}
+        value={paragraph}
+        style={{
+          fontSize,
+          paddingLeft: 6,
+          ...globalStyles.noInputOutline,
+        }}
+        maxLength={300}
+      />
+    </View>
+  );
+}
+
+function roundToPlaces(number, places) {
+  const order = 10 ** places;
+  return Math.round(number * order) / order;
+}
+
+const reverseGecode = cache(async ({ lat, long }) => {
+  lat = roundToPlaces(lat, 6);
+  long = roundToPlaces(long, 6);
+
+  try {
+    const url =
+      `https://api.bigdatacloud.net/data/reverse-geocode-client?` +
+      `latitude=${lat}&longitude=${long}&localityLanguage=en`;
+    return await fetch(url)
+      .then((res) => res.json())
+      .then((obj) => obj.city);
+  } catch (err) {
+    console.error("Couldn't Reverse-Gecode:", err);
+    return null;
+  }
+});
+
+function LocationPicker({ type, location, setLocation }) {
+  const deviceLocation = React.useContext(LocationContext);
+  const [latLong, setLatLong] = React.useState({
+    lat: location.lat,
+    long: location.long,
+  });
+  const [fetchedName, setFetchedName] = React.useState(location.name);
+  const [userText, setUserText] = React.useState('');
+  const [isHere, setIsHere] = React.useState(true);
+
+  React.useEffect(() => {
+    if (deviceLocation) {
+      const { latitude, longitude } = deviceLocation;
+      setLatLong({ lat: latitude, long: longitude });
+    }
+  }, [deviceLocation]);
+
+  React.useEffect(() => {
+    latLong.lat && reverseGecode(latLong).then(setFetchedName);
+  }, [latLong]);
+
+  React.useEffect(() => {
+    setUserText(userText.trimStart());
+  }, [userText]);
+
+  React.useEffect(() => {
+    setLocation(
+      isHere
+        ? {
+            ...latLong,
+            name: userText || fetchedName,
+          }
+        : { name: userText }
+    );
+  }, [isHere, latLong, userText, fetchedName]);
+
+  return (
+    <View
+      style={{
+        flexDirection: 'row',
+        alignItems: 'flex-end',
+        justifyContent: 'space-between',
+        paddingHorizontal: 4,
+
+        marginTop: 4,
+        marginBottom: 24,
+      }}
+    >
+      <View style={{ flexDirection: 'row' }}>
+        <Text style={{ fontSize: 16 }}>{userText && 'At '}</Text>
+        <TextInput
+          autoCapitalize="words"
+          value={userText}
+          onChangeText={setUserText}
+          placeholder={
+            isHere
+              ? fetchedName
+                ? `"${fetchedName}"`
+                : "Getting this place's Name..."
+              : `Where did you ${type == 'lost' ? 'lose' : 'find'} it?`
+          }
+          style={{
+            fontSize: 16,
+            // the text "Getting this place's Name..." should be italic
+            ...(isHere && !fetchedName && !userText && { fontStyle: 'italic' }),
+            ...(userText && { fontWeight: 'bold' }),
+            // transform: [{ translateY: .5 }],
+            ...globalStyles.noInputOutline,
+          }}
+          placeholderTextColor="rgba(0, 0, 0, .4)"
+        />
+      </View>
+
+      <View style={{ marginLeft: 2 }}>
+        <CheckBox isChecked={isHere} onChange={setIsHere} label="Here" />
+      </View>
+    </View>
+  );
+}
+
+function SubmitButton({ onPress, isActive }) {
+  return (
+    <View
+      style={{
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginTop: 24,
+      }}
+    >
+      <TouchableOpacity
+        disabled={!isActive}
+        style={{
+          paddingVertical: 8,
+          paddingHorizontal: 16,
+          paddingRight: 15,
+          borderRadius: 8,
+          borderWidth: 1,
+          borderColor: isActive ? 'transparent' : 'darkgray',
+          backgroundColor: isActive ? 'rgb(26, 119, 169)' : 'transparent',
+        }}
+        onPress={onPress}
+      >
+        <Text
+          style={{
+            fontWeight: 'bold',
+            textTransform: 'uppercase',
+            fontSize: 18,
+            color: isActive ? '#eee' : 'darkgray',
+          }}
+        >
+          {isActive ? 'Post →' : 'Post'}
+        </Text>
+      </TouchableOpacity>
+    </View>
+  );
+}

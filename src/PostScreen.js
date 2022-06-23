@@ -12,58 +12,70 @@ import {
   FlatList,
   Image,
   ScrollView,
+  Linking,
+  Platform,
+  Share,
 } from 'react-native';
 
-import geoDistance, { capitalize, timeDeltaAsString } from './utils';
+import geoDistance, { capitalize, server, timeDeltaAsString } from './utils';
 import globalStyles from './globalStyles';
 import { FeedContext, LocationContext } from './contexts';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
-import MapView from 'react-native-maps';
+import { Ionicons } from '@expo/vector-icons';
+import * as Clipboard from 'expo-clipboard';
 
-function useDistanceInKm(postLocation) {
-  const deviceLocation = React.useContext(LocationContext);
-  const [distance, setDistance] = React.useState(undefined);
-
-  React.useEffect(() => {
-    const { lat, long } = postLocation;
-    if (lat && long && deviceLocation) {
-      const { latitude, longitude } = deviceLocation;
-      const dist = geoDistance(latitude, longitude, lat, long);
-      setDistance(dist);
-    }
-  }, [deviceLocation]);
-
-  return distance;
-}
+import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps';
 
 export default function () {
   const { postViewed } = React.useContext(FeedContext);
-  const proximityInKm = useDistanceInKm(postViewed.location);
   const navigation = useNavigation();
 
   useFocusEffect(() => {
     navigation.setOptions({ title: `${capitalize(postViewed.author.name)}'s Post` });
   });
 
+  const linkToPost = server`/view-post/?_id=${postViewed._id}`;
+
   return (
-    <ScrollView>
+    <ScrollView style={{ padding: 6 }}>
       <View style={[styles.container, globalStyles.shadow]}>
         <View style={styles.extraMargin}>
           <View style={styles.LocationAndDate}>
             <Text style={styles.date}>{timeDeltaAsString(postViewed.date)}</Text>
-            <Text style={styles.location}>
-              <Text style={{ textTransform: 'capitalize' }}>
+            <View
+              style={{
+                marginLeft: 'auto',
+                alignItems: 'flex-end',
+              }}
+            >
+              <Text
+                style={{
+                  textTransform: 'capitalize',
+                  letterSpacing: 1.5,
+                }}
+              >
                 {postViewed.location.name}
               </Text>
-              <Text>
-                {'\n'}
-                {proximityInKm != undefined && prettyDistance(proximityInKm)}
-              </Text>
-            </Text>
+              {postViewed.location.lat && postViewed.location.long && (
+                <TouchableOpacity
+                  onPress={() =>
+                    void Linking.openURL(
+                      `https://maps.google.com/?q=${postViewed.location.lat},${postViewed.location.long}`
+                    ).catch((err) => Alert.alert("Couldn't load page: " + err.message))
+                  }
+                  style={{ flexDirection: 'row', alignItems: 'center' }}
+                >
+                  <Text style={{ color: 'steelblue', fontWeight: '600' }}>Map </Text>
+                  <Ionicons size={20} name="map-outline" color="steelblue" />
+                </TouchableOpacity>
+              )}
+            </View>
           </View>
+
           <Text style={styles.header}>{postViewed.header}</Text>
           <Text style={styles.bodyText}>{postViewed.body}</Text>
         </View>
+
         <FlatList
           style={[styles.imagesContainer, { paddingVertical: 8, paddingLeft: 2 }]}
           data={postViewed.picsUrls}
@@ -81,26 +93,9 @@ export default function () {
           }}
           keyExtractor={(_, idx) => idx}
         />
-        <View
-          style={{
-            width: '100%',
-            height: 300,
-            ...globalStyles.shadow,
-            padding: 6,
-          }}
-        >
-          <MapView
-            style={{ flex: 1, borderRadius: 6 }}
-            region={{
-              latitude: 37.78825,
-              longitude: -122.4324,
-              latitudeDelta: 0.0922,
-              longitudeDelta: 0.0421,
-            }}
-          />
-        </View>
+
         <View>
-          <View style={{ width: '100%', paddingHorizontal: 8, marginVertical: 8 }}>
+          <View style={{ width: '100%', paddingHorizontal: 8, marginBottom: 8 }}>
             <View // an hr
               style={{
                 height: 1,
@@ -143,21 +138,82 @@ export default function () {
           </View>
         </View>
       </View>
+
+      <View
+        style={{
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          padding: 8,
+          paddingHorizontal: 12,
+          marginTop: 4,
+          marginBottom: 20,
+          alignItems: 'center',
+        }}
+      >
+        <TouchableOpacity
+          onPress={() => {
+            const body = [
+              `I'd like to report this.`,
+              ``,
+              `Link to Post:`,
+              linkToPost,
+            ].join('\n');
+
+            const subject = 'Report Post';
+
+            Linking.openURL(
+              encodeURI(
+                `mailto:lost.n.found.nitsan@gmail.com?&subject=${subject}&body=${body}`
+              )
+            ).catch((err) => Alert.alert("Couldn't load page: " + err.message));
+          }}
+        >
+          <Text style={{ textDecorationLine: 'underline' }}>Report Post</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          onPress={() => {
+            const alert = Platform.OS == 'web' ? window.alert : Alert.alert;
+
+            async function attemptShare() {
+              await Share.share({
+                message: `Thought you might find this ${postViewed.type} item interesting:\n${linkToPost}`,
+              });
+            }
+
+            async function fallback1() {
+              await Clipboard.setStringAsync('hello world');
+              alert('Link to Post was Copied to Clipboard');
+            }
+
+            async function fallback2() {
+              await navigator.clipboard.writeText(linkToPost);
+              alert('Link to Post was Copied to Clipboard');
+              console.log('gosh we are in the second share fallback');
+            }
+
+            attemptShare().catch(fallback1).catch(fallback2);
+          }}
+          style={{ flexDirection: 'row', alignItems: 'center' }}
+        >
+          <Text style={{ color: 'steelblue', fontWeight: 'bold' }}>Share </Text>
+          <View style={{ position: 'relative', transform: [{ translateY: -1 }] }}>
+            <Ionicons size={20} name="share-outline" color="steelblue" />
+            <Ionicons
+              size={19}
+              name="share-outline"
+              color="steelblue"
+              style={{
+                position: 'absolute',
+                // transform: [{ translateX: 1 }, { translateY: 1 }],
+              }}
+            />
+          </View>
+        </TouchableOpacity>
+
+      </View>
     </ScrollView>
   );
-}
-
-function prettyDistance(proximityInKm) {
-  if (proximityInKm >= 10) {
-    return `${proximityInKm.toFixed(0)} km away`;
-  }
-  if (proximityInKm >= 1) {
-    return `${proximityInKm.toFixed(1)} km away`;
-  }
-  if (proximityInKm <= 0.1) {
-    return 'at this area';
-  }
-  return `${proximityInKm.toFixed(2)} km away`;
 }
 
 const styles = StyleSheet.create({
@@ -166,9 +222,9 @@ const styles = StyleSheet.create({
   },
 
   container: {
-    margin: 8,
+    margin: 3,
 
-    padding: 8,
+    padding: 10,
     backgroundColor: '#fff',
 
     marginBottom: 8,
@@ -184,11 +240,6 @@ const styles = StyleSheet.create({
     letterSpacing: 1.2,
     fontWeight: 'bold',
     textTransform: 'capitalize',
-  },
-  location: {
-    marginLeft: 'auto',
-    letterSpacing: 1.5,
-    textAlign: 'right',
   },
   header: {
     fontSize: 33,
