@@ -126,7 +126,7 @@ async function pickImage(setUploadState, setUri) {
   const { uri, cancelled } = await ImagePicker.launchImageLibraryAsync({
     mediaTypes: ImagePicker.MediaTypeOptions.Images,
     allowsEditing: true,
-    // aspect: [1, 1], // todo can i enable this?
+    aspect: [1, 1],
     quality: 1,
   });
 
@@ -146,12 +146,12 @@ async function pickImage(setUploadState, setUri) {
   }
 
   async function compressAndUpload() {
-
     let [w, h] = await new Promise((resolve, reject) => {
       Image.getSize(uri, (w, h) => resolve([w, h]), reject);
     });
-    const vmin = Math.min(w, h);
-    const shrinkRatio = vmin / RESIZE_TO;
+
+    const shrinkRatio = Math.min(w, h) / RESIZE_TO;
+
     w /= shrinkRatio;
     h /= shrinkRatio;
 
