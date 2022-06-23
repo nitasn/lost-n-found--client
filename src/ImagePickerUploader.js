@@ -147,7 +147,9 @@ async function pickImage(setUploadState, setUri) {
 
   async function compressAndUpload() {
 
-    let [w, h] = await new Promise((res, rej) => Image.getSize(uri, res, rej));
+    let [w, h] = await new Promise((resolve, reject) => {
+      Image.getSize(uri, (w, h) => resolve([w, h]), reject);
+    });
     const vmin = Math.min(w, h);
     const shrinkRatio = vmin / RESIZE_TO;
     w /= shrinkRatio;
@@ -174,7 +176,8 @@ async function pickImage(setUploadState, setUri) {
         url: cld_url,
       })
     )
-    .catch(() => {
+    .catch((err) => {
+      console.error(err.message);
       setUploadState({
         status: 'failed',
         url: undefined,
