@@ -30,6 +30,9 @@ import globalStyles from './src/globalStyles';
 import WelcomeInsertName from './src/WelcomeInsertName';
 import { SERVER_URL } from './src/constants';
 
+import { PortalProvider, PortalHost } from '@gorhom/portal';
+
+
 function ProvideAll({ children, ContextsAndValues }) {
   return ContextsAndValues.reduceRight((result, [Context, value]) => {
     return <Context.Provider value={value}>{result}</Context.Provider>;
@@ -56,9 +59,12 @@ export default function App() {
   return (
     <>
       <StatusBar style="auto" />
-      <ProvideAll ContextsAndValues={CVs}>
-        <Tabs />
-      </ProvideAll>
+      <PortalProvider>
+        <ProvideAll ContextsAndValues={CVs}>
+          <Tabs />
+          <PortalHost name="alert" />
+        </ProvideAll>
+      </PortalProvider>
     </>
   );
 }

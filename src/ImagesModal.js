@@ -19,7 +19,7 @@ import globalStyles from './globalStyles';
 
 import { FeedContext } from './contexts';
 import { capitalize } from './utils';
-
+import AutoHeightImage from './AutoHeightImage';
 import { useFocusEffect } from '@react-navigation/native';
 
 export default function ImagesModal({ navigation }) {
@@ -34,27 +34,18 @@ export default function ImagesModal({ navigation }) {
   return (
     <FlatList
       data={postViewed.picsUrls}
-      style={{ padding: 6 }}
+      style={{ padding: 8 }}
       renderItem={({ item, index }) => (
         <View
           style={{
-            marginBottom: index + 1 == postViewed.picsUrls.length ? 6 : 0,
+            marginBottom: index + 1 == postViewed.picsUrls.length ? 10 : 0,
             ...globalStyles.shadow,
           }}
         >
-          <Image style={styles.image} source={{ uri: item }} />
+          <AutoHeightImage uri={item} style={{ borderRadius: 8, marginBottom: 8 }} />
         </View>
       )}
       keyExtractor={(_, idx) => idx}
     />
   );
 }
-
-const styles = StyleSheet.create({
-  image: {
-    width: '100%',
-    borderRadius: 4,
-    aspectRatio: 1,
-    marginBottom: 6,
-  },
-});

@@ -85,7 +85,10 @@ export default function () {
             const marginRight = index + 1 == postViewed.picsUrls.length ? 4 : 0;
             return (
               <View style={{ marginRight }}>
-                <TouchableOpacity style={{ ...globalStyles.shadow }}>
+                <TouchableOpacity
+                  style={{ ...globalStyles.shadow }}
+                  onPress={() => navigation.navigate('ImagesModal')}
+                >
                   <Image style={styles.image} source={{ uri: item }} />
                 </TouchableOpacity>
               </View>
@@ -210,7 +213,6 @@ export default function () {
             />
           </View>
         </TouchableOpacity>
-
       </View>
     </ScrollView>
   );

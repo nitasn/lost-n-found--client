@@ -11,6 +11,7 @@ import {
   Alert,
   FlatList,
   Image,
+  TouchableWithoutFeedback
 } from 'react-native';
 
 import geoDistance, { capitalize, timeDeltaAsString } from './utils';
@@ -38,11 +39,6 @@ export default function ({ postData }) {
   const proximityInKm = useDistanceInKm(postData.location);
   const { setPostViewed } = React.useContext(FeedContext);
   const navigation = useNavigation();
-
-  const onImagesClick = () => {
-    setPostViewed(postData);
-    navigation.navigate('ImagesModal');
-  };
 
   const onAuthorClick = () => {
     setPostViewed(postData);
@@ -84,13 +80,11 @@ export default function ({ postData }) {
         renderItem={({ item, index }) => {
           const marginRight = index + 1 == postData.picsUrls.length ? 4 : 0;
           return (
-            <View style={{ marginRight }}>
-              <TouchableOpacity
-                onPress={onImagesClick}
-                style={{ ...globalStyles.shadow }}
-              >
+            <View style={{ marginRight, ...globalStyles.shadow }}>
+              <TouchableWithoutFeedback>
+                {/* to allow scrolling wihtout tapping the post */}
                 <Image style={styles.image} source={{ uri: item }} />
-              </TouchableOpacity>
+              </TouchableWithoutFeedback>
             </View>
           );
         }}

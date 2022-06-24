@@ -11,17 +11,24 @@ const ONE_MINUTE = 1000 * 60;
 export default function useLocation({ updateEvery } = { updateEvery: ONE_MINUTE }) {
   const [location, setLocation] = React.useState(undefined);
 
-  React.useEffect(() => void asyncWork(), []);
+  let isStillMounted = true;
+
+  React.useEffect(() => {
+    asyncWork();
+    return () => (isStillMounted = false);
+  }, []);
 
   async function asyncWork() {
     const { status } = await Location.requestForegroundPermissionsAsync();
 
     if (status !== 'granted') {
-      return setLocation(null);
+      return isStillMounted && setLocation(null);
     }
 
     try {
       const { coords } = await Location.getCurrentPositionAsync();
+
+      if (!isStillMounted) return;
 
       setLocation(extractFrom(coords, ['latitude', 'longitude']));
 
@@ -30,7 +37,7 @@ export default function useLocation({ updateEvery } = { updateEvery: ONE_MINUTE 
       }
     } 
     catch {
-      setTimeout(asyncWork, 1000);
+      isStillMounted && setTimeout(asyncWork, 1000);
     }
   }
 

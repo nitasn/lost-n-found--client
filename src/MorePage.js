@@ -14,8 +14,11 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 
 import globalStyles from './globalStyles';
+import CustomAlert from './CustomAlert';
 
 export default function MorePage({ navigation }) {
+  const [isAlertShown, setIsAlertShown] = React.useState(false);
+
   return (
     <View
       style={{
@@ -52,7 +55,18 @@ export default function MorePage({ navigation }) {
       <Bar
         text="Settings"
         iconName="settings-outline"
-        // onPress={() => console.log('he')}
+        onPress={() => setIsAlertShown(true)}
+      />
+
+      <CustomAlert
+        isShown={isAlertShown}
+        hide={() => setIsAlertShown(false)}
+        header="hello there"
+        body="what would you like to do next?"
+        backgroundColor='hsl(195, 44%, 16%)'
+        textColor="white"
+        buttonBgColor='rgb(26, 119, 169)'
+        buttonTextColor="white"
       />
     </View>
   );

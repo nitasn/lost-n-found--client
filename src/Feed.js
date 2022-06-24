@@ -20,28 +20,37 @@ import { FeedContext, PostsContext } from './contexts';
 import Post from './Post';
 import { useNavigation } from '@react-navigation/native';
 
-export default ({ navigation }) => {
-  // todo pull to refresh
+export default ({}) => {
+  const { type: feedType, filter } = React.useContext(FeedContext);
 
-  const { type: feedType, filter, setPostViewed } = React.useContext(FeedContext);
+  const { allPosts, postsLoadError, refreshPosts } = React.useContext(PostsContext);
 
-  const { allPosts, postsLoadError } = React.useContext(PostsContext);
+  const [isRefreshing, setIsRefreshing] = React.useState(false);
+
+  const [posts, setPosts] = React.useState(null);
+
+  React.useEffect(() => {
+    if (!allPosts) return;
+    const allPostsOfType = allPosts.filter(({ type }) => type == feedType);
+    setPosts([replaceMeWithSearchBar, ...apply(filter, allPostsOfType)]);
+  }, [allPosts, feedType, filter]);
 
   if (postsLoadError) return <PostsLoadErrorScreen msg={postsLoadError} />;
 
-  if (!allPosts) return <LoadingPostsScreen />;
-
-  const allPostsOfType = allPosts.filter(({ type }) => type == feedType);
-
-  const posts = [replaceMeWithSearchBar, ...apply(filter, allPostsOfType)];
+  if (!posts) return <LoadingPostsScreen />;
 
   return (
     <View style={[styles.conatiner, { flex: 1 }]}>
       <FlatList
+        refreshing={isRefreshing}
+        onRefresh={() => {
+          setIsRefreshing(true); // todo doesn't work on web
+          refreshPosts().then(() => setIsRefreshing(false));
+        }}
         style={{ padding: 6, paddingTop: 0, width: '100%' }}
         data={posts}
         renderItem={({ item, index }) => {
-          if (item == replaceMeWithSearchBar) {
+          if (item === replaceMeWithSearchBar) {
             return <SearchBar filter={!!filter} />;
           }
           return (
@@ -50,7 +59,10 @@ export default ({ navigation }) => {
             </View>
           );
         }}
-        keyExtractor={(_, idx) => idx}
+        keyExtractor={(obj) => {
+          if (obj === replaceMeWithSearchBar) return feedType + '-search-bar';
+          return obj._id
+        }}
       />
 
       {posts.length == 1 && (
@@ -111,24 +123,20 @@ const styles = StyleSheet.create({
 
 function LoadingPostsScreen() {
   return (
-    <View style={[styles.conatiner, { padding: 12 }]}>
-      <View style={styles.conatiner}>
-        <Text>Loading Posts...</Text>
-      </View>
+    <View style={[styles.conatiner, { padding: 12, height: '100%' }]}>
+      <Text style={{ margin: 'auto' }}>Loading Posts...</Text>
     </View>
   );
 }
 
 function PostsLoadErrorScreen({ msg }) {
   return (
-    <View style={[styles.conatiner, { padding: 12 }]}>
-      <View style={styles.conatiner}>
-        <Text>Could not load posts.</Text>
-        <Text>Please make sure you're connected to the internet and try again.</Text>
-        <Text>{'\n'}</Text>
-        <Text>Error message:</Text>
-        <Text>{msg}</Text>
-      </View>
+    <View style={[styles.conatiner, { padding: 12, height: '100%' }]}>
+      <Text>Could not load posts.</Text>
+      <Text>Please make sure you're connected to the internet and try again.</Text>
+      <Text>{'\n'}</Text>
+      <Text>Error message:</Text>
+      <Text>{msg}</Text>
     </View>
   );
 }

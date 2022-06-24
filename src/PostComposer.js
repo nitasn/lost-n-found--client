@@ -47,11 +47,14 @@ export default ({ navigation }) => {
   const jwt = React.useContext(JwtContext);
   const scrollRef = React.useRef();
 
+  const [isPosting, setIsPosting] = React.useState(false);
+
   const canPost =
     header.length >= 2 &&
     (location.name || (location.lat && location.long)) &&
     imagesStatuses.every(({ status }) => status == 'succeeded') &&
-    imagesStatuses.length >= 1;
+    imagesStatuses.length >= 1 &&
+    !isPosting;
 
   return (
     <KeyboardAvoidingView
@@ -95,8 +98,11 @@ export default ({ navigation }) => {
 
           <View style={{ paddingHorizontal: 20 }}>
             <ParagraphInput {...{ paragraph, setParagraph, scrollRef }} />
-            {/* todo button should show "uploading..." and be non-pressable */}
-            <SubmitButton isActive={canPost} onPress={() => void sendToServer()} />
+            <SubmitButton
+              isPosting={isPosting}
+              isActive={canPost}
+              onPress={() => void sendToServer()}
+            />
           </View>
         </View>
       </ScrollView>
@@ -121,18 +127,24 @@ export default ({ navigation }) => {
     };
 
     try {
+      setIsPosting(true);
       const res = await sendPostReq(server`/protected/new-post`, body, jwt);
 
       const { error, post_id } = await res.json();
+      // id is returned so we can later go to postscreen to view it
+
       if (error) return onError(error);
 
       refreshPosts();
       await AsyncAlert('Posted', 'Your post successfully uploaded ❤️');
-      navigation.navigate('MorePage');
+      navigation.navigate('MorePage'); // todo clear fields instead
     } 
     catch (err) {
       console.error('could not post because', err);
       onError(err.message);
+    } 
+    finally {
+      setIsPosting(false);
     }
   }
 };
@@ -339,7 +351,9 @@ function LocationPicker({ type, location, setLocation }) {
   );
 }
 
-function SubmitButton({ onPress, isActive }) {
+function SubmitButton({ onPress, isActive, isPosting }) {
+  if (isPosting) isActive = false; // it's gonna be false anyway, but to be 102% sure
+
   return (
     <View
       style={{
@@ -370,7 +384,7 @@ function SubmitButton({ onPress, isActive }) {
             color: isActive ? '#eee' : 'darkgray',
           }}
         >
-          {isActive ? 'Post →' : 'Post'}
+          {isPosting ? 'Posting...' : isActive ? 'Post →' : 'Post'}
         </Text>
       </TouchableOpacity>
     </View>

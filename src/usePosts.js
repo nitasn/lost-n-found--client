@@ -17,7 +17,8 @@ export default function usePosts() {
       const res = await fetch(server`/public/get-all-posts`);
       const json = await res.json();
       setPosts(json);
-    } catch (err) {
+    } 
+    catch (err) {
       setError(err.message);
       timeoutId = setTimeout(goFetch, 1000);
       // todo this doesn't work. it does resend a req until it gets a res,
@@ -25,12 +26,9 @@ export default function usePosts() {
     }
   }
 
-  function refresh() {
-    if (timeoutId) {
-      clearTimeout(timeoutId);
-      timeoutId = undefined;
-    }
-    goFetch();
+  async function refresh() {
+    clearTimeout(timeoutId); // no effect if timeoutId is not set
+    await goFetch();
   }
 
   return [posts, error, refresh];
