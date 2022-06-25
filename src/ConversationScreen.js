@@ -137,12 +137,15 @@ export default function ({ navigation }) {
         >
           <TouchableOpacity style={{ flex: 1 }} onPress={inputRef.current?.focus()}>
             <TextInput
-              style={{
-                padding: 12,
-                fontSize: 18,
-                color: 'white',
-                ...globalStyles.noInputOutline,
-              }}
+              style={[
+                {
+                  padding: 12,
+                  fontSize: 18,
+                  color: 'white',
+                  marginRight: 4,
+                },
+                globalStyles.noInputOutline,
+              ]}
               onChangeText={setMsg}
               value={msg}
               placeholder="Type something..."

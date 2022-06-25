@@ -86,7 +86,7 @@ export default function ({ onName }) {
             onPress={() => inputRef.current.focus()}
           >
             <TextInput
-              style={{ fontSize: 20, ...globalStyles.noInputOutline }}
+              style={[{ fontSize: 20 }, globalStyles.noInputOutline]}
               value={name}
               onChangeText={setName}
               placeholder="name..."

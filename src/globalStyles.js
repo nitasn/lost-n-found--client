@@ -30,7 +30,10 @@ export default StyleSheet.create({
 
     elevation: 5,
   },
-  noInputOutline: Platform.OS != "web" ? {} : {
-    outlineStyle: 'none',
-  },
+  noInputOutline:
+    Platform.OS === 'web'
+      ? {
+          outlineStyle: 'none',
+        }
+      : {},
 });

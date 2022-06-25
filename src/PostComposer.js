@@ -138,12 +138,10 @@ export default ({ navigation }) => {
       refreshPosts();
       AsyncAlert('Posted', 'Your post successfully uploaded ❤️');
       navigation.navigate('MorePage'); // todo clear fields instead
-    } 
-    catch (err) {
+    } catch (err) {
       console.error('could not post because', err);
       onError(err.message);
-    } 
-    finally {
+    } finally {
       setIsPosting(false);
     }
   }
@@ -203,7 +201,7 @@ function HeaderInput({ header, setHeader, type }) {
         value={header}
         onChangeText={setHeader}
         placeholder={`What did you ${type == 'lost' ? 'lose' : 'find'}?`}
-        style={{ fontSize: 20, ...globalStyles.noInputOutline }}
+        style={[{ fontSize: 20 }, globalStyles.noInputOutline]}
       />
     </View>
   );
@@ -238,11 +236,13 @@ function ParagraphInput({ paragraph, setParagraph, scrollRef }) {
         scrollEnabled={false}
         onChangeText={setParagraph}
         value={paragraph}
-        style={{
-          fontSize,
-          paddingLeft: 6,
-          ...globalStyles.noInputOutline,
-        }}
+        style={[
+          {
+            fontSize,
+            paddingLeft: 6,
+          },
+          globalStyles.noInputOutline,
+        ]}
         maxLength={300}
       />
     </View>
@@ -332,14 +332,16 @@ function LocationPicker({ type, location, setLocation }) {
                 : "Getting this place's Name..."
               : `Where did you ${type == 'lost' ? 'lose' : 'find'} it?`
           }
-          style={{
-            fontSize: 16,
+          style={[
+            { fontSize: 16 },
+
             // the text "Getting this place's Name..." should be italic
-            ...(isHere && !fetchedName && !userText && { fontStyle: 'italic' }),
-            ...(userText && { fontWeight: 'bold' }),
-            // transform: [{ translateY: .5 }],
-            ...globalStyles.noInputOutline,
-          }}
+            isHere && !fetchedName && !userText && { fontStyle: 'italic' },
+
+            userText && { fontWeight: 'bold' },
+
+            globalStyles.noInputOutline,
+          ]}
           placeholderTextColor="rgba(0, 0, 0, .4)"
         />
       </View>

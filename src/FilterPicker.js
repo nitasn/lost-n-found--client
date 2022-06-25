@@ -88,11 +88,12 @@ export default function FilterPicker() {
       </View>
 
       <TextInput
-        style={{
-          ...styles.boxed,
-          fontWeight: text ? '500' : 'normal',
-          ...globalStyles.noInputOutline,
-        }}
+        // for some reason, style doens't work with inline ...obj
+        style={[
+          styles.boxed,
+          { fontWeight: text ? '500' : 'normal' },
+          globalStyles.noInputOutline,
+        ]}
         onChangeText={setText}
         value={text}
         placeholder="Words..."
@@ -189,7 +190,7 @@ function DatePicker({ word, onChange, date }) {
   return (
     <>
       <TouchableOpacity
-        style={{ flexDirection: 'row', ...styles.boxed }}
+        style={[{ flexDirection: 'row' }, styles.boxed]}
         onPress={() => setModalVisible(true)}
       >
         <Text style={{ marginRight: 8 }}>{word}</Text>
