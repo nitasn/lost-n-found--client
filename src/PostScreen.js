@@ -17,22 +17,22 @@ import {
   Share,
 } from 'react-native';
 
-import geoDistance, { capitalize, server, timeDeltaAsString } from './utils';
+import { capitalize, server, timeDeltaAsString } from './utils';
 import globalStyles from './globalStyles';
-import { FeedContext, LocationContext } from './contexts';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import * as Clipboard from 'expo-clipboard';
 
-import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps';
+// import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps';
 
-export default function ({ }) {
-  const { postViewed } = React.useContext(FeedContext);
+export default function ({ route }) {
   const navigation = useNavigation();
 
   useFocusEffect(() => {
     navigation.setOptions({ title: `${capitalize(postViewed.author.name)}'s Post` });
   });
+
+  const { postViewed } = route.params;
 
   const linkToPost = server`/view-post/?_id=${postViewed._id}`;
 
@@ -87,7 +87,7 @@ export default function ({ }) {
               <View style={{ marginRight }}>
                 <TouchableOpacity
                   style={{ ...globalStyles.shadow }}
-                  onPress={() => navigation.navigate('ImagesModal')}
+                  onPress={() => navigation.navigate('ImagesModal', { postViewed })}
                 >
                   <Image style={styles.image} source={{ uri: item }} />
                 </TouchableOpacity>

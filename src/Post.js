@@ -11,10 +11,11 @@ import {
   Alert,
   FlatList,
   Image,
-  TouchableWithoutFeedback
+  TouchableWithoutFeedback,
+  Platform,
 } from 'react-native';
 
-import geoDistance, { capitalize, timeDeltaAsString } from './utils';
+import { geoDistance, timeDeltaAsString } from './utils';
 import globalStyles from './globalStyles';
 import { FeedContext, LocationContext } from './contexts';
 import { useNavigation } from '@react-navigation/native';
@@ -47,16 +48,21 @@ export default function ({ postData }) {
 
   const onChatClick = () => {
     setPostViewed(postData);
-    Alert.alert('Chat is currenty under development <3');
+    (Platform.OS === 'web' ? window : Alert).alert(
+      'Chat is currenty under development <3'
+    );
   };
 
   const onPostClick = () => {
     setPostViewed(postData);
-    navigation.navigate('PostScreen');
-  }
+    navigation.navigate('PostScreen', { postViewed: postData });
+  };
 
   return (
-    <TouchableOpacity style={[styles.container, globalStyles.shadow]} onPress={onPostClick}>
+    <TouchableOpacity
+      style={[styles.container, globalStyles.shadow]}
+      onPress={onPostClick}
+    >
       <View style={styles.extraMargin}>
         <View style={styles.LocationAndDate}>
           <Text style={styles.date}>{timeDeltaAsString(postData.date)}</Text>

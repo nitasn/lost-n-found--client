@@ -73,6 +73,9 @@ function MainThing({
           position: 'absolute',
           justifyContent: 'center',
           alignItems: 'center',
+          backgroundColor: 'rgba(0, 0, 0, .15)',
+          // animation:
+          opacity,
         }}
       >
         <TouchableWithoutFeedback /* to block touch on the popup itself */>
@@ -85,8 +88,7 @@ function MainThing({
               borderRadius: 8,
               ...globalStyles.shadow,
               shadowOpacity: 0.3,
-              // the next ones are animated values:
-              opacity,
+              // animation:
               transform: [{ translateY }],
             }}
           >

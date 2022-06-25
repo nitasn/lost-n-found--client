@@ -17,19 +17,16 @@ import {
 
 import globalStyles from './globalStyles';
 
-import { FeedContext } from './contexts';
 import { capitalize } from './utils';
 import AutoHeightImage from './AutoHeightImage';
 import { useFocusEffect } from '@react-navigation/native';
 
-export default function ImagesModal({ navigation }) {
-  const { postViewed } = React.useContext(FeedContext);
-
+export default function ImagesModal({ navigation, route }) {
   useFocusEffect(() => {
-    navigation.setOptions({
-      title: `${capitalize(postViewed.author.name)}'s Images`,
-    });
+    navigation.setOptions({ title: `${capitalize(postViewed.author.name)}'s Images` });
   });
+
+  const { postViewed } = route.params;
 
   return (
     <FlatList
