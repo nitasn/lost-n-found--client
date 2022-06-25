@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-export const FeedContext = React.createContext();
+export const FilterContext = React.createContext();
 
 export const JwtContext = React.createContext();
 

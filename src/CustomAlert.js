@@ -39,25 +39,40 @@ function MainThing({
 
   const { width, height } = useDimensions();
 
-  const animValue = new Animated.Value(0);
+  const opacityValue = new Animated.Value(0);
+  const scaleValue = new Animated.Value(0);
 
   React.useEffect(() => {
     Animated.sequence([
-      Animated.timing(animValue, {
+      Animated.timing(opacityValue, {
         toValue: 1,
         duration: 330,
         easing: Easing.ease,
         useNativeDriver: false,
       }),
     ]).start();
+
+    Animated.sequence([
+      Animated.timing(scaleValue, {
+        toValue: 1,
+        duration: 330,
+        easing: Easing.elastic(1),
+        useNativeDriver: false,
+      }),
+    ]).start();
   });
 
-  const translateY = animValue.interpolate({
+  // const translateY = opacityValue.interpolate({
+  //   inputRange: [0, 1],
+  //   outputRange: [10, 0],
+  // });
+
+  const scale = scaleValue.interpolate({
     inputRange: [0, 1],
-    outputRange: [10, 0],
+    outputRange: [0.7, 1],
   });
 
-  const opacity = animValue.interpolate({
+  const opacity = opacityValue.interpolate({
     inputRange: [0, 1],
     outputRange: [0, 1],
   });
@@ -89,7 +104,10 @@ function MainThing({
               ...globalStyles.shadow,
               shadowOpacity: 0.3,
               // animation:
-              transform: [{ translateY }],
+              transform: [
+                { scale },
+                // { translateY },
+              ],
             }}
           >
             <Text

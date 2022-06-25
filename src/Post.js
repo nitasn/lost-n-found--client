@@ -17,7 +17,7 @@ import {
 
 import { geoDistance, timeDeltaAsString } from './utils';
 import globalStyles from './globalStyles';
-import { FeedContext, LocationContext } from './contexts';
+import { LocationContext } from './contexts';
 import { useNavigation } from '@react-navigation/native';
 
 function useDistanceInKm(postLocation) {
@@ -38,23 +38,19 @@ function useDistanceInKm(postLocation) {
 
 export default function ({ postData }) {
   const proximityInKm = useDistanceInKm(postData.location);
-  const { setPostViewed } = React.useContext(FeedContext);
   const navigation = useNavigation();
 
   const onAuthorClick = () => {
-    setPostViewed(postData);
-    navigation.navigate('UserModal');
+    navigation.navigate('UserModal', { postViewed: postData });
   };
 
   const onChatClick = () => {
-    setPostViewed(postData);
     (Platform.OS === 'web' ? window : Alert).alert(
       'Chat is currenty under development <3'
     );
   };
 
   const onPostClick = () => {
-    setPostViewed(postData);
     navigation.navigate('PostScreen', { postViewed: postData });
   };
 

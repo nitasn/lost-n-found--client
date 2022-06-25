@@ -18,23 +18,22 @@ import globalStyles from './globalStyles';
 import ImagesModal from './ImagesModal';
 import UserModal from './UserModal';
 import FilterPicker from './FilterPicker';
-import { FeedContext } from './contexts';
+import { FilterContext } from './contexts';
 import TypeChangingHeader from './TypeChangingHeader';
 import PostScreen from './PostScreen';
 
 const Stack = createNativeStackNavigator();
 
 export default function () {
-  const [postViewed, setPostViewed] = React.useState();
-  const [filter, setFilter] = React.useState(null);
   const [type, setType] = React.useState('found');
+  const [filter, setFilter] = React.useState(null);
 
+  // used to make the "switch feed type" button change opacity
+  // based on the posts list's scroll position
   const [scrollPosition, setScrollPosition] = React.useState(0);
 
-  const provided = { postViewed, setPostViewed, filter, setFilter, type };
-
   return (
-    <FeedContext.Provider value={provided}>
+    <FilterContext.Provider value={{ filter, setFilter }}>
       <Stack.Navigator
         headerMode="screen"
         screenOptions={{
@@ -43,17 +42,16 @@ export default function () {
       >
         <Stack.Screen
           name="Feed"
-          children={() => <Feed {...{ setScrollPosition }} />}
           options={{
-            // todo - on type switch - scroll to top
             header: () => <TypeChangingHeader {...{ type, setType, scrollPosition }} />,
           }}
+          children={() => <Feed {...{ type, setScrollPosition }} />}
         />
         <Stack.Screen name="ImagesModal" component={ImagesModal} />
         <Stack.Screen name="UserModal" component={UserModal} />
         <Stack.Screen name="FilterPicker" component={FilterPicker} />
         <Stack.Screen name="PostScreen" component={PostScreen} />
       </Stack.Navigator>
-    </FeedContext.Provider>
+    </FilterContext.Provider>
   );
 }

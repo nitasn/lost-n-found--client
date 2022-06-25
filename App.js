@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { StyleSheet } from 'react-native';
+import { View } from 'react-native';
 
 import { StatusBar } from 'expo-status-bar';
 import useJwt from './src/useJwt';
@@ -38,8 +38,10 @@ export default function App() {
       <StatusBar style="auto" />
       <PortalProvider>
         <ProvideAll ContextsAndValues={CVs}>
-          <Tabs />
-          <PortalHost name="alert" />
+          <View style={{ flex: 1, overflow: 'hidden' }}>
+            <Tabs />
+            <PortalHost name="alert" />
+          </View>
         </ProvideAll>
       </PortalProvider>
     </>

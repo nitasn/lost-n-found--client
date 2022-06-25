@@ -18,7 +18,7 @@ import { useNavigation } from '@react-navigation/native';
 import globalStyles from './globalStyles';
 import { useFocusEffect } from '@react-navigation/native';
 
-import { FeedContext } from './contexts';
+import { FilterContext } from './contexts';
 
 const filterShape = {
   text: String,
@@ -37,8 +37,7 @@ import { prettyDate } from './utils';
 
 export default function FilterPicker() {
   const navigation = useNavigation();
-
-  const { filter, setFilter } = React.useContext(FeedContext);
+  const { filter, setFilter } = React.useContext(FilterContext);
 
   const [text, setText] = React.useState(filter?.text ?? '');
   const [fromDate, setFromDate] = React.useState(filter?.dates?.from);

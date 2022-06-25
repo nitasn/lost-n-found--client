@@ -16,12 +16,12 @@ import {
 import { vw, vh, vmin, vmax } from 'react-native-expo-viewport-units';
 import { Ionicons } from '@expo/vector-icons';
 import globalStyles from './globalStyles';
-import { FeedContext, PostsContext } from './contexts';
+import { FilterContext, PostsContext } from './contexts';
 import Post from './Post';
 import { useNavigation } from '@react-navigation/native';
 
-export default ({ setScrollPosition }) => {
-  const { type: type, filter } = React.useContext(FeedContext);
+export default ({ type, setScrollPosition }) => {
+  const { filter } = React.useContext(FilterContext);
 
   const { allPosts, postsLoadError, refreshPosts } = React.useContext(PostsContext);
 
@@ -61,10 +61,11 @@ export default ({ setScrollPosition }) => {
         }}
         refreshing={isRefreshing}
         onRefresh={() => {
-          setIsRefreshing(true); // todo doesn't work on web
+          // todo doesn't work on web
+          setIsRefreshing(true); 
           refreshPosts().then(() => setIsRefreshing(false));
         }}
-        style={{ padding: 6, paddingTop: 0, width: '100%' }}
+        style={{ paddingHorizontal: 6, paddingVertical: 0, width: '100%' }}
         data={posts}
         renderItem={({ item, index }) => {
           if (item === replaceMeWithSearchBar) {
@@ -85,7 +86,7 @@ export default ({ setScrollPosition }) => {
       {posts.length == 1 && (
         <View style={{ marginBottom: vh(50) }}>
           <Text style={{ fontSize: 15, lineHeight: 20 }}>
-            {allPostsOfType.length ? LOOSEN_FILTER_MSG : NO_POSTS_MSG}
+            {posts.length ? LOOSEN_FILTER_MSG : NO_POSTS_MSG}
           </Text>
         </View>
       )}
