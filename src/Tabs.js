@@ -28,6 +28,19 @@ const Tabs = createBottomTabNavigator();
 
 const ref = createNavigationContainerRef();
 
+// const linking = {
+//   prefixes: ['http://localhost:19006/', 'https://lost-n-found-nitsan.herokuapp.com/'],
+//   config: {
+//     screens: {
+//       Feed: 'feed',
+//       ChatsScreen: 'chats',
+//       FeedStack: 'home',
+//       MorePage: 'more',
+//       PostScreen: 'post'
+//     },
+//   }
+// };
+
 export default function () {
   const [routeName, setRouteName] = React.useState();
 
@@ -35,9 +48,10 @@ export default function () {
 
   return (
     <NavigationContainer
+      // linking={linking}
       ref={ref}
       onReady={() => {
-        setRouteName(ref.getCurrentRoute().name); // do the same on convo screen to scroll down
+        setRouteName(ref.getCurrentRoute().name);
       }}
       onStateChange={() => {
         setRouteName(ref.getCurrentRoute().name);
@@ -54,7 +68,7 @@ export default function () {
               <Ionicons
                 size={size}
                 color={color}
-                name={focused ? 'planet-sharp' : 'planet-outline'}
+                name={focused ? 'earth-sharp' : 'earth-outline'}
               />
             ),
           }}

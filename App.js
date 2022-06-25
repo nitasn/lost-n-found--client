@@ -1,5 +1,3 @@
-// import 'react-native-gesture-handler'; // must go first
-
 import * as React from 'react';
 import { StyleSheet } from 'react-native';
 

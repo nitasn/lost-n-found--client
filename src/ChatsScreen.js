@@ -12,6 +12,7 @@ import {
   FlatList,
   Image,
   TextInput,
+  TouchableWithoutFeedback,
 } from 'react-native';
 
 import { Ionicons } from '@expo/vector-icons';
@@ -25,16 +26,27 @@ import useDecodedJwt from './useDecodedJwt';
 import { firestore } from './init-firebase';
 import { useCollection, useDocument } from 'react-firebase-hooks/firestore';
 import { collection, doc, getDoc, query, where } from 'firebase/firestore';
+import CustomAlert from './CustomAlert';
 
-function CenteredText({ msg }) {
+export default function ChatsScreen({ navigation }) {
+  const [isAlertShown, setIsAlertShown] = React.useState(false);
+
   return (
-    <View style={globalStyles.fullScreenAndCenter}>
-      <Text style={{maxWidth: 350}}>{msg}</Text>
-    </View>
+    <TouchableWithoutFeedback onPress={() => setIsAlertShown(true)}>
+      <View style={{ flex: 1 }}>
+        <RealThing navigation={navigation} />
+        <CustomAlert
+          isShown={isAlertShown}
+          onClose={() => setIsAlertShown(false)}
+          header="hello there"
+          body="This is an alert message. Do you like ice bananas?"
+        />
+      </View>
+    </TouchableWithoutFeedback>
   );
 }
 
-export default function ({ navigation }) {
+function RealThing({ navigation }) {
   useFocusEffect(() => {
     navigation.setOptions({ title: 'Chats' });
   });
@@ -136,5 +148,13 @@ function ListUsers({ ids, navigation, myId }) {
       )}
       keyExtractor={(_, index) => index}
     />
+  );
+}
+
+function CenteredText({ msg }) {
+  return (
+    <View style={globalStyles.fullScreenAndCenter}>
+      <Text style={{ maxWidth: 350 }}>{msg}</Text>
+    </View>
   );
 }

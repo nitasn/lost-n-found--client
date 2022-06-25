@@ -45,6 +45,7 @@ export default function () {
           name="Feed"
           children={() => <Feed {...{ setScrollPosition }} />}
           options={{
+            // todo - on type switch - scroll to top
             header: () => <TypeChangingHeader {...{ type, setType, scrollPosition }} />,
           }}
         />

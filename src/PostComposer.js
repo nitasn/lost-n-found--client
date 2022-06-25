@@ -136,7 +136,7 @@ export default ({ navigation }) => {
       if (error) return onError(error);
 
       refreshPosts();
-      await AsyncAlert('Posted', 'Your post successfully uploaded ❤️');
+      AsyncAlert('Posted', 'Your post successfully uploaded ❤️');
       navigation.navigate('MorePage'); // todo clear fields instead
     } 
     catch (err) {

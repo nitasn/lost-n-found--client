@@ -109,7 +109,7 @@ export function sendPostReq(url, body, jwt = undefined) {
   });
 }
 
-import { SERVER_URL } from './constants';
+import { SERVER_URL } from './serverUrl';
 
 /**
  * prefix with SERVER_URL

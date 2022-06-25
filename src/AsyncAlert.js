@@ -1,4 +1,4 @@
-import { Alert as NativeAlert } from 'react-native';
+import { Alert as NativeAlert, Platform } from 'react-native';
 
 const defaultButtons = (resolve, reject) => [
   {
@@ -11,7 +11,8 @@ const defaultButtons = (resolve, reject) => [
 
 const AsyncAlert = (title, msg, getButtons = defaultButtons) =>
   new Promise((resolve, reject) => {
-    NativeAlert.alert(title, msg, getButtons(resolve, reject), { cancelable: false });
+    const source = (Platform.OS === 'web' ? window : NativeAlert);
+    source.alert(title, msg, getButtons(resolve, reject), { cancelable: false });
   });
 
 export default AsyncAlert;

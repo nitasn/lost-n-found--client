@@ -21,19 +21,30 @@ import Post from './Post';
 import { useNavigation } from '@react-navigation/native';
 
 export default ({ setScrollPosition }) => {
-  const { type: feedType, filter } = React.useContext(FeedContext);
+  const { type: type, filter } = React.useContext(FeedContext);
 
   const { allPosts, postsLoadError, refreshPosts } = React.useContext(PostsContext);
-
-  const [isRefreshing, setIsRefreshing] = React.useState(false);
 
   const [posts, setPosts] = React.useState(null);
 
   React.useEffect(() => {
     if (!allPosts) return;
-    const allPostsOfType = allPosts.filter(({ type }) => type == feedType);
+    const allPostsOfType = allPosts.filter((post) => post.type === type);
     setPosts([replaceMeWithSearchBar, ...apply(filter, allPostsOfType)]);
-  }, [allPosts, feedType, filter]);
+  }, [allPosts, type, filter]);
+
+  const listRef = React.useRef();
+
+  React.useEffect(() => {
+    listRef.current?.scrollToOffset({ animated: true, offset: scrollPosOf.current[type] });
+  }, [type]);
+
+  const scrollPosOf = React.useRef({
+    lost: 0,
+    found: 0,
+  });
+
+  const [isRefreshing, setIsRefreshing] = React.useState(false);
 
   if (postsLoadError) return <PostsLoadErrorScreen msg={postsLoadError} />;
 
@@ -42,9 +53,12 @@ export default ({ setScrollPosition }) => {
   return (
     <View style={[styles.conatiner, { flex: 1 }]}>
       <FlatList
-        onScroll={
-          setScrollPosition && ((e) => setScrollPosition(e.nativeEvent.contentOffset.y))
-        }
+        ref={listRef}
+        onScroll={(e) => {
+          const pos = e.nativeEvent.contentOffset.y;
+          setScrollPosition?.(pos);
+          scrollPosOf.current[type] = pos;
+        }}
         refreshing={isRefreshing}
         onRefresh={() => {
           setIsRefreshing(true); // todo doesn't work on web
@@ -63,7 +77,7 @@ export default ({ setScrollPosition }) => {
           );
         }}
         keyExtractor={(obj) => {
-          if (obj === replaceMeWithSearchBar) return feedType + '-search-bar';
+          if (obj === replaceMeWithSearchBar) return type + '-search-bar';
           return obj._id;
         }}
       />

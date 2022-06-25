@@ -26,7 +26,7 @@ import * as Clipboard from 'expo-clipboard';
 
 import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps';
 
-export default function () {
+export default function ({ }) {
   const { postViewed } = React.useContext(FeedContext);
   const navigation = useNavigation();
 
