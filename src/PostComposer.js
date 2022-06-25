@@ -111,7 +111,7 @@ export default ({ navigation }) => {
 
   async function sendToServer() {
     const onError = (msg) =>
-      Alert.alert(
+      AsyncAlert(
         'Not Posted',
         'We seem to face a problem at the moment. \n' +
           'Your post was not posted 💔 \n\n\n' +
@@ -138,10 +138,12 @@ export default ({ navigation }) => {
       refreshPosts();
       AsyncAlert('Posted', 'Your post successfully uploaded ❤️');
       navigation.navigate('MorePage'); // todo clear fields instead
-    } catch (err) {
+    } 
+    catch (err) {
       console.error('could not post because', err);
       onError(err.message);
-    } finally {
+    } 
+    finally {
       setIsPosting(false);
     }
   }

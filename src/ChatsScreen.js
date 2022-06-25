@@ -120,8 +120,10 @@ function ListUsers({ ids, navigation, myId }) {
             shadowOpacity: 0.15,
           }}
           onPress={() => {
+            const userChattingWith = chatIdToPartnerId[firestoreChatId];
+            if (!userChattingWith) return; // plaster to avoid crash for now
             setCurrentChatId(firestoreChatId);
-            setUserChattingWith(chatIdToPartnerId[firestoreChatId]);
+            setUserChattingWith(userChattingWith);
             navigation.navigate('ConversationScreen');
           }}
         >
