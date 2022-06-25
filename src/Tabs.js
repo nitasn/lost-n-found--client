@@ -15,6 +15,7 @@ import {
   NavigationContainer,
   createNavigationContainerRef,
 } from '@react-navigation/native';
+import NotFound from './NotFound';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
 import ChatsScreen from './ChatsScreen';
@@ -23,23 +24,52 @@ import MoreStack from './MoreStack';
 import globalStyles from './globalStyles';
 import ConversationScreen from './ConversationScreen';
 import ChatsStack from './ChatsStack';
+import * as Linking from 'expo-linking';
 
 const Tabs = createBottomTabNavigator();
 
 const ref = createNavigationContainerRef();
 
-// const linking = {
-//   prefixes: ['http://localhost:19006/', 'https://lost-n-found-nitsan.herokuapp.com/'],
-//   config: {
-//     screens: {
-//       Feed: 'feed',
-//       ChatsScreen: 'chats',
-//       FeedStack: 'home',
-//       MorePage: 'more',
-//       PostScreen: 'post'
-//     },
-//   }
-// };
+const linking = {
+  prefixes: [
+    'https://lost-n-found-nitsan.herokuapp.com/',
+    Linking.createURL('lostnfound://'),
+    Linking.createURL('/'), // which one of them works...?
+  ],
+
+  config: {
+    screens: {
+      FeedStack: {
+        initialRouteName: 'Feed',
+
+        screens: {
+          Feed: 'feed',
+          ImagesModal: 'images',
+          UserModal: 'user',
+          FilterPicker: 'filter',
+          PostScreen: 'post/:id',
+        },
+      },
+
+      ChatsStack: {
+        screens: {
+          ChatsScreen: 'chats',
+          ConversationScreen: 'conversation',
+        },
+      },
+
+      MoreStack: {
+        screens: {
+          MorePage: 'more',
+          MyProfile: 'my-profile',
+          PostComposer: 'compose-post',
+        },
+      },
+
+      NotFound: '*',
+    },
+  },
+};
 
 export default function () {
   const [routeName, setRouteName] = React.useState();
@@ -48,7 +78,8 @@ export default function () {
 
   return (
     <NavigationContainer
-      // linking={linking}
+      linking={linking}
+      fallback={<Text>Loading...</Text>}
       ref={ref}
       onReady={() => {
         setRouteName(ref.getCurrentRoute().name);
@@ -57,7 +88,12 @@ export default function () {
         setRouteName(ref.getCurrentRoute().name);
       }}
     >
-      <Tabs.Navigator headerMode="screen">
+      <Tabs.Navigator
+        headerMode="screen"
+        screenOptions={({ route }) => ({
+          tabBarButton: route.name === 'NotFound' ? () => null : undefined,
+        })}
+      >
         <Tabs.Screen
           name="FeedStack"
           component={FeedStack}
@@ -73,8 +109,9 @@ export default function () {
             ),
           }}
         />
+
         <Tabs.Screen
-          name="ChatsTab"
+          name="ChatsStack"
           component={ChatsStack}
           options={{
             title: 'Chats',
@@ -92,8 +129,9 @@ export default function () {
             ),
           }}
         />
+
         <Tabs.Screen
-          name="MoreTab"
+          name="MoreStack"
           component={MoreStack}
           options={{
             title: 'More',
@@ -102,9 +140,18 @@ export default function () {
               <Ionicons
                 size={size}
                 color={color}
-                name={focused ? 'menu-sharp' : 'menu'}
+                name={focused ? 'add-circle-sharp' : 'add-circle-outline'}
               />
             ),
+          }}
+        />
+
+        <Tabs.Screen
+          name="NotFound"
+          component={NotFound}
+          options={{
+            title: 'Not Found',
+            headerTitleAlign: 'center',
           }}
         />
       </Tabs.Navigator>

@@ -29,12 +29,34 @@ export default function ({ route }) {
   const navigation = useNavigation();
 
   useFocusEffect(() => {
-    navigation.setOptions({ title: `${capitalize(postViewed.author.name)}'s Post` });
+    navigation.setOptions({ title: 'View Post' });
   });
 
-  const { postViewed } = route.params;
+  const [postViewed, setPostViewed] = React.useState(route.params.postViewed);
+  const [loadError, setLoadError] = React.useState(null);
 
-  const linkToPost = server`/view-post/?_id=${postViewed._id}`;
+  React.useEffect(() => {
+    if (postViewed) return;
+    let isStillMounted = true;
+    (async () => {
+      const res = await fetch(server`/public/get-post/?_id=${route.params.id}`);
+      const json = await res.json();
+      if (!isStillMounted) return;
+      if (json.error) return setLoadError(json.error);
+      setPostViewed(json);
+    })();
+    return () => (isStillMounted = false);
+  }, []);
+
+  if (loadError) {
+    return <CenteredText msg="An error occurred... Sorry 💔" />;
+  }
+
+  if (!postViewed) {
+    return <CenteredText msg="Loading Post..." />;
+  }
+
+  const linkToPost = server`/post/${postViewed._id}`;
 
   return (
     <ScrollView style={{ padding: 6 }}>
@@ -215,6 +237,21 @@ export default function ({ route }) {
         </TouchableOpacity>
       </View>
     </ScrollView>
+  );
+}
+
+function CenteredText({ msg }) {
+  return (
+    <View
+      style={{
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        justifyContent: 'space-evenly',
+      }}
+    >
+      <Text>{msg}</Text>
+    </View>
   );
 }
 
