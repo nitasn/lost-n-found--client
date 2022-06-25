@@ -17,7 +17,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import globalStyles from './globalStyles';
 import { useFocusEffect } from '@react-navigation/native';
-
+import { createElement } from 'react-native';
 import { FilterContext } from './contexts';
 
 const filterShape = {
@@ -99,6 +99,10 @@ export default function FilterPicker() {
         placeholder="Words..."
         placeholderTextColor="gray"
       />
+
+      {/* todo make it work on web too... */}
+      {/* <WebNativeDatePicker word="Since" date={fromDate} onChange={setFromDate} />
+      <WebNativeDatePicker word="Until" date={untilDate} onChange={setUntilDate} /> */}
 
       <DatePicker word="Since" date={fromDate} onChange={setFromDate} />
       <DatePicker word="Until" date={untilDate} onChange={setUntilDate} />
@@ -206,6 +210,14 @@ function DatePicker({ word, onChange, date }) {
       />
     </>
   );
+}
+
+function WebNativeDatePicker({ date, onChange }) {
+  return createElement('input', {
+    type: 'date',
+    value: date,
+    onInput: onChange,
+  });
 }
 
 const styles = StyleSheet.create({

@@ -84,8 +84,8 @@ export default ({ type, setScrollPosition }) => {
       />
 
       {posts.length == 1 && (
-        <View style={{ marginBottom: vh(50) }}>
-          <Text style={{ fontSize: 15, lineHeight: 20 }}>
+        <View style={{ flex: 3 }}>
+          <Text style={{ fontSize: 15, lineHeight: 20, textAlign: 'center' }}>
             {posts.length ? LOOSEN_FILTER_MSG : NO_POSTS_MSG}
           </Text>
         </View>

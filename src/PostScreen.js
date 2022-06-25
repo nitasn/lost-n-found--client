@@ -207,7 +207,7 @@ export default function ({ route }) {
             }
 
             async function fallback1() {
-              await Clipboard.setStringAsync('hello world');
+              await Clipboard.setStringAsync(linkToPost);
               alert('Link to Post was Copied to Clipboard');
             }
 
