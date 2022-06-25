@@ -74,18 +74,12 @@ export default function ({ navigation }) {
     navigation.setOptions({ title: capitalize(userChattingWith.name) });
   });
 
-  React.useEffect(() => onUnmount);
-
   const [isSending, setIsSending] = React.useState(false);
 
   const [messages, messagesLoading, messagesError] = useMessages();
 
   if (messagesLoading) return <CenteredText />;
   if (messagesError) return <CenteredText msg={'error :( ' + messagesError.message} />;
-
-  function onUnmount() {
-    //
-  }
 
   const MessagesArea = View;
   const InputArea = View;
@@ -94,7 +88,7 @@ export default function ({ navigation }) {
     <KeyboardAvoidingView
       style={{ flex: 1, flexDirection: 'column', justifyContent: 'center' }}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      keyboardVerticalOffset={60}
+      keyboardVerticalOffset={64}
       // todo try "eact-native-keyboard-aware-scroll-view"
     >
       <View style={{ flex: 1 }}>

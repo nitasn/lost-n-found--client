@@ -9,7 +9,7 @@
     "eject": "expo eject"
   },
   "dependencies": {
-    "@gorhom/portal": "^1.0.13",
+    "@gorhom/portal": "^1.0.14",
     "@react-native-async-storage/async-storage": "~1.17.3",
     "@react-native-community/datetimepicker": "6.1.2",
     "@react-native-masked-view/masked-view": "0.2.6",

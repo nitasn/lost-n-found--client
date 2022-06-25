@@ -60,13 +60,9 @@ export default function MorePage({ navigation }) {
 
       <CustomAlert
         isShown={isAlertShown}
-        hide={() => setIsAlertShown(false)}
+        onClose={() => setIsAlertShown(false)}
         header="hello there"
         body="what would you like to do next?"
-        backgroundColor='hsl(195, 44%, 16%)'
-        textColor="white"
-        buttonBgColor='rgb(26, 119, 169)'
-        buttonTextColor="white"
       />
     </View>
   );

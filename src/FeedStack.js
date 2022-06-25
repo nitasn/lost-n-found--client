@@ -29,6 +29,8 @@ export default function () {
   const [filter, setFilter] = React.useState(null);
   const [type, setType] = React.useState('found');
 
+  const [scrollPosition, setScrollPosition] = React.useState(0);
+
   const provided = { postViewed, setPostViewed, filter, setFilter, type };
 
   return (
@@ -41,9 +43,9 @@ export default function () {
       >
         <Stack.Screen
           name="Feed"
-          component={Feed}
+          children={() => <Feed {...{ setScrollPosition }} />}
           options={{
-            header: () => <TypeChangingHeader type={type} setType={setType} />,
+            header: () => <TypeChangingHeader {...{ type, setType, scrollPosition }} />,
           }}
         />
         <Stack.Screen name="ImagesModal" component={ImagesModal} />

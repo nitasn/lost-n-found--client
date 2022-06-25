@@ -20,7 +20,7 @@ import { FeedContext, PostsContext } from './contexts';
 import Post from './Post';
 import { useNavigation } from '@react-navigation/native';
 
-export default ({}) => {
+export default ({ setScrollPosition }) => {
   const { type: feedType, filter } = React.useContext(FeedContext);
 
   const { allPosts, postsLoadError, refreshPosts } = React.useContext(PostsContext);
@@ -42,6 +42,9 @@ export default ({}) => {
   return (
     <View style={[styles.conatiner, { flex: 1 }]}>
       <FlatList
+        onScroll={
+          setScrollPosition && ((e) => setScrollPosition(e.nativeEvent.contentOffset.y))
+        }
         refreshing={isRefreshing}
         onRefresh={() => {
           setIsRefreshing(true); // todo doesn't work on web
@@ -61,7 +64,7 @@ export default ({}) => {
         }}
         keyExtractor={(obj) => {
           if (obj === replaceMeWithSearchBar) return feedType + '-search-bar';
-          return obj._id
+          return obj._id;
         }}
       />
 
