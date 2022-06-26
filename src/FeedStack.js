@@ -8,7 +8,6 @@ import {
   Pressable,
   useWindowDimensions,
   Keyboard,
-  Alert,
 } from 'react-native';
 
 import { createNativeStackNavigator } from '@react-navigation/native-stack';

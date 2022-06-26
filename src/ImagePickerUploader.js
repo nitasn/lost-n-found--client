@@ -19,12 +19,16 @@ import bg from '../assets/bg.jpeg';
 import globalStyles from './globalStyles';
 import uploadToCloudinary from './uploadToCloudinary';
 import EverSpinningDots from './EverSpinningDots';
+import { showCustomAlert } from './CustomAlert';
 
 async function askForCameraRollPermissionsWeb() {
   if (Platform.OS !== 'web') {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== 'granted') {
-      alert('Please allow camera roll permissions to add images to your post!');
+      showCustomAlert({
+        header: 'Camera Roll Permissions',
+        body: 'Please allow camera roll permissions to add images to your post!'
+      })
     }
   }
 }

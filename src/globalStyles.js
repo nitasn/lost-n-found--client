@@ -8,7 +8,6 @@ import {
   Pressable,
   useWindowDimensions,
   Keyboard,
-  Alert,
   Platform,
 } from 'react-native';
 

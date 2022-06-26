@@ -1,9 +1,9 @@
+// todo solve dependencies array for animation
+// solve bg not full screen on iphone pwa not status bar
+
 import * as React from 'react';
-import { Portal } from '@gorhom/portal';
 import {
-  Button,
   Text,
-  View,
   TouchableOpacity,
   TouchableWithoutFeedback,
   Animated,
@@ -12,16 +12,57 @@ import {
 import globalStyles from './globalStyles';
 import useDimensions from './useDimensions';
 
-// todo1 make async (resolve when closed)
-// todo2 show up with a transition
+/**
+ * length 0 ---- no alert is shown
+ * length 1 ---- one alert is shown, and no alerts were pushed behind it
+ * length 2+ --- one alert is shown, and some alerts were pushed behind it
+ */
+const _stack = [];
 
-export default function (props) {
-  if (!props.isShown) return null;
+export function showCustomAlert(props) {
+  _stack.push(props);
+  _setProps({ ...props, isShown: true, onClose });
+  _reanimate?.();
 
-  return <MainThing {...props} />;
+  function onClose() {
+    const { onClose: extOnClose } = _stack.pop();
+
+    const newProps = _stack.length
+      ? { ..._stack[_stack.length - 1], isShown: true, onClose }
+      : { isShown: false };
+
+    _setProps(newProps);
+
+    extOnClose?.();
+  }
 }
 
-function MainThing({
+let _reanimate = undefined;
+
+let _setProps = () =>
+  console.warn('cannot set alert props: AlertProvider has not been mounted');
+
+export function AlertProvider({ children }) {
+  const [props, setProps] = React.useState({ isShown: false });
+
+  React.useEffect(() => {
+    _setProps = setProps;
+
+    return function onUnmount() {
+      _setProps = () =>
+        console.warn('cannot set alert props: AlertProvider was unmounted');
+    };
+  }, [setProps]);
+
+  return (
+    <>
+      {children}
+      {props.isShown && <CustomAlert {...props} />}
+    </>
+  );
+}
+
+function CustomAlert({
   header,
   body,
 
@@ -39,8 +80,18 @@ function MainThing({
 
   const { width, height } = useDimensions();
 
+  const [animCount, setAnimCount] = React.useState(0);
+
   const opacityValue = new Animated.Value(0);
   const scaleValue = new Animated.Value(0);
+
+  React.useEffect(() => {
+    _reanimate = () => setAnimCount(count => count + 1);
+
+    return function onUnmount() {
+      _reanimate = undefined;
+    };
+  }, [setAnimCount]);
 
   React.useEffect(() => {
     Animated.sequence([
@@ -60,7 +111,7 @@ function MainThing({
         useNativeDriver: false,
       }),
     ]).start();
-  });
+  }, [animCount]);
 
   const scale = scaleValue.interpolate({
     inputRange: [0, 1],
@@ -73,58 +124,55 @@ function MainThing({
   });
 
   return (
-    <Portal hostName="alert">
-      <Animated.View
-        style={{
-          height: '100%',
-          width: '100%',
-          top: 0,
-          left: 0,
-          position: 'absolute',
-          justifyContent: 'center',
-          alignItems: 'center',
-          backgroundColor: 'rgba(0, 0, 0, .15)',
-          // animation:
-          opacity,
-        }}
-      >
-        <TouchableWithoutFeedback /* to block touch on the popup itself */>
-          <Animated.View
+    <Animated.View
+      style={{
+        height: '100%',
+        width: '100%',
+        top: 0,
+        left: 0,
+        zIndex: 9,
+        position: 'absolute',
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(0, 0, 0, .15)',
+        // animation:
+        opacity,
+      }}
+    >
+      <TouchableWithoutFeedback /* to block touch on the popup itself */>
+        <Animated.View
+          style={{
+            width: Math.min(0.8 * width, 400),
+            paddingTop: 26,
+            padding: 24,
+            backgroundColor,
+            borderRadius: 8,
+            ...globalStyles.shadow,
+            shadowOpacity: 0.3,
+            // animation:
+            transform: [{ scale }],
+          }}
+        >
+          <Text
             style={{
-              width: Math.min(0.8 * width, 400),
-              paddingTop: 26,
-              padding: 24,
-              backgroundColor,
-              borderRadius: 8,
-              ...globalStyles.shadow,
-              shadowOpacity: 0.3,
-              // animation:
-              transform: [
-                { scale },
-              ],
+              fontSize: 24,
+              marginBottom: 16,
+              textTransform: 'capitalize',
+              color: textColor,
             }}
           >
-            <Text
-              style={{
-                fontSize: 24,
-                marginBottom: 16,
-                textTransform: 'capitalize',
-                color: textColor,
-              }}
-            >
-              {header}
-            </Text>
-            <Text style={{ marginBottom: 30, color: textColor }}>{body}</Text>
-            <FlatButton
-              onPress={onClose}
-              text="Okay"
-              textColor={buttonTextColor}
-              bgColor={buttonBgColor}
-            />
-          </Animated.View>
-        </TouchableWithoutFeedback>
-      </Animated.View>
-    </Portal>
+            {header}
+          </Text>
+          <Text style={{ marginBottom: 30, color: textColor }}>{body}</Text>
+          <FlatButton
+            onPress={onClose}
+            text="Okay"
+            textColor={buttonTextColor}
+            bgColor={buttonBgColor}
+          />
+        </Animated.View>
+      </TouchableWithoutFeedback>
+    </Animated.View>
   );
 }
 

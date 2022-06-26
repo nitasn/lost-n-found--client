@@ -8,7 +8,6 @@ import {
   Pressable,
   useWindowDimensions,
   Keyboard,
-  Alert,
   FlatList,
   Image,
   TextInput,
@@ -26,23 +25,13 @@ import useDecodedJwt from './useDecodedJwt';
 import { firestore } from './init-firebase';
 import { useCollection, useDocument } from 'react-firebase-hooks/firestore';
 import { collection, doc, getDoc, query, where } from 'firebase/firestore';
-import CustomAlert from './CustomAlert';
+import { showCustomAlert } from './CustomAlert';
 
 export default function ChatsScreen({ navigation }) {
-  const [isAlertShown, setIsAlertShown] = React.useState(false);
-
   return (
-    <TouchableWithoutFeedback onPress={() => setIsAlertShown(true)}>
-      <View style={{ flex: 1 }}>
-        <RealThing navigation={navigation} />
-        <CustomAlert
-          isShown={isAlertShown}
-          onClose={() => setIsAlertShown(false)}
-          header="hello there"
-          body="This is an alert message. Do you like ice bananas?"
-        />
-      </View>
-    </TouchableWithoutFeedback>
+    <View style={{ flex: 1 }}>
+      <RealThing navigation={navigation} />
+    </View>
   );
 }
 

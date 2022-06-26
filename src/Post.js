@@ -8,7 +8,6 @@ import {
   Pressable,
   useWindowDimensions,
   Keyboard,
-  Alert,
   FlatList,
   Image,
   TouchableWithoutFeedback,
@@ -19,6 +18,7 @@ import { geoDistance, timeDeltaAsString } from './utils';
 import globalStyles from './globalStyles';
 import { LocationContext } from './contexts';
 import { useNavigation } from '@react-navigation/native';
+import { showCustomAlert } from './CustomAlert';
 
 function useDistanceInKm(postLocation) {
   const deviceLocation = React.useContext(LocationContext);
@@ -45,9 +45,10 @@ export default function ({ postData }) {
   };
 
   const onChatClick = () => {
-    (Platform.OS === 'web' ? window : Alert).alert(
-      'Chat is currenty under development <3'
-    );
+    showCustomAlert({
+      header: 'Soon...',
+      body: 'Chat is currenty under development <3'
+    })
   };
 
   const onPostClick = () => {

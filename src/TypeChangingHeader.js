@@ -9,7 +9,6 @@ import {
   Pressable,
   useWindowDimensions,
   Keyboard,
-  Alert,
   SafeAreaView,
   Platform,
 } from 'react-native';

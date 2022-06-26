@@ -9,5 +9,3 @@ export const LocationContext = React.createContext();
 export const PostsContext = React.createContext();
 
 export const ChatContext = React.createContext();
-
-export const AlertContext = React.createContext();

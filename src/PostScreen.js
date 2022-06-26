@@ -8,7 +8,6 @@ import {
   Pressable,
   useWindowDimensions,
   Keyboard,
-  Alert,
   FlatList,
   Image,
   ScrollView,
@@ -22,6 +21,7 @@ import globalStyles from './globalStyles';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import * as Clipboard from 'expo-clipboard';
+import { showCustomAlert } from './CustomAlert';
 
 // import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps';
 
@@ -83,7 +83,12 @@ export default function ({ route }) {
                   onPress={() =>
                     void Linking.openURL(
                       `https://maps.google.com/?q=${postViewed.location.lat},${postViewed.location.long}`
-                    ).catch((err) => Alert.alert("Couldn't load page: " + err.message))
+                    ).catch(({ message }) =>
+                      showCustomAlert({
+                        header: "Couldn't Open Maps",
+                        body: message,
+                      })
+                    )
                   }
                   style={{ flexDirection: 'row', alignItems: 'center' }}
                 >
@@ -190,7 +195,12 @@ export default function ({ route }) {
               encodeURI(
                 `mailto:lost.n.found.nitsan@gmail.com?&subject=${subject}&body=${body}`
               )
-            ).catch((err) => Alert.alert("Couldn't load page: " + err.message));
+            ).catch(({ message }) =>
+              showCustomAlert({
+                header: "Couldn't Launch Email App",
+                body: message,
+              })
+            );
           }}
         >
           <Text style={{ textDecorationLine: 'underline' }}>Report Post</Text>
@@ -198,26 +208,21 @@ export default function ({ route }) {
 
         <TouchableOpacity
           onPress={() => {
-            const alert = Platform.OS == 'web' ? window.alert : Alert.alert;
-
             async function attemptShare() {
               await Share.share({
                 message: `Thought you might find this ${postViewed.type} item interesting:\n${linkToPost}`,
               });
             }
 
-            async function fallback1() {
+            async function fallback() {
               await Clipboard.setStringAsync(linkToPost);
-              alert('Link to Post was Copied to Clipboard');
+              showCustomAlert({
+                header: 'copied',
+                body: 'Link to Post was Copied to Clipboard',
+              });
             }
 
-            async function fallback2() {
-              await navigator.clipboard.writeText(linkToPost);
-              alert('Link to Post was Copied to Clipboard');
-              console.log('gosh we are in the second share fallback');
-            }
-
-            attemptShare().catch(fallback1).catch(fallback2);
+            attemptShare().catch(fallback);
           }}
           style={{ flexDirection: 'row', alignItems: 'center' }}
         >

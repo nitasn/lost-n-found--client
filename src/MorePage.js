@@ -8,17 +8,14 @@ import {
   Pressable,
   useWindowDimensions,
   Keyboard,
-  Alert,
 } from 'react-native';
 
 import { Ionicons } from '@expo/vector-icons';
 
 import globalStyles from './globalStyles';
-import CustomAlert from './CustomAlert';
+import { showCustomAlert } from './CustomAlert';
 
 export default function MorePage({ navigation }) {
-  const [isAlertShown, setIsAlertShown] = React.useState(false);
-
   return (
     <View
       style={{
@@ -55,14 +52,13 @@ export default function MorePage({ navigation }) {
       <Bar
         text="Settings"
         iconName="settings-outline"
-        onPress={() => setIsAlertShown(true)}
-      />
-
-      <CustomAlert
-        isShown={isAlertShown}
-        onClose={() => setIsAlertShown(false)}
-        header="hello there"
-        body="what would you like to do next?"
+        onPress={() => {
+          showCustomAlert({
+            header: 'an alert',
+            body: 'I wrote this alert functionality from scratch. why? becuase.',
+            onClose: () => console.log('alert was closed')
+          });
+        }}
       />
     </View>
   );

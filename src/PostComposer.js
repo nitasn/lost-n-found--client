@@ -8,7 +8,6 @@ import {
   Pressable,
   useWindowDimensions,
   Keyboard,
-  Alert,
   FlatList,
   Image,
   SafeAreaView,
@@ -18,8 +17,6 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from 'react-native';
-
-import AsyncAlert from './AsyncAlert';
 
 import CheckBox from './CheckBox';
 import { StatusBar } from 'expo-status-bar';
@@ -31,6 +28,7 @@ import globalStyles from './globalStyles';
 import { cache, capitalize, prettyDateNoWeekday } from './utils';
 import { LocationContext } from './contexts';
 import { server, sendPostReq, deviceName } from './utils';
+import { showCustomAlert } from './CustomAlert';
 
 export default ({ navigation }) => {
   const [type, setType] = React.useState('lost');
@@ -110,13 +108,15 @@ export default ({ navigation }) => {
   );
 
   async function sendToServer() {
-    const onError = (msg) =>
-      AsyncAlert(
-        'Not Posted',
-        'We seem to face a problem at the moment. \n' +
+    const onError = (msg) => {
+      showCustomAlert({
+        header: 'Not Posted',
+        body:
+          'We seem to face a problem at the moment. \n' +
           'Your post was not posted 💔 \n\n\n' +
-          `Error message: "${msg}"`
-      );
+          `Error message: "${msg}"`,
+      });
+    };
 
     const body = {
       type,
@@ -135,12 +135,15 @@ export default ({ navigation }) => {
 
       if (error) return onError(error);
 
+      showCustomAlert({
+        header: 'Posted',
+        body: 'Your post successfully uploaded ❤️',
+        onClose: () => navigation.navigate('MorePage'),
+      });
       refreshPosts();
-      AsyncAlert('Posted', 'Your post successfully uploaded ❤️');
-      navigation.navigate('MorePage'); // todo clear fields instead
     } 
     catch (err) {
-      console.error('could not post because', err);
+      console.error('could not post because:', err.message);
       onError(err.message);
     } 
     finally {

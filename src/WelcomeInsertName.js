@@ -9,7 +9,6 @@ import {
   Platform,
   useWindowDimensions,
   Keyboard,
-  Alert,
   SafeAreaView,
   TextInput,
   ScrollView,
@@ -18,6 +17,7 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import globalStyles from './globalStyles';
+import { showCustomAlert } from './CustomAlert';
 
 export default function ({ onName }) {
   const [name, setName] = React.useState('');
@@ -32,11 +32,12 @@ export default function ({ onName }) {
   async function resolve(value) {
     try {
       await AsyncStorage.setItem('name', value);
-    } catch {
-      return Alert.alert(
-        'Oh snap :(',
-        'Your name could not be stored locally on your device. Please make sure to allow storage permissions'
-      );
+    } 
+    catch {
+      showCustomAlert({
+        header: 'Oh snap :(',
+        body: 'Your name could not be stored locally on your device. Please make sure to allow storage permissions',
+      });
     }
     onName(value);
   }

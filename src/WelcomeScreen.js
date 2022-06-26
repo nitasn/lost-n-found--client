@@ -8,7 +8,6 @@ import {
   Pressable,
   useWindowDimensions,
   Keyboard,
-  Alert,
 } from 'react-native';
 
 import globalStyles from './globalStyles';

@@ -8,7 +8,7 @@ import WelcomeScreen from './src/WelcomeScreen';
 import useLocation from './src/useLocation';
 import usePosts from './src/usePosts';
 import { JwtContext, LocationContext, PostsContext } from './src/contexts';
-import { PortalProvider, PortalHost } from '@gorhom/portal';
+import { AlertProvider } from './src/CustomAlert';
 
 function ProvideAll({ children, ContextsAndValues }) {
   return ContextsAndValues.reduceRight((result, [Context, value]) => {
@@ -36,17 +36,19 @@ export default function App() {
   return (
     <>
       <StatusBar style="auto" />
-      <PortalProvider>
-        <ProvideAll ContextsAndValues={CVs}>
-          <View style={{ flex: 1, overflow: 'hidden' }}>
+      <ProvideAll ContextsAndValues={CVs}>
+        <View style={{ flex: 1, overflow: 'hidden' }}>
+          <AlertProvider>
             <Tabs />
-            <PortalHost name="alert" />
-          </View>
-        </ProvideAll>
-      </PortalProvider>
+          </AlertProvider>
+        </View>
+      </ProvideAll>
     </>
   );
 }
+
+// todo make sure the alert works with non-full-height parent
+// and publish to npm !!!!
 
 /**
  * todos

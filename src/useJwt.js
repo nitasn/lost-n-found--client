@@ -1,6 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as React from 'react';
-import { Alert, Platform } from 'react-native';
+import { Platform } from 'react-native';
+import { showCustomAlert } from './CustomAlert';
 import { server, sendPostReq, deviceName } from './utils';
 
 let workingOnIt = false;
@@ -55,14 +56,17 @@ async function requestNewJwt(name) {
 }
 
 function alertCouldNotGetNewJwt() {
-  Alert.alert('Network Problem', 'Could not connect to server!');
+  showCustomAlert({
+    header: 'Network Problem',
+    body: 'Could not connect to server!'
+  })
 }
 
 function alertCouldNotStroreJwtLocally() {
-  Alert.alert(
-    'Storage Error',
-    'An annon-user was successfully created for you, \n' +
-      'But then your device refused to store it. \n\n' +
+  showCustomAlert({
+    header: 'Storage Error',
+    body: 'An annon-user was successfully created for you - ' +
+      'but then your device refused to store it. ' +
       'Please make sure to allow storage permissions.'
-  );
+});
 }
