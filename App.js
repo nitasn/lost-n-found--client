@@ -34,16 +34,14 @@ export default function App() {
   ];
 
   return (
-    <>
+    <AlertProvider>
       <StatusBar style="auto" />
       <ProvideAll ContextsAndValues={CVs}>
         <View style={{ flex: 1, overflow: 'hidden' }}>
-          <AlertProvider>
-            <Tabs />
-          </AlertProvider>
+          <Tabs />
         </View>
       </ProvideAll>
-    </>
+    </AlertProvider>
   );
 }
 

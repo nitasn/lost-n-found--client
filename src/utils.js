@@ -33,18 +33,19 @@ export const timeDeltaAsString = (() => {
 
   /**
    * @param {number|Date|string} timestamp in the past or in the future
-   * @param {number|Date} reference defaults to Date.now()
+   * @param {number|Date|string} reference defaults to Date.now()
    */
   return (timestamp, reference = Date.now()) => {
-    timestamp = +new Date(timestamp);
-    const elapsed = timestamp - reference;
+    if (typeof timestamp === 'string') timestamp = new Date(timestamp);
+    if (typeof reference === 'string') reference = new Date(reference);
+    const elapsed = Number(timestamp) - Number(reference);
 
     for (const unit in units) {
-      // "Math.abs" accounts for both "past" & "future" scenarios
       if (Math.abs(elapsed) > units[unit] || unit == 'second') {
         const howMany = Math.abs(Math.round(elapsed / units[unit]));
-        if (elapsed < 0) return `${howMany} ${unit}s ago`;
-        return `in ${howMany} ${unit}s`;
+        const countString = howMany === 1 ? `${howMany} ${unit}` : `${howMany} ${unit}s`;
+        if (elapsed < 0) return `${countString} ago`;
+        return `in ${countString}`;
       }
     }
   };
@@ -105,6 +106,7 @@ export function sendPostReq(url, body, jwt = undefined) {
   return fetch(url, {
     headers,
     method: 'POST',
+    mode: 'cors',
     body: JSON.stringify(body),
   });
 }
@@ -117,13 +119,42 @@ import { SERVER_URL } from './serverUrl';
  * `` server`/hello/there` `` --> `` 'http://localhost:3000/hello/there' ``
  */
 export function server({ raw: strings }, ...rest) {
-  const parts = [(strings[0].startsWith('/') ? '' : '/') + strings[0]];
+  const parts = [SERVER_URL];
+
+  if (!strings[0].startsWith('/') && !SERVER_URL.endsWith('/')) {
+    parts.push('/');
+  }
+
+  parts.push(strings[0]);
+
   for (let i = 0; i < rest.length; i++) {
     parts.push(rest[i]);
     parts.push(strings[i + 1]);
   }
-  const path = parts.join('');
-  return SERVER_URL + path;
+
+  const url = parts.join('');
+
+  return ensureUrlEndsWithForwardSlash(url);
+}
+
+/**
+ * if "?" is present, ensures threre's a "/" before it;
+ * if "?" isn't present, ensures the entire strings ends with a "/"
+ */
+function ensureUrlEndsWithForwardSlash(url) {
+  const queryIndex = url.indexOf('?');
+
+  if (queryIndex !== -1) {
+    let baseUrl = url.substring(0, queryIndex);
+
+    if (baseUrl[baseUrl.length - 1] !== '/') {
+      baseUrl += '/';
+    }
+
+    return baseUrl + url.substring(queryIndex);
+  }
+
+  return url.endsWith('/') ? url : url + '/';
 }
 
 export function extractFrom(obj, keys) {
@@ -165,13 +196,14 @@ export function zip(arr1, arr2) {
 }
 
 export function hashCyrb53(str, seed = 0) {
-  let h1 = 0xdeadbeef ^ seed, h2 = 0x41c6ce57 ^ seed;
+  let h1 = 0xdeadbeef ^ seed,
+    h2 = 0x41c6ce57 ^ seed;
   for (let i = 0, ch; i < str.length; i++) {
-      ch = str.charCodeAt(i);
-      h1 = Math.imul(h1 ^ ch, 2654435761);
-      h2 = Math.imul(h2 ^ ch, 1597334677);
+    ch = str.charCodeAt(i);
+    h1 = Math.imul(h1 ^ ch, 2654435761);
+    h2 = Math.imul(h2 ^ ch, 1597334677);
   }
-  h1 = Math.imul(h1 ^ (h1>>>16), 2246822507) ^ Math.imul(h2 ^ (h2>>>13), 3266489909);
-  h2 = Math.imul(h2 ^ (h2>>>16), 2246822507) ^ Math.imul(h1 ^ (h1>>>13), 3266489909);
-  return 4294967296 * (2097151 & h2) + (h1>>>0);
-};
+  h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507) ^ Math.imul(h2 ^ (h2 >>> 13), 3266489909);
+  h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507) ^ Math.imul(h1 ^ (h1 >>> 13), 3266489909);
+  return 4294967296 * (2097151 & h2) + (h1 >>> 0);
+}

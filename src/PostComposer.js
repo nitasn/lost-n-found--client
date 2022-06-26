@@ -21,7 +21,7 @@ import {
 import CheckBox from './CheckBox';
 import { StatusBar } from 'expo-status-bar';
 import { Ionicons } from '@expo/vector-icons';
-import { useFocusEffect } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import PicsPickRow from './PicsPickRow';
 import { JwtContext, PostsContext } from './contexts';
 import globalStyles from './globalStyles';
@@ -30,7 +30,14 @@ import { LocationContext } from './contexts';
 import { server, sendPostReq, deviceName } from './utils';
 import { showCustomAlert } from './CustomAlert';
 
-export default ({ navigation }) => {
+export default () => {
+  const [count, setCount] = React.useState(0);
+
+  return <PostForm key={count} rerender={() => setCount(count + 1)} />;
+};
+
+function PostForm({ rerender }) {
+  const navigation = useNavigation();
   const [type, setType] = React.useState('lost');
   const [header, setHeader] = React.useState('');
   const [paragraph, setParagraph] = React.useState('');
@@ -131,26 +138,31 @@ export default ({ navigation }) => {
       const res = await sendPostReq(server`/protected/new-post`, body, jwt);
 
       const { error, post_id } = await res.json();
-      // id is returned so we can later go to postscreen to view it
 
       if (error) return onError(error);
+
+      console.log('posted! post id:', post_id);
 
       showCustomAlert({
         header: 'Posted',
         body: 'Your post successfully uploaded ❤️',
-        onClose: () => navigation.navigate('MorePage'),
+        onClose: () => {
+          rerender();
+          navigation.navigate('PostScreen', { id: post_id });
+        },
       });
+
       refreshPosts();
-    } 
+    }
     catch (err) {
-      console.error('could not post because:', err.message);
+      console.error('could not post because:', err.message, err);
       onError(err.message);
-    } 
+    }
     finally {
       setIsPosting(false);
     }
   }
-};
+}
 
 function LostOrFoundSelector({ type, setType }) {
   return (
@@ -278,10 +290,12 @@ const reverseGecode = cache(async ({ lat, long }) => {
 
 function LocationPicker({ type, location, setLocation }) {
   const deviceLocation = React.useContext(LocationContext);
+
   const [latLong, setLatLong] = React.useState({
     lat: location.lat,
     long: location.long,
   });
+
   const [fetchedName, setFetchedName] = React.useState(location.name);
   const [userText, setUserText] = React.useState('');
   const [isHere, setIsHere] = React.useState(true);

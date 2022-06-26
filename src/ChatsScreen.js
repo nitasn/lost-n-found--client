@@ -27,15 +27,7 @@ import { useCollection, useDocument } from 'react-firebase-hooks/firestore';
 import { collection, doc, getDoc, query, where } from 'firebase/firestore';
 import { showCustomAlert } from './CustomAlert';
 
-export default function ChatsScreen({ navigation }) {
-  return (
-    <View style={{ flex: 1 }}>
-      <RealThing navigation={navigation} />
-    </View>
-  );
-}
-
-function RealThing({ navigation }) {
+export default function({ navigation }) {
   useFocusEffect(() => {
     navigation.setOptions({ title: 'Chats' });
   });

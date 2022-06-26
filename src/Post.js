@@ -40,29 +40,14 @@ export default function ({ postData }) {
   const proximityInKm = useDistanceInKm(postData.location);
   const navigation = useNavigation();
 
-  const onAuthorClick = () => {
-    navigation.navigate('UserModal', { postViewed: postData });
-  };
-
-  const onChatClick = () => {
-    showCustomAlert({
-      header: 'Soon...',
-      body: 'Chat is currenty under development <3'
-    })
-  };
-
-  const onPostClick = () => {
-    navigation.navigate('PostScreen', { postViewed: postData });
-  };
-
   return (
-    <TouchableOpacity
-      style={[styles.container, globalStyles.shadow]}
-      onPress={onPostClick}
-    >
+    <View style={[styles.container, globalStyles.shadow]}>
       <View style={styles.extraMargin}>
         <View style={styles.LocationAndDate}>
-          <Text style={styles.date}>{timeDeltaAsString(postData.date)}</Text>
+          <View style={{ flexDirection: 'row' }}>
+            <Text style={styles.date}>{postData.type} </Text>
+            <Text style={styles.date}>{timeDeltaAsString(postData.date)}</Text>
+          </View>
           <Text style={styles.location}>
             <Text style={{ textTransform: 'capitalize' }}>{postData.location.name}</Text>
             <Text>
@@ -83,28 +68,16 @@ export default function ({ postData }) {
         renderItem={({ item, index }) => {
           const marginRight = index + 1 == postData.picsUrls.length ? 4 : 0;
           return (
-            <View style={{ marginRight, ...globalStyles.shadow }}>
-              <TouchableWithoutFeedback>
-                {/* to allow scrolling wihtout tapping the post */}
-                <Image style={styles.image} source={{ uri: item }} />
-              </TouchableWithoutFeedback>
-            </View>
+            <TouchableOpacity
+              style={{ marginRight, ...globalStyles.shadow }}
+              onPress={() => navigation.navigate('ImagesModal', { postViewed: postData })}
+            >
+              <Image style={styles.image} source={{ uri: item }} />
+            </TouchableOpacity>
           );
         }}
         keyExtractor={(_, idx) => idx}
-      >
-        <View
-          style={{
-            position: 'absolute',
-            height: 70,
-            width: 70,
-            right: 70,
-            borderRadius: Number.MAX_SAFE_INTEGER,
-            backgroundColor: 'rgba(0, 0, 0, .9)',
-          }}
-        />
-      </FlatList>
-
+      ></FlatList>
       <View>
         <View // an hr
           style={{
@@ -118,45 +91,16 @@ export default function ({ postData }) {
           }}
         />
 
-        <View style={styles.lineProfileContainer}>
-          <TouchableOpacity
-            style={{ flexDirection: 'row', alignItems: 'center', margin: 4 }}
-            onPress={onAuthorClick}
-          >
-            <Image
-              style={styles.profileImage}
-              source={{ uri: postData.author.profilePicUrl }}
-            />
-            <Text
-              style={{
-                marginLeft: 4,
-                textTransform: 'capitalize',
-                fontWeight: 'bold',
-              }}
-            >
-              {postData.author.name}
-            </Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={{ marginLeft: 'auto', marginRight: 8 }}
-            onPress={onChatClick}
-          >
-            <Text
-              style={{
-                borderWidth: 1,
-                borderStyle: 'solid',
-                paddingHorizontal: 12,
-                paddingVertical: 8,
-                borderRadius: 4,
-              }}
-            >
-              Contact
-            </Text>
-          </TouchableOpacity>
-        </View>
+        <TouchableOpacity
+          style={{ padding: 12, width: '100%' }}
+          onPress={() => navigation.navigate('PostScreen', { postViewed: postData })}
+        >
+          <Text style={{ fontStyle: 'italic', fontWeight: '600', letterSpacing: 1.2 }}>
+            View Post &gt;
+          </Text>
+        </TouchableOpacity>
       </View>
-    </TouchableOpacity>
+    </View>
   );
 }
 
@@ -204,7 +148,7 @@ const styles = StyleSheet.create({
     textAlign: 'right',
   },
   header: {
-    fontSize: 33,
+    fontSize: 29,
     marginBottom: 18,
     textTransform: 'capitalize',
   },
@@ -223,12 +167,6 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     marginHorizontal: 5,
   },
-  lineProfileContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'flex-start',
-  },
-
   profileImage: {
     margin: 6,
 
@@ -238,3 +176,9 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
 });
+
+/**
+ * todo
+ * click on image here to open large
+ * also clear button for show more in the post (2 post screen)
+ */

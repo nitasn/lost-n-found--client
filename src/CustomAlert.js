@@ -1,5 +1,4 @@
-// todo solve dependencies array for animation
-// solve bg not full screen on iphone pwa not status bar
+// todo solve bg not full screen on iphone pwa not status bar
 
 import * as React from 'react';
 import {
@@ -19,6 +18,18 @@ import useDimensions from './useDimensions';
  */
 const _stack = [];
 
+/**
+ * @typedef {Object} CustomAlertProps
+ * @property {String} header
+ * @property {String} body
+ * @property {Function | undefined} onClose
+ * @property {String | undefined} backgroundColor
+ * @property {String | undefined} textColor
+ * @property {String | undefined} buttonTextColor
+ * @property {String | undefined} buttonBgColor
+ *
+ * @param {CustomAlertProps} props
+ */
 export function showCustomAlert(props) {
   _stack.push(props);
   _setProps({ ...props, isShown: true, onClose });
@@ -62,56 +73,50 @@ export function AlertProvider({ children }) {
   );
 }
 
-function CustomAlert({
-  header,
-  body,
-
-  onClose,
-
-  backgroundColor,
-  textColor,
-  buttonTextColor,
-  buttonBgColor,
-}) {
-  if (!backgroundColor) backgroundColor = 'hsl(195, 44%, 16%)';
-  if (!textColor) textColor = 'white';
-  if (!buttonBgColor) buttonBgColor = 'rgb(26, 119, 169)';
-  if (!buttonTextColor) buttonTextColor = 'white';
-
+function CustomAlert(props) {
   const { width, height } = useDimensions();
 
-  const [animCount, setAnimCount] = React.useState(0);
+  const [totalNumAlerts, setTotalNumAlerts] = React.useState(0);
 
-  const opacityValue = new Animated.Value(0);
-  const scaleValue = new Animated.Value(0);
+  const [animations, setAnimations] = React.useState([]);
 
-  React.useEffect(() => {
-    _reanimate = () => setAnimCount(count => count + 1);
-
-    return function onUnmount() {
-      _reanimate = undefined;
-    };
-  }, [setAnimCount]);
+  const opacityValue = React.useRef(new Animated.Value(0)).current;
+  const scaleValue = React.useRef(new Animated.Value(0)).current;
 
   React.useEffect(() => {
-    Animated.sequence([
-      Animated.timing(opacityValue, {
-        toValue: 1,
-        duration: 330,
-        easing: Easing.ease,
-        useNativeDriver: false,
-      }),
-    ]).start();
+    _reanimate = () => setTotalNumAlerts((count) => count + 1);
+    return () => (_reanimate = undefined);
+  }, [setTotalNumAlerts]);
 
-    Animated.sequence([
-      Animated.timing(scaleValue, {
-        toValue: 1,
-        duration: 330,
-        easing: Easing.elastic(1),
-        useNativeDriver: false,
-      }),
-    ]).start();
-  }, [animCount]);
+  React.useEffect(() => {
+    setAnimations([
+      Animated.sequence([
+        Animated.timing(opacityValue, {
+          toValue: 1,
+          duration: 330,
+          easing: Easing.ease,
+          useNativeDriver: true,
+        }),
+      ]),
+      Animated.sequence([
+        Animated.timing(scaleValue, {
+          toValue: 1,
+          duration: 330,
+          easing: Easing.elastic(1),
+          useNativeDriver: true,
+        }),
+      ]),
+    ]);
+  }, []);
+
+  React.useEffect(() => {
+    animations.forEach((anim) => {
+      anim.reset();
+      anim.start();
+    });
+
+    return () => animations.forEach((anim) => anim.stop());
+  }, [totalNumAlerts, animations]);
 
   const scale = scaleValue.interpolate({
     inputRange: [0, 1],
@@ -123,8 +128,18 @@ function CustomAlert({
     outputRange: [0, 1],
   });
 
+  // some default values:
+  props = {
+    backgroundColor: 'hsl(195, 44%, 16%)',
+    textColor: 'white',
+    buttonBgColor: 'rgb(26, 119, 169)',
+    buttonTextColor: 'white',
+    ...props,
+  };
+
   return (
     <Animated.View
+      key={Math.random().toString(36).substring(2)}
       style={{
         height: '100%',
         width: '100%',
@@ -145,7 +160,7 @@ function CustomAlert({
             width: Math.min(0.8 * width, 400),
             paddingTop: 26,
             padding: 24,
-            backgroundColor,
+            backgroundColor: props.backgroundColor,
             borderRadius: 8,
             ...globalStyles.shadow,
             shadowOpacity: 0.3,
@@ -158,17 +173,17 @@ function CustomAlert({
               fontSize: 24,
               marginBottom: 16,
               textTransform: 'capitalize',
-              color: textColor,
+              color: props.textColor,
             }}
           >
-            {header}
+            {props.header}
           </Text>
-          <Text style={{ marginBottom: 30, color: textColor }}>{body}</Text>
+          <Text style={{ marginBottom: 30, color: props.textColor }}>{props.body}</Text>
           <FlatButton
-            onPress={onClose}
+            onPress={props.onClose}
             text="Okay"
-            textColor={buttonTextColor}
-            bgColor={buttonBgColor}
+            textColor={props.buttonTextColor}
+            bgColor={props.buttonBgColor}
           />
         </Animated.View>
       </TouchableWithoutFeedback>

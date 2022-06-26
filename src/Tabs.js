@@ -81,7 +81,7 @@ export default function () {
 
   return (
     <NavigationContainer
-      linking={linking}
+      // linking={linking}
       fallback={<Text>Loading...</Text>}
       ref={ref}
       onReady={() => {

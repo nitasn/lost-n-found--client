@@ -63,7 +63,10 @@ export default function ({ route }) {
       <View style={[styles.container, globalStyles.shadow]}>
         <View style={styles.extraMargin}>
           <View style={styles.LocationAndDate}>
-            <Text style={styles.date}>{timeDeltaAsString(postViewed.date)}</Text>
+            <View style={{ flexDirection: 'row' }}>
+              <Text style={styles.date}>{postViewed.type} </Text>
+              <Text style={styles.date}>{timeDeltaAsString(postViewed.date)}</Text>
+            </View>
             <View
               style={{
                 marginLeft: 'auto',
@@ -137,6 +140,7 @@ export default function ({ route }) {
           <View style={styles.lineProfileContainer}>
             <TouchableOpacity
               style={{ flexDirection: 'row', alignItems: 'center', margin: 4 }}
+              onPress={() => navigation.navigate('UserModal', { postViewed })}
             >
               <Image
                 style={styles.profileImage}
@@ -152,7 +156,15 @@ export default function ({ route }) {
                 {postViewed.author.name}
               </Text>
             </TouchableOpacity>
-            <TouchableOpacity style={{ marginLeft: 'auto', marginRight: 8 }}>
+            <TouchableOpacity
+              style={{ marginLeft: 'auto', marginRight: 8 }}
+              onPress={() =>
+                showCustomAlert({
+                  header: 'Chat Coming Soon...',
+                  body: 'Currenty under development ❤️',
+                })
+              }
+            >
               <Text
                 style={{
                   borderWidth: 1,
@@ -280,10 +292,9 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   date: {
-    fontWeight: 'normal',
     letterSpacing: 1.2,
-    fontWeight: 'bold',
     textTransform: 'capitalize',
+    fontWeight: 'bold',
   },
   header: {
     fontSize: 33,
