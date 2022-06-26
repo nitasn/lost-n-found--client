@@ -26,10 +26,6 @@ import ConversationScreen from './ConversationScreen';
 import ChatsStack from './ChatsStack';
 import * as Linking from 'expo-linking';
 
-const Tabs = createBottomTabNavigator();
-
-const ref = createNavigationContainerRef();
-
 const linking = {
   prefixes: [
     'https://lost-n-found-nitsan.herokuapp.com/',
@@ -52,6 +48,8 @@ const linking = {
       },
 
       ChatsStack: {
+        initialRouteName: 'ChatsScreen',
+
         screens: {
           ChatsScreen: 'chats',
           ConversationScreen: 'conversation',
@@ -59,6 +57,8 @@ const linking = {
       },
 
       MoreStack: {
+        initialRouteName: 'MorePage',
+
         screens: {
           MorePage: 'more',
           MyProfile: 'my-profile',
@@ -70,6 +70,10 @@ const linking = {
     },
   },
 };
+
+const Tabs = createBottomTabNavigator();
+
+const ref = createNavigationContainerRef();
 
 export default function () {
   const [routeName, setRouteName] = React.useState();
@@ -91,6 +95,7 @@ export default function () {
       <Tabs.Navigator
         headerMode="screen"
         screenOptions={({ route }) => ({
+          // to prevent at tab-bar icon for the not-found page
           tabBarButton: route.name === 'NotFound' ? () => null : undefined,
         })}
       >

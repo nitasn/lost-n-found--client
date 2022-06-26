@@ -62,11 +62,6 @@ function MainThing({
     ]).start();
   });
 
-  // const translateY = opacityValue.interpolate({
-  //   inputRange: [0, 1],
-  //   outputRange: [10, 0],
-  // });
-
   const scale = scaleValue.interpolate({
     inputRange: [0, 1],
     outputRange: [0.7, 1],
@@ -81,8 +76,8 @@ function MainThing({
     <Portal hostName="alert">
       <Animated.View
         style={{
-          height,
-          width,
+          height: '100%',
+          width: '100%',
           top: 0,
           left: 0,
           position: 'absolute',
@@ -106,7 +101,6 @@ function MainThing({
               // animation:
               transform: [
                 { scale },
-                // { translateY },
               ],
             }}
           >
