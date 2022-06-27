@@ -1,23 +1,8 @@
 import * as React from 'react';
-import {
-  Button,
-  StyleSheet,
-  Text,
-  View,
-  TouchableOpacity,
-  Pressable,
-  useWindowDimensions,
-  Keyboard,
-} from 'react-native';
-
 import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { Ionicons } from '@expo/vector-icons';
-import globalStyles from './globalStyles';
 import ChatsScreen from './ChatsScreen';
 import ConversationScreen from './ConversationScreen';
-
 import { ChatContext } from './contexts';
 
 export default function ({ navigation, route }) {

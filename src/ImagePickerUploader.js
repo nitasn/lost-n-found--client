@@ -2,18 +2,14 @@ const DEFAULT_SIZE = 200; // on screen
 
 const RESIZE_TO = 400; // to shrink the selected image into before uploading
 
-import React, { useState, useEffect } from 'react';
-
+import * as React from 'react';
 import { Platform, StyleSheet, TouchableOpacity, Image, Text, View } from 'react-native';
-
 import * as ImagePicker from 'expo-image-picker';
-
 import { manipulateAsync, SaveFormat } from 'expo-image-manipulator';
 
 import placeholderImgUri from '../assets/add-image-icon.png';
 import failureImgUri from '../assets/red-alert.png';
 import succcessImgUri from '../assets/success-tick.png';
-
 import bg from '../assets/bg.jpeg';
 
 import globalStyles from './globalStyles';
@@ -27,8 +23,8 @@ async function askForCameraRollPermissionsWeb() {
     if (status !== 'granted') {
       showCustomAlert({
         header: 'Camera Roll Permissions',
-        body: 'Please allow camera roll permissions to add images to your post!'
-      })
+        body: 'Please allow camera roll permissions to add images to your post!',
+      });
     }
   }
 }
@@ -46,21 +42,16 @@ async function askForCameraRollPermissionsWeb() {
  * @param {Props} props
  */
 export default function ImagePickerUploader(props) {
-  const [uri, setUri] = useState(null);
+  const [uri, setUri] = React.useState(null);
 
-  const [uploadState, setUploadState] = useState({
+  const [uploadState, setUploadState] = React.useState({
     status: 'no-image',
     url: undefined,
   });
 
-  useEffect(() => props.onUploadStateChanged?.(uploadState), [uploadState]);
+  React.useEffect(() => void props.onUploadStateChanged?.(uploadState), [uploadState]);
 
-  // the callback passed to useEffect needs to be sync,
-  // hence we don't simply do useEffect(askForCameraRollPermissionsWeb, [])
-  // also "{}" are a must since the return value is a destroy function
-  useEffect(() => {
-    askForCameraRollPermissionsWeb();
-  }, []);
+  React.useEffect(() => void askForCameraRollPermissionsWeb(), []);
 
   const placeholderImageStyle = {
     width: (props.style?.width || DEFAULT_SIZE) / 4,
@@ -201,7 +192,7 @@ async function pickImage(setUploadState, setUri) {
 // combine them into a single state
 // using this custom hook
 function useMergeState(initialState) {
-  const [state, setState] = useState(initialState);
+  const [state, setState] = React.useState(initialState);
   const setMergedState = (newState) => {
     setState((prevState) => ({ ...prevState, ...newState }));
   };

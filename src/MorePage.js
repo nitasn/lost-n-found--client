@@ -1,19 +1,7 @@
-import * as React from 'react';
-import {
-  Button,
-  StyleSheet,
-  Text,
-  View,
-  TouchableOpacity,
-  Pressable,
-  useWindowDimensions,
-  Keyboard,
-} from 'react-native';
-
+import { Text, TouchableOpacity, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-
-import globalStyles from './globalStyles';
 import { showCustomAlert } from './CustomAlert';
+import globalStyles from './globalStyles';
 
 export default function MorePage({ navigation }) {
   return (
@@ -56,7 +44,6 @@ export default function MorePage({ navigation }) {
           showCustomAlert({
             header: 'No Settings Yet',
             body: 'Settings screen is not implemented.',
-
           });
         }}
       />

@@ -1,28 +1,11 @@
-import * as React from 'react';
-import {
-  Button,
-  StyleSheet,
-  Text,
-  View,
-  TouchableOpacity,
-  Pressable,
-  useWindowDimensions,
-  Keyboard,
-  FlatList,
-  Image,
-  SafeAreaView,
-  Modal,
-} from 'react-native';
-
-import jwtDecode from 'jwt-decode';
-import { StatusBar } from 'expo-status-bar';
+import { Image, Text, TouchableOpacity, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useFocusEffect } from '@react-navigation/native';
+import { StatusBar } from 'expo-status-bar';
 import { showCustomAlert } from './CustomAlert';
-import { JwtContext } from './contexts';
 import globalStyles from './globalStyles';
-import { prettyDateNoWeekday } from './utils';
 import useDecodedJwt from './useDecodedJwt';
+import { prettyDateNoWeekday } from './utils';
 
 export default function MyProfile({ navigation }) {
   const { name, profilePicUrl, iat, _id } = useDecodedJwt();
@@ -55,7 +38,6 @@ export default function MyProfile({ navigation }) {
                 showCustomAlert({
                   header: 'Cannot Edit Yet',
                   body: 'Edit feature is not implemented.',
-      
                 });
               }}
             />

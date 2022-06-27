@@ -1,22 +1,10 @@
 import * as React from 'react';
-import {
-  Button,
-  StyleSheet,
-  Text,
-  View,
-  TouchableOpacity,
-  Pressable,
-  useWindowDimensions,
-  Keyboard,
-  FlatList,
-  TextInput,
-} from 'react-native';
-
+import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import globalStyles from './globalStyles';
 import { useFocusEffect } from '@react-navigation/native';
 import { createElement } from 'react-native';
 import { FilterContext } from './contexts';
+import globalStyles from './globalStyles';
 
 const filterShape = {
   text: String,
@@ -33,7 +21,7 @@ const filterShape = {
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import { prettyDate } from './utils';
 
-export default function FilterPicker({navigation}) {
+export default function FilterPicker({ navigation }) {
   const { filter, setFilter } = React.useContext(FilterContext);
 
   const [text, setText] = React.useState(filter?.text ?? '');

@@ -1,24 +1,9 @@
 import * as React from 'react';
-import {
-  Button,
-  StyleSheet,
-  Text,
-  View,
-  TouchableOpacity,
-  Pressable,
-  useWindowDimensions,
-  Keyboard,
-  FlatList,
-  Image,
-  TouchableWithoutFeedback,
-  Platform,
-} from 'react-native';
-
-import { geoDistance, timeDeltaAsString } from './utils';
-import globalStyles from './globalStyles';
-import { LocationContext } from './contexts';
+import { FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { showCustomAlert } from './CustomAlert';
+import { LocationContext } from './contexts';
+import globalStyles from './globalStyles';
+import { geoDistance, timeDeltaAsString } from './utils';
 
 function useDistanceInKm(postLocation) {
   const deviceLocation = React.useContext(LocationContext);

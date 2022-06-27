@@ -1,24 +1,8 @@
-import * as React from 'react';
-import {
-  Button,
-  StyleSheet,
-  Text,
-  View,
-  TouchableOpacity,
-  Pressable,
-  useWindowDimensions,
-  Keyboard,
-  FlatList,
-  Image,
-  SafeAreaView,
-  Modal,
-} from 'react-native';
-
+import { FlatList, View } from 'react-native';
 import globalStyles from './globalStyles';
-
-import { capitalize } from './utils';
-import AutoHeightImage from './AutoHeightImage';
 import { useFocusEffect } from '@react-navigation/native';
+import AutoHeightImage from './AutoHeightImage';
+import { capitalize } from './utils';
 
 export default function ImagesModal({ navigation, route }) {
   useFocusEffect(() => {

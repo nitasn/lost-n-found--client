@@ -1,19 +1,8 @@
 import * as React from 'react';
-import {
-  Button,
-  StyleSheet,
-  Text,
-  View,
-  TouchableOpacity,
-  Pressable,
-  useWindowDimensions,
-  Keyboard,
-} from 'react-native';
 
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import Feed from './Feed';
-import globalStyles from './globalStyles';
 import ImagesModal from './ImagesModal';
 import UserModal from './UserModal';
 import FilterPicker from './FilterPicker';

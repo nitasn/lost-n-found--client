@@ -1,6 +1,5 @@
 import * as React from 'react';
-import { Text, View, StyleSheet, Animated, Dimensions, Easing } from 'react-native';
-import useDimensions from './useDimensions';
+import { Animated, Easing, StyleSheet } from 'react-native';
 
 export default function ({ children }) {
   const value = new Animated.Value(0);

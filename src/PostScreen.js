@@ -1,27 +1,22 @@
 import * as React from 'react';
 import {
-  Button,
-  StyleSheet,
-  Text,
-  View,
-  TouchableOpacity,
-  Pressable,
-  useWindowDimensions,
-  Keyboard,
   FlatList,
   Image,
-  ScrollView,
   Linking,
-  Platform,
+  ScrollView,
   Share,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 
-import { capitalize, server, timeDeltaAsString } from './utils';
-import globalStyles from './globalStyles';
-import { useFocusEffect } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
+import { useFocusEffect } from '@react-navigation/native';
 import * as Clipboard from 'expo-clipboard';
 import { showCustomAlert } from './CustomAlert';
+import globalStyles from './globalStyles';
+import { server, timeDeltaAsString } from './utils';
 
 // import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps';
 

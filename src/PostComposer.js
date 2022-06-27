@@ -1,34 +1,21 @@
 import * as React from 'react';
 import {
-  Button,
-  StyleSheet,
-  Text,
-  View,
-  TouchableOpacity,
-  Pressable,
-  useWindowDimensions,
-  Keyboard,
-  FlatList,
-  Image,
-  SafeAreaView,
-  Modal,
-  TextInput,
-  ScrollView,
   KeyboardAvoidingView,
   Platform,
+  ScrollView,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from 'react-native';
-
-import CheckBox from './CheckBox';
-import { StatusBar } from 'expo-status-bar';
 import { Ionicons } from '@expo/vector-icons';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
-import PicsPickRow from './PicsPickRow';
-import { JwtContext, PostsContext } from './contexts';
-import globalStyles from './globalStyles';
-import { cache, capitalize, prettyDateNoWeekday } from './utils';
-import { LocationContext } from './contexts';
-import { server, sendPostReq, deviceName } from './utils';
+import CheckBox from './CheckBox';
+import { JwtContext, LocationContext, PostsContext } from './contexts';
 import { showCustomAlert } from './CustomAlert';
+import globalStyles from './globalStyles';
+import PicsPickRow from './PicsPickRow';
+import { cache, sendPostReq, server } from './utils';
 
 export default () => {
   const [count, setCount] = React.useState(0);

@@ -1,22 +1,7 @@
-import * as React from 'react';
-import {
-  Button,
-  StyleSheet,
-  Text,
-  View,
-  TouchableOpacity,
-  Pressable,
-  useWindowDimensions,
-  Keyboard,
-  FlatList,
-  Image,
-  SafeAreaView,
-  Modal,
-} from 'react-native';
-
+import { Image, Text, View } from 'react-native';
+import { useFocusEffect } from '@react-navigation/native';
 import globalStyles from './globalStyles';
 import { capitalize } from './utils';
-import { useFocusEffect } from '@react-navigation/native';
 
 export default function UserModal({ navigation, route }) {
   const { author } = route.params.postViewed;

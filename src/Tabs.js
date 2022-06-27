@@ -1,29 +1,17 @@
 import * as React from 'react';
-import {
-  Button,
-  StyleSheet,
-  Text,
-  View,
-  TouchableOpacity,
-  Pressable,
-  useWindowDimensions,
-  Keyboard,
-} from 'react-native';
+import { Text } from 'react-native';
 
-import {
-  NavigationContainer,
-  createNavigationContainerRef,
-} from '@react-navigation/native';
-import NotFound from './NotFound';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
-import ChatsScreen from './ChatsScreen';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import {
+  createNavigationContainerRef,
+  NavigationContainer,
+} from '@react-navigation/native';
+import * as Linking from 'expo-linking';
+import ChatsStack from './ChatsStack';
 import FeedStack from './FeedStack';
 import MoreStack from './MoreStack';
-import globalStyles from './globalStyles';
-import ConversationScreen from './ConversationScreen';
-import ChatsStack from './ChatsStack';
-import * as Linking from 'expo-linking';
+import NotFound from './NotFound';
 
 const linking = {
   prefixes: [

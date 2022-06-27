@@ -1,22 +1,11 @@
 import * as React from 'react';
-import {
-  Button,
-  StyleSheet,
-  Text,
-  View,
-  TouchableOpacity,
-  Pressable,
-  useWindowDimensions,
-  Keyboard,
-  FlatList,
-  ScrollView,
-} from 'react-native';
+import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 import { Ionicons } from '@expo/vector-icons';
-import globalStyles from './globalStyles';
-import { FilterContext, PostsContext } from './contexts';
-import Post from './Post';
 import { useNavigation } from '@react-navigation/native';
+import { FilterContext, PostsContext } from './contexts';
+import globalStyles from './globalStyles';
+import Post from './Post';
 
 export default ({ type, setScrollPosition }) => {
   const { filter } = React.useContext(FilterContext);
@@ -34,7 +23,10 @@ export default ({ type, setScrollPosition }) => {
   const listRef = React.useRef();
 
   React.useEffect(() => {
-    listRef.current?.scrollToOffset({ animated: true, offset: scrollPosOf.current[type] });
+    listRef.current?.scrollToOffset({
+      animated: true,
+      offset: scrollPosOf.current[type],
+    });
   }, [type]);
 
   const scrollPosOf = React.useRef({
@@ -60,7 +52,7 @@ export default ({ type, setScrollPosition }) => {
         refreshing={isRefreshing}
         onRefresh={() => {
           // todo doesn't work on web
-          setIsRefreshing(true); 
+          setIsRefreshing(true);
           refreshPosts().then(() => setIsRefreshing(false));
         }}
         style={{ paddingHorizontal: 6, paddingVertical: 0, width: '100%' }}

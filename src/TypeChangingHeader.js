@@ -1,20 +1,9 @@
 import React from 'react';
 
-import {
-  Button,
-  StyleSheet,
-  Text,
-  View,
-  TouchableOpacity,
-  Pressable,
-  useWindowDimensions,
-  Keyboard,
-  SafeAreaView,
-  Platform,
-} from 'react-native';
+import { Platform, Text, TouchableOpacity, View } from 'react-native';
 
-import globalStyles from './globalStyles';
 import { Ionicons } from '@expo/vector-icons';
+import globalStyles from './globalStyles';
 
 export default function ({ type, setType, scrollPosition }) {
   return (

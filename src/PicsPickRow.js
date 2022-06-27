@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { StyleSheet, ScrollView, View } from 'react-native';
-import globalStyles from './globalStyles';
 import ImagePickerUploader from './ImagePickerUploader';
 import { newID } from './utils';
 

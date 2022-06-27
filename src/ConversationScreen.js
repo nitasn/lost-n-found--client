@@ -1,31 +1,22 @@
 import * as React from 'react';
 import {
-  Button,
-  StyleSheet,
-  Text,
-  View,
-  TouchableOpacity,
-  Pressable,
-  useWindowDimensions,
-  Keyboard,
   FlatList,
-  TextInput,
-  ScrollView,
   KeyboardAvoidingView,
   Platform,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 
-import { Ionicons } from '@expo/vector-icons';
-
-import globalStyles from './globalStyles';
 import { useFocusEffect } from '@react-navigation/native';
-import dummyMessages from './dummyMessages.json';
-import { ChatContext, JwtContext } from './contexts';
-import { timeDeltaAsString, capitalize } from './utils';
-import useDecodedJwt from './useDecodedJwt';
-import { useCollection, useDocument } from 'react-firebase-hooks/firestore';
+import { addDoc, collection } from 'firebase/firestore';
+import { useCollection } from 'react-firebase-hooks/firestore';
+import { ChatContext } from './contexts';
+import globalStyles from './globalStyles';
 import { firestore } from './init-firebase';
-import { addDoc, collection, doc, Query, setDoc } from 'firebase/firestore';
+import useDecodedJwt from './useDecodedJwt';
+import { capitalize } from './utils';
 
 function useMessages() {
   const { currentChatId } = React.useContext(ChatContext);
