@@ -12,7 +12,6 @@ import {
   ScrollView,
 } from 'react-native';
 
-import { vw, vh, vmin, vmax } from 'react-native-expo-viewport-units';
 import { Ionicons } from '@expo/vector-icons';
 import globalStyles from './globalStyles';
 import { FilterContext, PostsContext } from './contexts';

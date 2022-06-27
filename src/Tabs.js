@@ -32,6 +32,11 @@ const linking = {
     Linking.createURL('/'), // which one of them works...?
   ],
 
+  // todo PostScreen params are weird...
+  // when visiting from a link "server/post/some-id" it's good,
+  // but when navigating through the app, the url includes an "undefined" id,
+  // and a url-decoded "[Object object]" postViewed
+
   config: {
     screens: {
       FeedStack: {

@@ -13,7 +13,6 @@ import {
 } from 'react-native';
 
 import { Ionicons } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/native';
 import globalStyles from './globalStyles';
 import { useFocusEffect } from '@react-navigation/native';
 import { createElement } from 'react-native';
@@ -34,8 +33,7 @@ const filterShape = {
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import { prettyDate } from './utils';
 
-export default function FilterPicker() {
-  const navigation = useNavigation();
+export default function FilterPicker({navigation}) {
   const { filter, setFilter } = React.useContext(FilterContext);
 
   const [text, setText] = React.useState(filter?.text ?? '');

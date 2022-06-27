@@ -18,16 +18,14 @@ import {
 
 import { capitalize, server, timeDeltaAsString } from './utils';
 import globalStyles from './globalStyles';
-import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import { useFocusEffect } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import * as Clipboard from 'expo-clipboard';
 import { showCustomAlert } from './CustomAlert';
 
 // import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps';
 
-export default function ({ route }) {
-  const navigation = useNavigation();
-
+export default function ({ navigation, route }) {
   useFocusEffect(() => {
     navigation.setOptions({ title: 'View Post' });
   });
