@@ -40,11 +40,18 @@ export default function MorePage({ navigation }) {
       <Bar
         text="Settings"
         iconName="settings-outline"
-        onPress={() => {
+        onPress={async () => {
           showCustomAlert({
             header: 'No Settings Yet',
             body: 'Settings screen is not implemented.',
+            // onClose: () => console.log('msg 1 closed!'),
           });
+          // await new Promise((res) => setTimeout(res, 1000));
+          // showCustomAlert({
+          //   header: 'Test message',
+          //   body: 'todo: delete this message.',
+          //   onClose: () => console.log('msg 2 closed...'),
+          // });
         }}
       />
     </View>

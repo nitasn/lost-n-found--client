@@ -153,7 +153,7 @@ export default function ({ navigation, route }) {
               style={{ marginLeft: 'auto', marginRight: 8 }}
               onPress={() =>
                 showCustomAlert({
-                  header: 'Chat Coming Soon...',
+                  header: 'Chats Coming Soon...',
                   body: 'Currenty under development ❤️',
                 })
               }

@@ -1,4 +1,11 @@
-// todo solve bg not full screen on iphone pwa not status bar
+// todo check if it's always full screen
+
+// todo if our AlertProvider is not the root node,
+// and its parent rerenders,
+// while there is an alert shown.
+// will it reanimate? probably so.
+// will the close button completely fail? maybe.
+// i remember seeing a way to cache components...?
 
 import * as React from 'react';
 import {
@@ -11,12 +18,25 @@ import {
 import globalStyles from './globalStyles';
 import useDimensions from './useDimensions';
 
-/**
- * length 0 ---- no alert is shown
- * length 1 ---- one alert is shown, and no alerts were pushed behind it
- * length 2+ --- one alert is shown, and some alerts were pushed behind it
- */
-const _stack = [];
+export function AlertProvider({ children }) {
+  const [props, setProps] = React.useState({ isShown: false });
+
+  React.useEffect(() => {
+    _setProps = setProps;
+
+    return () => {
+      _setProps = () =>
+        console.warn('cannot set alert props: AlertProvider was unmounted');
+    };
+  }, [setProps]);
+
+  return (
+    <>
+      {children}
+      {props.isShown && <CustomAlert {...props} />}
+    </>
+  );
+}
 
 /**
  * @typedef {Object} CustomAlertProps
@@ -32,46 +52,33 @@ const _stack = [];
  */
 export function showCustomAlert(props) {
   _stack.push(props);
-  _setProps({ ...props, isShown: true, onClose });
+  _setProps({ ...props, isShown: true, onClose: _onClose });
   _reanimate?.();
-
-  function onClose() {
-    const { onClose: extOnClose } = _stack.pop();
-
-    const newProps = _stack.length
-      ? { ..._stack[_stack.length - 1], isShown: true, onClose }
-      : { isShown: false };
-
-    _setProps(newProps);
-
-    extOnClose?.();
-  }
 }
+
+function _onClose() {
+  const poppedProps = _stack.pop(); // pop the props of the one being showed
+
+  const props = _stack.length
+    ? { ..._stack[_stack.length - 1], isShown: true, onClose: _onClose }
+    : { isShown: false };
+
+  _setProps(props);
+
+  poppedProps.onClose?.();
+}
+
+/**
+ * length 0 ---- no alert is shown
+ * length 1 ---- one alert is shown, and no alerts were pushed behind it
+ * length 2+ --- one alert is shown, and some alerts were pushed behind it
+ */
+const _stack = [];
 
 let _reanimate = undefined;
 
 let _setProps = () =>
   console.warn('cannot set alert props: AlertProvider has not been mounted');
-
-export function AlertProvider({ children }) {
-  const [props, setProps] = React.useState({ isShown: false });
-
-  React.useEffect(() => {
-    _setProps = setProps;
-
-    return function onUnmount() {
-      _setProps = () =>
-        console.warn('cannot set alert props: AlertProvider was unmounted');
-    };
-  }, [setProps]);
-
-  return (
-    <>
-      {children}
-      {props.isShown && <CustomAlert {...props} />}
-    </>
-  );
-}
 
 function CustomAlert(props) {
   const { width, height } = useDimensions();
@@ -81,7 +88,7 @@ function CustomAlert(props) {
   const [animations, setAnimations] = React.useState([]);
 
   const opacityValue = React.useRef(new Animated.Value(0)).current;
-  const scaleValue = React.useRef(new Animated.Value(0)).current;
+  const scaleValue = React.useRef(new Animated.Value(0.7)).current;
 
   React.useEffect(() => {
     _reanimate = () => setTotalNumAlerts((count) => count + 1);
@@ -118,16 +125,6 @@ function CustomAlert(props) {
     return () => animations.forEach((anim) => anim.stop());
   }, [totalNumAlerts, animations]);
 
-  const scale = scaleValue.interpolate({
-    inputRange: [0, 1],
-    outputRange: [0.7, 1],
-  });
-
-  const opacity = opacityValue.interpolate({
-    inputRange: [0, 1],
-    outputRange: [0, 1],
-  });
-
   // some default values:
   props = {
     backgroundColor: 'hsl(195, 44%, 16%)',
@@ -151,7 +148,7 @@ function CustomAlert(props) {
         alignItems: 'center',
         backgroundColor: 'rgba(0, 0, 0, .15)',
         // animation:
-        opacity,
+        opacity: opacityValue,
       }}
     >
       <TouchableWithoutFeedback /* to block touch on the popup itself */>
@@ -165,7 +162,7 @@ function CustomAlert(props) {
             ...globalStyles.shadow,
             shadowOpacity: 0.3,
             // animation:
-            transform: [{ scale }],
+            transform: [{ scale: scaleValue }],
           }}
         >
           <Text
