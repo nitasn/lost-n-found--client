@@ -153,12 +153,10 @@ function PostForm({ rerender }) {
       });
 
       refreshPosts();
-    }
-    catch (err) {
+    } catch (err) {
       console.error('could not post because:', err.message, err);
       onError(err.message);
-    }
-    finally {
+    } finally {
       setIsPosting(false);
     }
   }
@@ -229,34 +227,27 @@ function ParagraphInput({ paragraph, setParagraph, scrollRef }) {
     setParagraph(paragraph.trimStart());
   }, [paragraph]);
 
-  const fontSize = 16;
+  const [height, setHeight] = React.useState(20);
 
   return (
     <View style={{ marginVertical: 24 }}>
-      {paragraph == '' && (
-        <Text
-          style={{
-            fontSize,
-            color: '#bbb',
-            position: 'absolute',
-            paddingLeft: 4,
-            paddingTop: 4,
-          }}
-        >
-          Add more information (optional)
-        </Text>
-      )}
       <TextInput
         multiline
+        placeholder="Add more information (optional)"
         onBlur={() => setParagraph(paragraph.trim())}
         onFocus={() => scrollRef.current.scrollToEnd()}
         scrollEnabled={false}
         onChangeText={setParagraph}
         value={paragraph}
+        onContentSizeChange={(event) => {
+          setHeight(event.nativeEvent.contentSize.height);
+        }}
         style={[
           {
-            fontSize,
+            fontSize: 16,
             paddingLeft: 6,
+            height,
+            paddingTop: 0, // it's a default setting (?) and we need to override it
           },
           globalStyles.noInputOutline,
         ]}
@@ -330,7 +321,7 @@ function LocationPicker({ type, location, setLocation }) {
     <View
       style={{
         flexDirection: 'row',
-        alignItems: 'flex-end',
+        alignItems: 'center',
         justifyContent: 'space-between',
         paddingHorizontal: 4,
 
@@ -338,8 +329,8 @@ function LocationPicker({ type, location, setLocation }) {
         marginBottom: 24,
       }}
     >
-      <View style={{ flexDirection: 'row' }}>
-        <Text style={{ fontSize: 16 }}>{userText && 'At '}</Text>
+      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+        <Text style={{ fontSize: 16 }}>{userText && `I ${type} it at `}</Text>
         <TextInput
           autoCapitalize="words"
           value={userText}
@@ -347,7 +338,7 @@ function LocationPicker({ type, location, setLocation }) {
           placeholder={
             isHere
               ? fetchedName
-                ? `"${fetchedName}"`
+                ? `I ${type} it at "${fetchedName}"`
                 : "Getting this place's Name..."
               : `Where did you ${type == 'lost' ? 'lose' : 'find'} it?`
           }

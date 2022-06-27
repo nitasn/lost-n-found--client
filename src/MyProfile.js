@@ -18,7 +18,7 @@ import jwtDecode from 'jwt-decode';
 import { StatusBar } from 'expo-status-bar';
 import { Ionicons } from '@expo/vector-icons';
 import { useFocusEffect } from '@react-navigation/native';
-
+import { showCustomAlert } from './CustomAlert';
 import { JwtContext } from './contexts';
 import globalStyles from './globalStyles';
 import { prettyDateNoWeekday } from './utils';
@@ -51,7 +51,13 @@ export default function MyProfile({ navigation }) {
               color="darkblue"
               text="Edit"
               iconName="pencil-outline"
-              onPress={() => {}}
+              onPress={() => {
+                showCustomAlert({
+                  header: 'Cannot Edit Yet',
+                  body: 'Edit feature is not implemented.',
+      
+                });
+              }}
             />
           </View>
         </View>

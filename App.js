@@ -35,7 +35,7 @@ export default function App() {
 
   return (
     <AlertProvider>
-      <StatusBar style="auto" />
+      <StatusBar style="dark" />
       <ProvideAll ContextsAndValues={CVs}>
         <View style={{ flex: 1, overflow: 'hidden' }}>
           <Tabs />

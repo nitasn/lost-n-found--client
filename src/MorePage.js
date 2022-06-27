@@ -52,25 +52,17 @@ export default function MorePage({ navigation }) {
       <Bar
         text="Settings"
         iconName="settings-outline"
-        onPress={async () => {
+        onPress={() => {
           showCustomAlert({
-            header: 'alert 1',
-            body: 'This is the first alert (out of two).',
-            onClose: () => console.log('alert 1 was closed'),
-          });
-          await sleep(3000);
-          showCustomAlert({
-            header: 'alert 2',
-            body: "I wrote this alert library from scratch, because I didn't like what I could find on npm.",
-            onClose: () => console.log('alert 2 was closed'),
+            header: 'No Settings Yet',
+            body: 'Settings screen is not implemented.',
+
           });
         }}
       />
     </View>
   );
 }
-
-const sleep = (ms) => new Promise((res) => setTimeout(res, ms));
 
 function Hr({ marginVertical }) {
   return (
