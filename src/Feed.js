@@ -36,43 +36,48 @@ export default ({ type, setScrollPosition }) => {
 
   const [isRefreshing, setIsRefreshing] = React.useState(false);
 
+  const postComponents = React.useMemo(() => {
+    // without this, all the posts would rerender on every tiny flat-list scroll
+    return posts?.map((item, index) => {
+      if (item === replaceMeWithSearchBar) {
+        return <SearchBar filter={!!filter} key={`${type}-search-bar`} />;
+      }
+      return (
+        <View style={index + 1 == posts.length && { marginBottom: 3 }} key={item._id}>
+          <Post postData={item} />
+        </View>
+      );
+    });
+  }, [posts]);
+
+  const onPullToRefresh = () => {
+    // todo doesn't work on web
+    setIsRefreshing(true);
+    let mounted = true;
+    refreshPosts().then(() => mounted && setIsRefreshing(false));
+    return () => (mounted = false);
+  };
+
+  const onScroll = (e) => {
+    const pos = e.nativeEvent.contentOffset.y;
+    setScrollPosition?.(pos);
+    scrollPosOf.current[type] = pos;
+  };
+
   if (postsLoadError) return <PostsLoadErrorScreen msg={postsLoadError} />;
 
-  if (!posts) return <LoadingPostsScreen />;
+  if (!postComponents) return <LoadingPostsScreen />;
 
   return (
     <View style={[styles.conatiner, { flex: 1 }]}>
       <FlatList
         ref={listRef}
-        onScroll={(e) => {
-          const pos = e.nativeEvent.contentOffset.y;
-          setScrollPosition?.(pos);
-          scrollPosOf.current[type] = pos;
-        }}
+        onScroll={onScroll}
         refreshing={isRefreshing}
-        onRefresh={() => {
-          // todo doesn't work on web
-          setIsRefreshing(true);
-          let isStillMounted = true;
-          refreshPosts().then(() => isStillMounted && setIsRefreshing(false));
-          return () => (isStillMounted = false);
-        }}
+        onRefresh={onPullToRefresh}
         style={{ paddingHorizontal: 6, paddingVertical: 0, width: '100%' }}
-        data={posts}
-        renderItem={({ item, index }) => {
-          if (item === replaceMeWithSearchBar) {
-            return <SearchBar filter={!!filter} />;
-          }
-          return (
-            <View style={index + 1 == posts.length && { marginBottom: 3 }}>
-              <Post postData={item} />
-            </View>
-          );
-        }}
-        keyExtractor={(obj) => {
-          if (obj === replaceMeWithSearchBar) return type + '-search-bar';
-          return obj._id;
-        }}
+        data={postComponents}
+        renderItem={({ item }) => item}
       />
 
       {posts.length == 1 && (
