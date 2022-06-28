@@ -53,7 +53,9 @@ export default ({ type, setScrollPosition }) => {
         onRefresh={() => {
           // todo doesn't work on web
           setIsRefreshing(true);
-          refreshPosts().then(() => setIsRefreshing(false));
+          let isStillMounted = true;
+          refreshPosts().then(() => isStillMounted && setIsRefreshing(false));
+          return () => (isStillMounted = false);
         }}
         style={{ paddingHorizontal: 6, paddingVertical: 0, width: '100%' }}
         data={posts}

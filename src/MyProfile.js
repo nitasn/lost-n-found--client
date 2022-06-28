@@ -1,7 +1,6 @@
-import { Image, Text, TouchableOpacity, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useFocusEffect } from '@react-navigation/native';
-import { StatusBar } from 'expo-status-bar';
+import { Image, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import { showCustomAlert } from './CustomAlert';
 import globalStyles from './globalStyles';
 import useDecodedJwt from './useDecodedJwt';
@@ -13,14 +12,12 @@ export default function MyProfile({ navigation }) {
   useFocusEffect(() => void navigation.setOptions({ title: `Your Profile` }));
 
   return (
-    <>
-      <StatusBar style="light" />
+    <ScrollView>
       <View
         style={{
           flex: 1,
-          //   alignItems: 'center',
           margin: 12,
-          padding: 12,
+          padding: 14,
           paddingTop: 18,
           backgroundColor: 'white',
           borderRadius: 12,
@@ -31,25 +28,19 @@ export default function MyProfile({ navigation }) {
           <Text style={{ fontSize: 30 }}>{name}</Text>
           <View style={{ marginLeft: 'auto' }}>
             <FlatButton
-              color="darkblue"
+              color="steelblue"
               text="Edit"
               iconName="pencil-outline"
               onPress={() => {
                 showCustomAlert({
                   header: 'Cannot Edit Yet',
-                  body: 'Edit feature is not implemented.',
+                  body: 'Edit feature is yet to be implemented.',
                 });
               }}
             />
           </View>
         </View>
-
-        <View
-          style={{
-            ...globalStyles.shadow,
-            marginVertical: 12,
-          }}
-        >
+        <View style={[{ marginTop: 12 }, globalStyles.shadow]}>
           <Image
             style={{
               alignSelf: 'center',
@@ -61,24 +52,17 @@ export default function MyProfile({ navigation }) {
             }}
             source={{ uri: profilePicUrl }}
           />
-          {/* <ImagePickerUploader
-            initialUri={profilePicUrl}
-            onUploadStateChanged={console.log}
-            style={{ width: 327, height: 327 }}
-          /> */}
         </View>
-
-        <Text style={{ marginVertical: 12 }}>
-          todo: fetch ratings, etc
-          {'\n'}
-          (using author._id)
-        </Text>
-
-        <Text style={{ fontSize: 16, marginVertical: 6 }}>
+        <View style={{ marginVertical: 20 }}>
+          <Text style={{ fontSize: 16, fontStyle: 'italic' }}>
+            reviews will appear here...
+          </Text>
+        </View>
+        <Text style={{ fontSize: 16, marginVertical: 6, marginTop: 'auto' }}>
           Joined at {prettyDateNoWeekday(iat)}
         </Text>
       </View>
-    </>
+    </ScrollView>
   );
 }
 

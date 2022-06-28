@@ -97,7 +97,7 @@ function prettyDistance(proximityInKm) {
     return `${proximityInKm.toFixed(1)} km away`;
   }
   if (proximityInKm <= 0.1) {
-    return 'at this area';
+    return 'near you';
   }
   return `${proximityInKm.toFixed(2)} km away`;
 }

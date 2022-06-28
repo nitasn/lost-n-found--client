@@ -1,59 +1,50 @@
-import { Text, TouchableOpacity, View } from 'react-native';
+import { Text, TouchableOpacity, View, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { showCustomAlert } from './CustomAlert';
 import globalStyles from './globalStyles';
 
 export default function MorePage({ navigation }) {
+  const menuItems = [
+    {
+      label: 'Found something? Lost an item?',
+      btnText: 'Upload Post',
+      iconName: 'add',
+      onPress: () => navigation.navigate('PostComposer'),
+    },
+    {
+      label: 'View & edit your profile',
+      btnText: 'Profile',
+      iconName: 'person-outline',
+      onPress: () => navigation.navigate('MyProfile'),
+    },
+    {
+      label: 'View the posts you published',
+      btnText: 'My Posts',
+      iconName: 'newspaper-outline',
+      onPress: () => navigation.navigate('MyPosts'),
+    },
+  ];
+
   return (
-    <View
-      style={{
-        ...globalStyles.fullScreenAndCenter,
-        alignItems: 'flex-start',
-        padding: 16,
-      }}
-    >
-      <Text style={{ lineHeight: 20, paddingHorizontal: 8 }}>
-        Found something? Lost an item?
-      </Text>
-      <Bar
-        text="Upload Post"
-        iconName="add"
-        onPress={() => navigation.navigate('PostComposer')}
-      />
-
-      <Hr marginVertical={24} />
-
-      <Text style={{ lineHeight: 20, paddingHorizontal: 8 }}>
-        Manage &amp; view history
-      </Text>
-      <Bar
-        text="Profile"
-        iconName="person-outline"
-        onPress={() => navigation.navigate('MyProfile')}
-      />
-
-      <Hr marginVertical={24} />
-
-      <Text style={{ lineHeight: 20, paddingHorizontal: 8 }}>
-        You know what this means
-      </Text>
-      <Bar
-        text="Settings"
-        iconName="settings-outline"
-        onPress={async () => {
-          showCustomAlert({
-            header: 'No Settings Yet',
-            body: 'Settings screen is not implemented.',
-            // onClose: () => console.log('msg 1 closed!'),
-          });
-          // await new Promise((res) => setTimeout(res, 1000));
-          // showCustomAlert({
-          //   header: 'Test message',
-          //   body: 'todo: delete this message.',
-          //   onClose: () => console.log('msg 2 closed...'),
-          // });
+    <View style={{ flex: 1, backgroundColor: '#ddd' }}>
+      <ScrollView
+        style={{
+          padding: 16,
+          paddingTop: 24,
         }}
-      />
+      >
+        {menuItems.map(({ label, btnText, iconName, onPress }, idx) => {
+          return (
+            <View key={idx}>
+              <Text style={{ lineHeight: 20, paddingHorizontal: 8, fontSize: 15 }}>
+                {label}
+              </Text>
+              <Bar text={btnText} iconName={iconName} onPress={onPress} />
+              {idx !== menuItems.length - 1 && <Hr marginVertical={24} />}
+            </View>
+          );
+        })}
+      </ScrollView>
     </View>
   );
 }
@@ -77,19 +68,22 @@ function Bar({ onPress, text, iconName }) {
     <View style={{ flexDirection: 'row', width: '100%' }}>
       <TouchableOpacity
         onPress={onPress}
-        style={{
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          marginVertical: 12,
-          paddingVertical: 12,
-          paddingHorizontal: 24,
-          backgroundColor: 'white',
-          borderRadius: 12,
-          ...globalStyles.shadow,
-          shadowOpacity: 0.2,
-          flex: 1,
-        }}
+        style={[
+          globalStyles.shadow,
+          {
+            shadowOpacity: 0.2,
+
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            marginVertical: 12,
+            paddingVertical: 12,
+            paddingHorizontal: 24,
+            backgroundColor: 'white',
+            borderRadius: 12,
+            flex: 1,
+          },
+        ]}
       >
         <Text
           style={{
@@ -104,3 +98,14 @@ function Bar({ onPress, text, iconName }) {
     </View>
   );
 }
+
+const settingsOption = {
+  label: 'You know what this means',
+  btnText: 'Settings',
+  iconName: 'settings-outline',
+  onPress: () =>
+    showCustomAlert({
+      header: 'No Settings Yet',
+      body: 'Settings screen is not implemented.',
+    }),
+};

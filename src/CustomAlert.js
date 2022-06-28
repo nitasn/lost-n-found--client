@@ -153,17 +153,19 @@ function CustomAlert(props) {
     >
       <TouchableWithoutFeedback /* to block touch on the popup itself */>
         <Animated.View
-          style={{
-            width: Math.min(0.8 * width, 400),
-            paddingTop: 26,
-            padding: 24,
-            backgroundColor: props.backgroundColor,
-            borderRadius: 8,
-            ...globalStyles.shadow,
-            shadowOpacity: 0.3,
-            // animation:
-            transform: [{ scale: scaleValue }],
-          }}
+          style={[
+            globalStyles.shadow,
+            {
+              width: Math.min(0.8 * width, 400),
+              paddingTop: 26,
+              padding: 24,
+              backgroundColor: props.backgroundColor,
+              borderRadius: 8,
+              shadowOpacity: 0.3,
+              // animation:
+              transform: [{ scale: scaleValue }],
+            },
+          ]}
         >
           <Text
             style={{
@@ -191,17 +193,19 @@ function CustomAlert(props) {
 function FlatButton({ text, onPress, textColor, bgColor }) {
   return (
     <TouchableOpacity
-      style={{
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'flex-end',
-        backgroundColor: bgColor,
-        borderRadius: 4,
-        paddingHorizontal: 16,
-        paddingVertical: 8,
-        alignSelf: 'flex-end',
-        ...globalStyles.shadow,
-      }}
+      style={[
+        globalStyles.shadow,
+        {
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'flex-end',
+          backgroundColor: bgColor,
+          borderRadius: 4,
+          paddingHorizontal: 16,
+          paddingVertical: 8,
+          alignSelf: 'flex-end',
+        },
+      ]}
       onPress={onPress}
     >
       <Text

@@ -6,7 +6,7 @@ import { capitalize } from './utils';
 
 export default function ImagesModal({ navigation, route }) {
   useFocusEffect(() => {
-    navigation.setOptions({ title: `${capitalize(postViewed.author.name)}'s Images` });
+    navigation.setOptions({ title: capitalize(postViewed.header) });
   });
 
   const { postViewed } = route.params;

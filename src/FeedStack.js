@@ -16,7 +16,7 @@ export default function () {
   const [type, setType] = React.useState('found');
   const [filter, setFilter] = React.useState(null);
 
-  // used to make the "switch feed type" button change opacity
+  // serves to make the "switch feed type" button change opacity
   // based on the posts list's scroll position
   const [scrollPosition, setScrollPosition] = React.useState(0);
 
@@ -33,6 +33,8 @@ export default function () {
           options={{
             header: () => <TypeChangingHeader {...{ type, setType, scrollPosition }} />,
           }}
+          // todo on every tiny scroll, the entire feed rerenders, 
+          // which causes each of the visible posts to rerender!
           children={() => <Feed {...{ type, setScrollPosition }} />}
         />
         <Stack.Screen name="ImagesModal" component={ImagesModal} />

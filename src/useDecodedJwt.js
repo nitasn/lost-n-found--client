@@ -4,5 +4,5 @@ import jwtDecode from 'jwt-decode';
 
 export default function useDecodedJwt() {
   const jwt = React.useContext(JwtContext);
-  return jwtDecode(jwt);
+  return React.useMemo(() => jwtDecode(jwt), [jwt]);
 }
